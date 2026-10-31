@@ -167,6 +167,16 @@ var BetterLottie = (function () {
   var LINE_CAPS = { 1: 'butt', 2: 'round', 3: 'square' };
   var LINE_JOINS = { 1: 'miter', 2: 'round', 3: 'bevel' };
   var MERGE_MODES = { 1: 'merge', 2: 'add', 3: 'subtract', 4: 'intersect', 5: 'exclude' };
+  // 'ADBE Vector Blend Mode' (groups, fills, strokes) is AE's menu position,
+  // separators included (2, 8, 14, 22, 25 render as normal). Identified
+  // against AE renders.
+  var SHAPE_BLEND_MODES = {
+    1: 'normal', 2: 'normal', 3: 'darken', 4: 'multiply', 5: 'color-burn', 6: 'linear-burn', 7: 'darker-color',
+    8: 'normal', 9: 'lighten', 10: 'screen', 11: 'color-dodge', 12: 'add', 13: 'lighter-color', 14: 'normal',
+    15: 'overlay', 16: 'soft-light', 17: 'hard-light', 18: 'linear-light', 19: 'vivid-light', 20: 'pin-light',
+    21: 'hard-mix', 22: 'normal', 23: 'difference', 24: 'exclusion', 25: 'normal', 26: 'hue', 27: 'saturation',
+    28: 'color', 29: 'luminosity'
+  };
   var REPEATER_TRANSFORM = {
     anchor: 'ADBE Vector Repeater Anchor', position: 'ADBE Vector Repeater Position',
     scale: 'ADBE Vector Repeater Scale', rotation: 'ADBE Vector Repeater Rotation'
@@ -310,6 +320,8 @@ var BetterLottie = (function () {
       var w = where + ' > ' + p.name;
       var it = { type: type, name: p.name };
       if (p.enabled === false) it.enabled = false;
+      var shapeBlend = SHAPE_BLEND_MODES[value(p, 'ADBE Vector Blend Mode')];
+      if (shapeBlend && shapeBlend !== 'normal') it.blendMode = shapeBlend;
       switch (type) {
         case 'group':
           it.transform = readTransform(p.property('ADBE Vector Transform Group'), GROUP_TRANSFORM, ctx, w);
@@ -374,9 +386,13 @@ var BetterLottie = (function () {
 
   // --- layers ---
 
-  var BLEND_NAMES = ['NORMAL', 'MULTIPLY', 'SCREEN', 'ADD', 'OVERLAY', 'DARKEN', 'LIGHTEN', 'SOFT_LIGHT',
-    'HARD_LIGHT', 'COLOR_DODGE', 'COLOR_BURN', 'DIFFERENCE', 'EXCLUSION', 'HUE', 'SATURATION', 'COLOR',
-    'LUMINOSITY', 'DISSOLVE'];
+  // Every BlendingMode enum name (AE spells SILHOUETE_ALPHA with one T).
+  var BLEND_NAMES = ['NORMAL', 'DISSOLVE', 'DANCING_DISSOLVE', 'DARKEN', 'MULTIPLY', 'COLOR_BURN',
+    'CLASSIC_COLOR_BURN', 'LINEAR_BURN', 'DARKER_COLOR', 'ADD', 'LIGHTEN', 'SCREEN', 'COLOR_DODGE',
+    'CLASSIC_COLOR_DODGE', 'LINEAR_DODGE', 'LIGHTER_COLOR', 'OVERLAY', 'SOFT_LIGHT', 'HARD_LIGHT',
+    'LINEAR_LIGHT', 'VIVID_LIGHT', 'PIN_LIGHT', 'HARD_MIX', 'DIFFERENCE', 'CLASSIC_DIFFERENCE', 'EXCLUSION',
+    'SUBTRACT', 'DIVIDE', 'HUE', 'SATURATION', 'COLOR', 'LUMINOSITY', 'STENCIL_ALPHA', 'STENCIL_LUMA',
+    'SILHOUETE_ALPHA', 'SILHOUETTE_ALPHA', 'SILHOUETTE_LUMA', 'ALPHA_ADD', 'LUMINESCENT_PREMUL'];
 
   function blendName(mode) {
     for (var i = 0; i < BLEND_NAMES.length; i++) {

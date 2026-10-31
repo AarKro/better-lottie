@@ -56,3 +56,27 @@ test('repeater: copy opacity steps by (end − start) / copies', () => {
 test('gradient scale and rotation become a gradientTransform', () => {
   assert.match(svgOf('ae-gradient-transform'), /gradientTransform="rotate\(45\) scale\(0\.5 1\)"/);
 });
+
+test('layer blend modes: CSS mix-blend-mode, isolated root, warnings for the rest', () => {
+  const { svg, warnings } = convert(fixture('blend-modes'));
+  assert.match(svg, /<svg [^>]*style="isolation:isolate"/);
+  for (const css of ['multiply', 'soft-light', 'luminosity', 'plus-lighter']) assert.ok(svg.includes(`mix-blend-mode:${css}`), css);
+  assert.deepEqual(warnings.map(w => w.replace(/^layer "[^"]+": /, '')).sort(), [
+    'blend mode "linear-burn" has no browser equivalent (exported as normal)',
+    'blend mode "vivid-light" has no browser equivalent (exported as normal)',
+  ]);
+  assert.ok(!svgOf('transform-basics').includes('isolation'), 'no isolation without blending');
+});
+
+test('shape-level blend modes: on the fill, layer content isolated', () => {
+  const { svg, warnings } = convert(fixture('shape-blend-modes'));
+  assert.match(svg, /fill="#66b38c" style="mix-blend-mode:multiply"/);
+  assert.match(svg, /<g style="isolation:isolate">/, 'shape blends stay inside their layer');
+  assert.equal(warnings.length, 7, 'linear burn/light, vivid/pin light, hard mix, lighter/darker color');
+});
+
+test('layer blend modes extracted from AE convert without surprises', () => {
+  const { svg, warnings } = convert(fixture('ae-blend-layers'));
+  assert.equal((svg.match(/mix-blend-mode:/g) || []).length, 16);
+  assert.equal(warnings.length, 2);
+});

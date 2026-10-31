@@ -18,6 +18,7 @@ import { orientClockwise, shapeLength, transformMatrix, transformShape } from '.
 import { animate, displayToggle, element, finalize, newId, sampling, trackOf } from './anim.js';
 import { num } from './format.js';
 import { paint, PAINTS } from './paint.js';
+import { cssBlend } from './blend.js';
 import { matrixTrack, part, wrapParts, wrapTransform } from './transform.js';
 
 const GEOMETRY = new Set(['path', 'rect', 'ellipse']);
@@ -38,12 +39,17 @@ function renderStack(items, ctx, where, end = items.length) {
     const it = items[i];
     if (it.enabled === false) continue;
     const w = `${where} › ${it.name || it.type}`;
+    const blend = shapeBlend(it, ctx, w);
     if (PAINTS.has(it.type)) {
       const style = paint(it, ctx, w);
+      if (blend) blendStyle(style, blend);
       out += collectGeometry(items, i, ctx, where).map(e => e.render(style)).join('');
     } else if (it.type === 'group') {
       const inner = renderStack(it.contents || [], ctx, w);
-      if (inner) out += wrapTransform(it.transform, inner, ctx, w, { opacity: true });
+      if (inner) {
+        const grouped = wrapTransform(it.transform, inner, ctx, w, { opacity: true });
+        out += blend ? element('g', { style: `mix-blend-mode:${blend}` }, grouped) : grouped;
+      }
     } else if (!GEOMETRY.has(it.type) && !MODIFIERS.has(it.type)) {
       ctx.warn(w, `shape item "${it.type}" is not supported (ignored)`);
     }
@@ -53,6 +59,25 @@ function renderStack(items, ctx, where, end = items.length) {
     if (above) out += repeat(items[r], above, ctx, `${where} › ${items[r].name || 'Repeater'}`);
   }
   return out;
+}
+
+// Blend mode of a group, fill or stroke as CSS (null when normal). The IR
+// carries AE's mode name; older extractors wrote the raw number.
+function shapeBlend(it, ctx, where) {
+  if (it.blendMode === undefined) return null;
+  if (typeof it.blendMode === 'number') {
+    ctx.warn(where, 'shape blend modes need a newer extractor; re-export from After Effects');
+    return null;
+  }
+  const css = cssBlend(it.blendMode, ctx, where);
+  if (css) { ctx.shapeBlends = true; ctx.blends = true; }
+  return css;
+}
+
+function blendStyle(style, css) {
+  const add = attrs => { if (attrs) attrs.style = `mix-blend-mode:${css}`; };
+  add(style.attrs);
+  if (style.outline) add(style.outline.attrs);
 }
 
 // Drawable entries for everything above index `end`:

@@ -85,12 +85,13 @@ If your composition uses something better-lottie can't export, the panel lists i
 | **Shapes** | Paths, rectangles, ellipses, groups, shape morphing |
 | **Fill & stroke** | Solid colors, linear and radial gradients (incl. gradient scale/rotation and animated colors), stroke width, line caps and joins, dashes, stroke taper and wave |
 | **Shape effects** | Trim Paths, Merge Paths, Repeater |
+| **Blend modes** | On layers and on shape groups, fills and strokes: Multiply, Screen, Overlay, Darken, Lighten, Color Dodge, Color Burn, Hard Light, Soft Light, Difference, Exclusion, Hue, Saturation, Color, Luminosity, Add |
 | **Masks & mattes** | Layer masks (add, subtract, intersect, inverted, feather, expansion, opacity), track mattes (alpha, luma and inverted) |
 | **Animation** | All keyframe easing, hold keyframes, motion paths, expressions (recorded frame by frame) |
 
 ### Not supported
 
-Effects, text layers, images and video, 3D layers and cameras, blend modes, precomps, and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners, Polystar).
+Effects, text layers, images and video, 3D layers and cameras, precomps, blend modes that browsers don't have (e.g. Linear Burn, Vivid Light, Pin Light, Hard Mix, Subtract, Divide; these export as Normal), and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners, Polystar).
 
 ## Tips
 

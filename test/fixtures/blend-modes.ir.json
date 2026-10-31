@@ -1,0 +1,1835 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "Blend modes",
+  "width": 600,
+  "height": 300,
+  "duration": 1,
+  "frameRate": 25,
+  "background": [
+   0.5,
+   0.5,
+   0.5
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "multiply",
+   "type": "shape",
+   "blendMode": "multiply",
+   "transform": {
+    "position": [
+     50,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "multiply backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     50,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "screen",
+   "type": "shape",
+   "blendMode": "screen",
+   "transform": {
+    "position": [
+     150,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "screen backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     150,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "overlay",
+   "type": "shape",
+   "blendMode": "overlay",
+   "transform": {
+    "position": [
+     250,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "name": "overlay backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     250,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "name": "darken",
+   "type": "shape",
+   "blendMode": "darken",
+   "transform": {
+    "position": [
+     350,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "name": "darken backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     350,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "name": "lighten",
+   "type": "shape",
+   "blendMode": "lighten",
+   "transform": {
+    "position": [
+     450,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "name": "lighten backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     450,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "name": "color-dodge",
+   "type": "shape",
+   "blendMode": "color-dodge",
+   "transform": {
+    "position": [
+     550,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "name": "color-dodge backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     550,
+     50
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "name": "color-burn",
+   "type": "shape",
+   "blendMode": "color-burn",
+   "transform": {
+    "position": [
+     50,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "name": "color-burn backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     50,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "name": "hard-light",
+   "type": "shape",
+   "blendMode": "hard-light",
+   "transform": {
+    "position": [
+     150,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "name": "hard-light backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     150,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "name": "soft-light",
+   "type": "shape",
+   "blendMode": "soft-light",
+   "transform": {
+    "position": [
+     250,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 18,
+   "name": "soft-light backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     250,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "name": "difference",
+   "type": "shape",
+   "blendMode": "difference",
+   "transform": {
+    "position": [
+     350,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "name": "difference backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     350,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "name": "exclusion",
+   "type": "shape",
+   "blendMode": "exclusion",
+   "transform": {
+    "position": [
+     450,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "name": "exclusion backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     450,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "name": "hue",
+   "type": "shape",
+   "blendMode": "hue",
+   "transform": {
+    "position": [
+     550,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "name": "hue backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     550,
+     150
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "name": "saturation",
+   "type": "shape",
+   "blendMode": "saturation",
+   "transform": {
+    "position": [
+     50,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "name": "saturation backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     50,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 27,
+   "name": "color",
+   "type": "shape",
+   "blendMode": "color",
+   "transform": {
+    "position": [
+     150,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "name": "color backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     150,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "name": "luminosity",
+   "type": "shape",
+   "blendMode": "luminosity",
+   "transform": {
+    "position": [
+     250,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 30,
+   "name": "luminosity backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     250,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 31,
+   "name": "add",
+   "type": "shape",
+   "blendMode": "add",
+   "transform": {
+    "position": [
+     350,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 32,
+   "name": "add backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     350,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 33,
+   "name": "linear-burn",
+   "type": "shape",
+   "blendMode": "linear-burn",
+   "transform": {
+    "position": [
+     450,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 34,
+   "name": "linear-burn backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     450,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 35,
+   "name": "vivid-light",
+   "type": "shape",
+   "blendMode": "vivid-light",
+   "transform": {
+    "position": [
+     550,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "size": [
+      60,
+      60
+     ],
+     "position": [
+      0,
+      0
+     ]
+    },
+    {
+     "type": "fill",
+     "color": [
+      0.4,
+      0.7,
+      0.55,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "name": "vivid-light backdrop",
+   "type": "shape",
+   "transform": {
+    "position": [
+     550,
+     250
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "L",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        -22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "R",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        45,
+        90
+       ],
+       "position": [
+        22.5,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

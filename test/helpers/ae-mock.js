@@ -142,7 +142,8 @@ export const ellipse = (name, size) => G('ADBE Vector Shape - Ellipse', name, [
 
 export const path = (name, spec) => G('ADBE Vector Shape - Group', name, [P('ADBE Vector Shape', 'Path', spec)]);
 
-export const fill = (name, color, opacity = 100) => G('ADBE Vector Graphic - Fill', name, [
+export const fill = (name, color, opacity = 100, blend = 1) => G('ADBE Vector Graphic - Fill', name, [
+  P('ADBE Vector Blend Mode', 'Blend Mode', blend),
   P('ADBE Vector Composite Order', 'Composite', 1),
   P('ADBE Vector Fill Rule', 'Fill Rule', 1),
   P('ADBE Vector Fill Color', 'Color', color),

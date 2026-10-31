@@ -7,6 +7,7 @@ import { element, timing } from './anim.js';
 import { renderContents } from './shapes.js';
 import { wrapTransform } from './transform.js';
 import { applyMasks, applyMatte } from './masks.js';
+import { cssBlend } from './blend.js';
 
 export const VERSION = '0.3.0';
 
@@ -55,8 +56,10 @@ export function convert(ir, options = {}) {
 
   const head = [`<!-- ${escComment(`better-lottie ${VERSION} · comp "${comp.name || ''}"`)} -->`];
   if (ctx.defs.length) head.push(`<defs>${ctx.defs.join('')}</defs>`);
+  // Blending stays inside the SVG, like in AE, even when it's inlined in a page.
+  const isolate = ctx.blends ? ' style="isolation:isolate"' : '';
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${num(comp.width)} ${num(comp.height)}" `
-    + `width="${num(comp.width)}" height="${num(comp.height)}">\n${head.concat(body).join('\n')}\n</svg>\n`;
+    + `width="${num(comp.width)}" height="${num(comp.height)}"${isolate}>\n${head.concat(body).join('\n')}\n</svg>\n`;
   return { svg, warnings };
 }
 
@@ -76,11 +79,13 @@ function renderLayer(layer, ctx, { force = false } = {}) {
     return '';
   }
   if (layer.threeD) ctx.warn(where, '3D layer exported as 2D');
-  if (layer.blendMode && layer.blendMode !== 'normal') ctx.warn(where, `blend mode "${layer.blendMode}" is not supported (exported as normal)`);
   if (layer.trackMatte) ctx.warn(where, 'track mattes need a newer extractor; re-export from After Effects');
 
+  ctx.shapeBlends = false;
   let content = renderContents(layer.contents || [], ctx, where);
   if (!content) return '';
+  // Shape-level blend modes blend within the layer only.
+  if (ctx.shapeBlends) content = element('g', { style: 'isolation:isolate' }, content);
   content = applyMasks(layer, content, ctx, where);
   let out = wrapTransform(layer.transform, content, ctx, where, { opacity: true });
 
@@ -93,7 +98,16 @@ function renderLayer(layer, ctx, { force = false } = {}) {
     out = wrapTransform(p.transform, out, ctx, `layer "${p.name}"`, { opacity: false });
     pid = p.parent;
   }
-  return withMatte(layer, withVisibility(layer, out, ctx), ctx, where);
+  out = withMatte(layer, withVisibility(layer, out, ctx), ctx, where);
+  // A matte layer's own blend mode doesn't matter inside the matte.
+  return force ? out : withBlend(layer, out, ctx, where);
+}
+
+function withBlend(layer, out, ctx, where) {
+  const css = out ? cssBlend(layer.blendMode, ctx, where) : null;
+  if (!css) return out;
+  ctx.blends = true;
+  return element('g', { style: `mix-blend-mode:${css}` }, out);
 }
 
 function withMatte(layer, out, ctx, where) {

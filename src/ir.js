@@ -30,7 +30,8 @@
 // @property {number} [inPoint]         defaults to 0
 // @property {number} [outPoint]        defaults to comp.duration
 // @property {boolean} [threeD]
-// @property {string} [blendMode]       anything but 'normal' is reported
+// @property {string} [blendMode]       AE mode name, lowercase with hyphens (e.g. 'color-dodge');
+//                                      modes without a CSS equivalent are reported
 // @property {boolean} [isMatte]        used as a track matte (hidden, but rendered into the matte)
 // @property {{ type: 'alpha'|'alpha-inverted'|'luma'|'luma-inverted', layer: number }} [matte]
 //                                      this layer's track matte: type and matte layer id
@@ -60,6 +61,8 @@
 // @property {Prop<number>} expansion   px, negative shrinks
 //
 // @typedef {Object} ShapeItem   (AE order: top item first)
+//   Groups, fills and strokes may carry blendMode: an AE mode name like the
+//   layer's (shape-level blend modes; they blend within the layer).
 //   { type: 'group', name, enabled?, transform, contents: ShapeItem[] }
 //   { type: 'path', path: Prop<Shape> }
 //   { type: 'rect', size: Prop<[w,h]>, position: Prop<[x,y]>, roundness: Prop<number> }

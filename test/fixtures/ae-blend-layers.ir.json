@@ -1,0 +1,5184 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "blend-layers",
+  "width": 600,
+  "height": 300,
+  "duration": 1,
+  "frameRate": 25,
+  "background": [
+   0.501961,
+   0.501961,
+   0.501961
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "MULTIPLY",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      50,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "multiply",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "MULTIPLY backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      50,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "SCREEN",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      150,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "screen",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "SCREEN backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      150,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "OVERLAY",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      250,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "overlay",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "name": "OVERLAY backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      250,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "name": "DARKEN",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      350,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "darken",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "name": "DARKEN backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      350,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "name": "LIGHTEN",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      450,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "lighten",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "name": "LIGHTEN backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      450,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "name": "COLOR_DODGE",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      550,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "color-dodge",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "name": "COLOR_DODGE backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      550,
+      50,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "name": "COLOR_BURN",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      50,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "color-burn",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "name": "COLOR_BURN backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      50,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "name": "HARD_LIGHT",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      150,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "hard-light",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "name": "HARD_LIGHT backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      150,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "name": "SOFT_LIGHT",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      250,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "soft-light",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 18,
+   "name": "SOFT_LIGHT backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      250,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "name": "DIFFERENCE",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      350,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "difference",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "name": "DIFFERENCE backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      350,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "name": "EXCLUSION",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      450,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "exclusion",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "name": "EXCLUSION backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      450,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "name": "HUE",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      550,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "hue",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "name": "HUE backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      550,
+      150,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "name": "SATURATION",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      50,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "saturation",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "name": "SATURATION backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      50,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 27,
+   "name": "COLOR",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      150,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "color",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "name": "COLOR backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      150,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "name": "LUMINOSITY",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      250,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "luminosity",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 30,
+   "name": "LUMINOSITY backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      250,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 31,
+   "name": "ADD",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      350,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "add",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 32,
+   "name": "ADD backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      350,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 33,
+   "name": "LINEAR_BURN",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      450,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "linear-burn",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 34,
+   "name": "LINEAR_BURN backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      450,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.85,
+         0.25,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.2,
+         0.45,
+         0.9,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 35,
+   "name": "VIVID_LIGHT",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      550,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "blendMode": "vivid-light",
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         60,
+         60
+        ]
+       },
+       "position": {
+        "value": [
+         0,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.4,
+         0.7,
+         0.55,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "name": "VIVID_LIGHT backdrop",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 1,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      550,
+      250,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "Group 1",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         -22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.95,
+         0.8,
+         0.2,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "Group 2",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      },
+      "opacity": {
+       "value": 100
+      },
+      "skew": {
+       "value": 0
+      }
+     },
+     "contents": [
+      {
+       "type": "rect",
+       "name": "Rectangle Path 1",
+       "size": {
+        "value": [
+         45,
+         90
+        ]
+       },
+       "position": {
+        "value": [
+         22.5,
+         0
+        ]
+       },
+       "roundness": {
+        "value": 0
+       }
+      },
+      {
+       "type": "fill",
+       "name": "Fill 1",
+       "color": {
+        "value": [
+         0.1,
+         0.6,
+         0.35,
+         1
+        ]
+       },
+       "opacity": {
+        "value": 100
+       },
+       "fillRule": "nonzero"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "warnings": []
+}

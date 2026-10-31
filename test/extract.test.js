@@ -129,7 +129,9 @@ test('extracted IR converts end to end', () => {
   // Hold keyframes on the hidden null still drive the child.
   assert.match(svg, /type="scale" values="1 1;0.5 0.5;0.5 0.5" keyTimes="0;0.5;1" calcMode="discrete"/);
   assert.match(svg, /stroke-linecap="round" stroke-linejoin="round"/);
-  for (const expected of ['text layers are not supported', 'blend mode "multiply"', 'expression baked']) {
+  assert.match(svg, /<g style="mix-blend-mode:multiply">/);
+  assert.match(svg, /<svg [^>]*style="isolation:isolate"/);
+  for (const expected of ['text layers are not supported', 'expression baked']) {
     assert.ok(warnings.some(w => w.includes(expected)), expected);
   }
 });
@@ -283,4 +285,14 @@ test('reads gradient color keyframes, and AE defaults for untouched gradients', 
   assert.deepEqual(animated.stops.keyframes.map(k => [k.t, k.v.colors]), [[0, RED], [1, BLUE]]);
   assert.deepEqual(untouched.stops.value.colors, [[0, 0.5, 1, 1, 1], [1, 0.5, 0, 0, 0]], 'white to black');
   assert.deepEqual(ir.warnings, []);
+});
+
+test('maps shape-level blend mode numbers (AE menu positions) to names', () => {
+  const comp = new CompItem({ id: 3, name: 'Blends', width: 100, height: 100, duration: 1, frameRate: 25, bgColor: [0, 0, 0] });
+  comp.layers = [shapeLayer({ index: 1, name: 'L', outPoint: 1 }, [
+    rect('R', [10, 10]), fill('A', [1, 0, 0, 1], 100, 4), fill('B', [1, 0, 0, 1], 100, 12),
+    fill('C', [1, 0, 0, 1], 100, 29), fill('D', [1, 0, 0, 1], 100, 8), fill('E', [1, 0, 0, 1], 100, 1),
+  ])];
+  const items = JSON.parse(loadHost(HOST, comp).extractActiveComp()).layers[0].contents;
+  assert.deepEqual(items.slice(1).map(i => i.blendMode), ['multiply', 'add', 'luminosity', undefined, undefined]);
 });

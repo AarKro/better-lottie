@@ -1,0 +1,2766 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "Shape blend modes",
+  "width": 700,
+  "height": 500,
+  "duration": 1,
+  "frameRate": 25,
+  "background": [
+   0.5,
+   0.5,
+   0.5
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "shape blend 29",
+   "type": "shape",
+   "transform": {
+    "position": [
+     600,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "luminosity"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "shape blend 28",
+   "type": "shape",
+   "transform": {
+    "position": [
+     530,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "color"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "shape blend 27",
+   "type": "shape",
+   "transform": {
+    "position": [
+     460,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "saturation"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "shape blend 26",
+   "type": "shape",
+   "transform": {
+    "position": [
+     390,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "hue"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "shape blend 25",
+   "type": "shape",
+   "transform": {
+    "position": [
+     320,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "name": "shape blend 24",
+   "type": "shape",
+   "transform": {
+    "position": [
+     250,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "exclusion"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "name": "shape blend 23",
+   "type": "shape",
+   "transform": {
+    "position": [
+     180,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "difference"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "name": "shape blend 22",
+   "type": "shape",
+   "transform": {
+    "position": [
+     110,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "name": "shape blend 21",
+   "type": "shape",
+   "transform": {
+    "position": [
+     40,
+     240
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "hard-mix"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "name": "shape blend 20",
+   "type": "shape",
+   "transform": {
+    "position": [
+     670,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "pin-light"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "name": "shape blend 19",
+   "type": "shape",
+   "transform": {
+    "position": [
+     600,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "vivid-light"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "name": "shape blend 18",
+   "type": "shape",
+   "transform": {
+    "position": [
+     530,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "linear-light"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "name": "shape blend 17",
+   "type": "shape",
+   "transform": {
+    "position": [
+     460,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "hard-light"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "name": "shape blend 16",
+   "type": "shape",
+   "transform": {
+    "position": [
+     390,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "soft-light"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "name": "shape blend 15",
+   "type": "shape",
+   "transform": {
+    "position": [
+     320,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "overlay"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "name": "shape blend 14",
+   "type": "shape",
+   "transform": {
+    "position": [
+     250,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 17,
+   "name": "shape blend 13",
+   "type": "shape",
+   "transform": {
+    "position": [
+     180,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "lighter-color"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 18,
+   "name": "shape blend 12",
+   "type": "shape",
+   "transform": {
+    "position": [
+     110,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "add"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 19,
+   "name": "shape blend 11",
+   "type": "shape",
+   "transform": {
+    "position": [
+     40,
+     140
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "color-dodge"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "name": "shape blend 10",
+   "type": "shape",
+   "transform": {
+    "position": [
+     670,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "screen"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "name": "shape blend 9",
+   "type": "shape",
+   "transform": {
+    "position": [
+     600,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "lighten"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "name": "shape blend 8",
+   "type": "shape",
+   "transform": {
+    "position": [
+     530,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 23,
+   "name": "shape blend 7",
+   "type": "shape",
+   "transform": {
+    "position": [
+     460,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "darker-color"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 24,
+   "name": "shape blend 6",
+   "type": "shape",
+   "transform": {
+    "position": [
+     390,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "linear-burn"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 25,
+   "name": "shape blend 5",
+   "type": "shape",
+   "transform": {
+    "position": [
+     320,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "color-burn"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 26,
+   "name": "shape blend 4",
+   "type": "shape",
+   "transform": {
+    "position": [
+     250,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "multiply"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 27,
+   "name": "shape blend 3",
+   "type": "shape",
+   "transform": {
+    "position": [
+     180,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ],
+       "blendMode": "darken"
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "name": "shape blend 2",
+   "type": "shape",
+   "transform": {
+    "position": [
+     110,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.95,
+        0.8,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.1,
+        0.6,
+        0.35,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "name": "shape blend 1",
+   "type": "shape",
+   "transform": {
+    "position": [
+     40,
+     40
+    ]
+   },
+   "contents": [
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        40,
+        40
+       ],
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.4,
+        0.7,
+        0.55,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        -15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.85,
+        0.25,
+        0.2,
+        1
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "name": "g",
+     "transform": {},
+     "contents": [
+      {
+       "type": "rect",
+       "size": [
+        30,
+        60
+       ],
+       "position": [
+        15,
+        0
+       ]
+      },
+      {
+       "type": "fill",
+       "color": [
+        0.2,
+        0.45,
+        0.9,
+        1
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
