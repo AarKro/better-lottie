@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Generated preview (rebuild with `npm run preview`)
+preview/out/
+preview/index.html
+
+# Build output / packaged extensions
+dist/
+build/
+*.zxp
+*.zip
+
+# Ad-hoc conversion output (test snapshots live in test/snapshots/ and ARE tracked)
+/*.svg
+/out/
+
+# After Effects working files (autosaves, render cache)
+*.aep.bak
+Adobe After Effects Auto-Save/
+*.aep Logs/
+
+# Signing certificates for ZXP packaging: never commit
+*.p12
+*.pfx
+
+# Logs and debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Test / tool artifacts
+coverage/
+.playwright-mcp/
+
+# Env
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp

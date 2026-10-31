@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "comp": { "name": "Transform basics", "width": 400, "height": 400, "duration": 2, "frameRate": 30, "background": [0.07, 0.07, 0.09] },
+  "layers": [
+    {
+      "id": 1, "name": "Square", "type": "shape", "inPoint": 0, "outPoint": 2,
+      "transform": {
+        "anchor": [0, 0],
+        "position": { "keyframes": [
+          { "t": 0, "v": [100, 200], "easeOut": [{ "speed": 0, "influence": 33.333 }] },
+          { "t": 1.5, "v": [300, 200], "easeIn": [{ "speed": 0, "influence": 33.333 }] }
+        ] },
+        "scale": { "keyframes": [
+          { "t": 0, "v": [100, 100], "easeOut": [{ "speed": 0, "influence": 33.333 }, { "speed": 0, "influence": 33.333 }] },
+          { "t": 0.75, "v": [60, 60],
+            "easeIn": [{ "speed": 0, "influence": 33.333 }, { "speed": 0, "influence": 33.333 }],
+            "easeOut": [{ "speed": 0, "influence": 33.333 }, { "speed": 0, "influence": 33.333 }] },
+          { "t": 1.5, "v": [100, 100], "easeIn": [{ "speed": 0, "influence": 33.333 }, { "speed": 0, "influence": 33.333 }] }
+        ] },
+        "rotation": { "keyframes": [
+          { "t": 0, "v": 0, "easeOut": [{ "speed": 0, "influence": 75 }] },
+          { "t": 1.5, "v": 180, "easeIn": [{ "speed": 0, "influence": 75 }] }
+        ] },
+        "opacity": { "keyframes": [
+          { "t": 0, "v": 0 }, { "t": 0.3, "v": 100 }, { "t": 1.6, "v": 100 }, { "t": 2, "v": 0 }
+        ] }
+      },
+      "contents": [
+        { "type": "group", "name": "Box", "transform": {}, "contents": [
+          { "type": "rect", "size": [120, 120], "position": [0, 0], "roundness": 18 },
+          { "type": "fill", "color": [1, 0.42, 0.21, 1], "opacity": 100 }
+        ] }
+      ]
+    }
+  ]
+}

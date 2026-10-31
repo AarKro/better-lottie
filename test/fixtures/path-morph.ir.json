@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "comp": { "name": "Path morph", "width": 400, "height": 400, "duration": 2.4, "frameRate": 30, "background": [0.07, 0.07, 0.09] },
+  "layers": [
+    {
+      "id": 1, "name": "Blob", "type": "shape",
+      "transform": { "position": [200, 200], "anchor": [0, 0] },
+      "contents": [
+        { "type": "path", "name": "Path 1", "path": { "keyframes": [
+          { "t": 0, "easeOut": [{ "speed": 0, "influence": 33.333 }], "v": {
+            "closed": true,
+            "vertices": [[-80, -80], [80, -80], [80, 80], [-80, 80]],
+            "inTangents": [[0, 0], [0, 0], [0, 0], [0, 0]],
+            "outTangents": [[0, 0], [0, 0], [0, 0], [0, 0]] } },
+          { "t": 1.2, "easeIn": [{ "speed": 0, "influence": 33.333 }], "easeOut": [{ "speed": 0, "influence": 33.333 }], "v": {
+            "closed": true,
+            "vertices": [[-63.64, -63.64], [63.64, -63.64], [63.64, 63.64], [-63.64, 63.64]],
+            "inTangents": [[-35.15, 35.15], [-35.15, -35.15], [35.15, -35.15], [35.15, 35.15]],
+            "outTangents": [[35.15, -35.15], [35.15, 35.15], [-35.15, 35.15], [-35.15, -35.15]] } },
+          { "t": 2.4, "easeIn": [{ "speed": 0, "influence": 33.333 }], "v": {
+            "closed": true,
+            "vertices": [[-80, -80], [80, -80], [80, 80], [-80, 80]],
+            "inTangents": [[0, 0], [0, 0], [0, 0], [0, 0]],
+            "outTangents": [[0, 0], [0, 0], [0, 0], [0, 0]] } }
+        ] } },
+        { "type": "stroke", "color": [1, 1, 1, 1], "opacity": 100, "lineJoin": "round",
+          "width": { "keyframes": [
+            { "t": 0, "v": 2, "easeOut": [{ "speed": 0, "influence": 33.333 }] },
+            { "t": 1.2, "v": 10, "easeIn": [{ "speed": 0, "influence": 33.333 }], "easeOut": [{ "speed": 0, "influence": 33.333 }] },
+            { "t": 2.4, "v": 2, "easeIn": [{ "speed": 0, "influence": 33.333 }] }
+          ] } },
+        { "type": "fill", "opacity": 100,
+          "color": { "keyframes": [
+            { "t": 0, "v": [0.25, 0.45, 1, 1], "easeOut": [{ "speed": 0, "influence": 33.333 }] },
+            { "t": 1.2, "v": [1, 0.35, 0.6, 1], "easeIn": [{ "speed": 0, "influence": 33.333 }], "easeOut": [{ "speed": 0, "influence": 33.333 }] },
+            { "t": 2.4, "v": [0.25, 0.45, 1, 1], "easeIn": [{ "speed": 0, "influence": 33.333 }] }
+          ] } }
+      ]
+    }
+  ]
+}

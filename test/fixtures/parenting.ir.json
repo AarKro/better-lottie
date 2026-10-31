@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "comp": { "name": "Parenting", "width": 400, "height": 400, "duration": 2, "frameRate": 30, "background": [0.07, 0.07, 0.09] },
+  "layers": [
+    {
+      "id": 1, "name": "Flash", "type": "shape", "inPoint": 1, "outPoint": 1.5,
+      "transform": { "position": [200, 40] },
+      "contents": [
+        { "type": "rect", "size": [24, 24], "position": [0, 0] },
+        { "type": "fill", "color": [1, 1, 1, 1] }
+      ]
+    },
+    {
+      "id": 2, "name": "Moon", "type": "shape", "parent": 4,
+      "transform": {
+        "position": [130, 0],
+        "scale": { "keyframes": [
+          { "t": 0, "v": [100, 100] }, { "t": 1, "v": [150, 150] }, { "t": 2, "v": [100, 100] }
+        ] }
+      },
+      "contents": [
+        { "type": "ellipse", "size": [36, 36], "position": [0, 0] },
+        { "type": "fill", "color": [0.85, 0.9, 1, 1] }
+      ]
+    },
+    {
+      "id": 3, "name": "Planet", "type": "shape",
+      "transform": { "position": [200, 200] },
+      "contents": [
+        { "type": "ellipse", "size": [90, 90], "position": [0, 0] },
+        { "type": "fill", "color": [1, 0.6, 0.2, 1] }
+      ]
+    },
+    {
+      "id": 4, "name": "Orbit", "type": "null",
+      "transform": {
+        "position": [200, 200],
+        "opacity": 0,
+        "rotation": { "keyframes": [{ "t": 0, "v": 0 }, { "t": 2, "v": 360 }] }
+      }
+    }
+  ]
+}
