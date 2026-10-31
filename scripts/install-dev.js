@@ -4,7 +4,7 @@
 // Restart After Effects afterwards; the panel is under Window › Extensions.
 
 import { execSync } from 'node:child_process';
-import { existsSync, lstatSync, mkdirSync, readlinkSync, rmSync, symlinkSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, readlinkSync, symlinkSync, unlinkSync } from 'node:fs';
 import { homedir, platform } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -28,7 +28,7 @@ function linkState() {
 }
 
 if (process.argv.includes('--uninstall')) {
-  if (linkState() === 'ours') { rmSync(target); console.log(`Removed ${target}`); }
+  if (linkState() === 'ours') { unlinkSync(target); console.log(`Removed ${target}`); }
   else console.log('Nothing to remove.');
   process.exit(0);
 }
