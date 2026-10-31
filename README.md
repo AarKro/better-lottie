@@ -8,48 +8,30 @@ Turn After Effects animations into **animated SVG files** you can put straight o
 
 That's all the website needs.
 
-## Prerequisites
+## Requirements
 
 - **Adobe After Effects 2019 or newer** (tested with After Effects 2026)
 - **macOS** (tested). Windows should work but hasn't been tested yet.
-- **[Node.js](https://nodejs.org) 20 or newer.** Only needed once, to install the extension.
-- **Git** to download the project, or download it as a ZIP instead
 
 ## Installation
 
-1. **Download the project**
+1. **Get ZXP Installer.** Download the free [ZXP Installer by aescripts + aeplugins](https://aescripts.com/learn/zxp-installer/) (Mac and Windows) and install it. It's the usual way to install After Effects extensions that don't come from Adobe's store.
 
-   ```sh
-   git clone https://github.com/AarKro/better-lottie.git
-   cd better-lottie
-   ```
+2. **Download better-lottie.** On the [latest release](https://github.com/AarKro/better-lottie/releases/latest) page, download the `better-lottie-<version>.zxp` file under **Assets**.
 
-   Or download the ZIP, unpack it, and open a terminal in that folder.
+3. **Install it.** Quit After Effects. Open ZXP Installer and drag the `.zxp` file into its window.
 
-2. **Install and link the extension**
-
-   ```sh
-   npm install
-   npm run dev:install
-   ```
-
-   This builds the extension and links it into After Effects' extensions folder. It also turns on a setting that lets After Effects load extensions that aren't distributed through Adobe's store.
-
-3. **Restart After Effects** completely (quit and reopen it).
-
-4. **Allow the extension to save files:** in After Effects, open **Settings › Scripting & Expressions** and turn on **Allow Scripts to Write Files and Access Network**.
+4. **Allow the extension to save files.** Open After Effects, go to **Settings › Scripting & Expressions** and turn on **Allow Scripts to Write Files and Access Network**.
 
 5. **Open the panel:** **Window › Extensions › better-lottie**. Dock it wherever you like.
 
 ### Updating
 
-Download the latest version (`git pull`), then run `npm install` and `npm run build`. Close and reopen the panel in After Effects. You don't need to install it again.
+Download the newer `.zxp` from the [latest release](https://github.com/AarKro/better-lottie/releases/latest) and install it the same way. It replaces the old version.
 
 ### Uninstalling
 
-```sh
-npm run dev:uninstall
-```
+Open ZXP Installer, select better-lottie in the list of installed extensions and remove it.
 
 ## Why?
 
@@ -125,7 +107,7 @@ Note: browsers pause animations in `<img>` tags while they are scrolled out of v
 
 | Problem | Fix |
 |---|---|
-| The panel isn't in **Window › Extensions** | Quit After Effects completely and reopen it. If it's still missing, run `npm run dev:install` again. |
+| The panel isn't in **Window › Extensions** | Quit After Effects completely and reopen it. If it's still missing, install the `.zxp` again (step 3 of the installation). |
 | "Open or select a composition first" | Click inside the composition's timeline or viewer, then try again. |
 | Saving fails | Turn on **Allow Scripts to Write Files and Access Network** (step 4 of the installation). |
 | Gradients come out black and white, or there's a warning about unsaved changes | Save the After Effects project, then export again. |
@@ -134,3 +116,39 @@ Note: browsers pause animations in `<img>` tags while they are scrolled out of v
 ## For developers
 
 The technical details (architecture, how After Effects features are converted, testing) are in [`CLAUDE.md`](CLAUDE.md). Run the tests with `npm test`.
+
+### Installing from source
+
+This links the extension straight from your copy of the code, so your changes show up in After Effects. If you installed the `.zxp`, uninstall it first so you don't end up with two copies of the panel.
+
+You need **[Node.js](https://nodejs.org) 20 or newer** and **Git** (or download the project as a ZIP).
+
+1. **Download the project**
+
+   ```sh
+   git clone https://github.com/AarKro/better-lottie.git
+   cd better-lottie
+   ```
+
+2. **Install and link the extension**
+
+   ```sh
+   npm install
+   npm run dev:install
+   ```
+
+   This builds the extension and links it into After Effects' extensions folder. It also turns on a setting (`PlayerDebugMode`) that lets After Effects load unsigned extensions.
+
+3. **Restart After Effects** completely (quit and reopen it), then follow steps 4 and 5 of the [installation](#installation) above.
+
+**Updating:** `git pull`, then `npm install` and `npm run build`. Close and reopen the panel in After Effects. You don't need to link it again.
+
+**Uninstalling:** `npm run dev:uninstall`
+
+### Making a release
+
+1. Set the same new version in `package.json` and in `ExtensionBundleVersion` and the `Extension` `Version` in `extension/CSXS/manifest.xml`.
+2. Run `npm run package`. It builds the extension, signs it and writes `dist/better-lottie-<version>.zxp`. Signing needs an internet connection (for the signature timestamp).
+3. Create a GitHub release for the version and attach the `.zxp` file.
+
+The first `npm run package` creates a self-signed certificate in `certs/` (not committed). Keep it and use it for every release. Set `ZXP_CERT_PASSWORD` to use your own certificate password. If signing fails with "bad CPU type" on an Apple Silicon Mac, install Rosetta (`softwareupdate --install-rosetta`) and try again.
