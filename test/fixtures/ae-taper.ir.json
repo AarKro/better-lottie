@@ -1,0 +1,274 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "taper",
+  "width": 400,
+  "height": 400,
+  "duration": 2,
+  "frameRate": 25,
+  "background": [
+   0.101961,
+   0.101961,
+   0.121569
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "wave",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      200,
+      290,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "path",
+     "name": "Path 1",
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         -150,
+         30
+        ],
+        [
+         0,
+         -40
+        ],
+        [
+         150,
+         30
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         -60,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         60,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": false
+      }
+     }
+    },
+    {
+     "type": "stroke",
+     "name": "Stroke 1",
+     "color": {
+      "value": [
+       1,
+       0.85,
+       0.3,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "width": {
+      "value": 24
+     },
+     "lineCap": "butt",
+     "lineJoin": "miter",
+     "miterLimit": 4,
+     "wave": {
+      "amount": {
+       "value": 50
+      },
+      "units": "cycles",
+      "wavelength": {
+       "value": 100
+      },
+      "cycles": {
+       "value": 4
+      },
+      "phase": {
+       "value": 0
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "taper",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      200,
+      110,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "path",
+     "name": "Path 1",
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         -150,
+         30
+        ],
+        [
+         0,
+         -40
+        ],
+        [
+         150,
+         30
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         -60,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         60,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": false
+      }
+     }
+    },
+    {
+     "type": "stroke",
+     "name": "Stroke 1",
+     "color": {
+      "value": [
+       1,
+       0.85,
+       0.3,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "width": {
+      "value": 24
+     },
+     "lineCap": "butt",
+     "lineJoin": "miter",
+     "miterLimit": 4,
+     "taper": {
+      "units": "percent",
+      "startLength": {
+       "value": 40
+      },
+      "endLength": {
+       "value": 25
+      },
+      "startWidth": {
+       "value": 0
+      },
+      "endWidth": {
+       "value": 30
+      },
+      "startEase": {
+       "value": 50
+      },
+      "endEase": {
+       "value": 0
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "warnings": []
+}

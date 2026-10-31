@@ -31,7 +31,10 @@
 // @property {number} [outPoint]        defaults to comp.duration
 // @property {boolean} [threeD]
 // @property {string} [blendMode]       anything but 'normal' is reported
-// @property {string} [trackMatte]      reported, not supported
+// @property {boolean} [isMatte]        used as a track matte (hidden, but rendered into the matte)
+// @property {{ type: 'alpha'|'alpha-inverted'|'luma'|'luma-inverted', layer: number }} [matte]
+//                                      this layer's track matte: type and matte layer id
+// @property {Mask[]} [masks]           layer masks in AE order (mode None is left out)
 // @property {Transform} transform
 // @property {ShapeItem[]} [contents]   shape layers only, top item first
 //
@@ -47,6 +50,15 @@
 //
 // @typedef {{ separated: true, x: Prop<number>, y: Prop<number> }} SeparatedPosition
 //
+// @typedef {Object} Mask             in layer space
+// @property {string} name
+// @property {'add'|'subtract'|'intersect'|'lighten'|'darken'|'difference'} mode
+// @property {boolean} inverted
+// @property {Prop<Shape>} path
+// @property {Prop<number[]>} feather   [x, y] px
+// @property {Prop<number>} opacity     0..100
+// @property {Prop<number>} expansion   px, negative shrinks
+//
 // @typedef {Object} ShapeItem   (AE order: top item first)
 //   { type: 'group', name, enabled?, transform, contents: ShapeItem[] }
 //   { type: 'path', path: Prop<Shape> }
@@ -56,24 +68,34 @@
 //   { type: 'stroke', color, opacity, width: Prop<number>,
 //     lineCap?: 'butt'|'round'|'square', lineJoin?: 'miter'|'round'|'bevel', miterLimit?: number,
 //     dashes?: [{ type: 'dash'|'gap', value: Prop<number> }], dashOffset?: Prop<number>,
-//     taper?: true   (taper/wave in use; reported) }
+//     taper?: { units: 'percent'|'pixels', startLength, endLength, startWidth, endWidth (0..100),
+//               startEase, endEase (0..100): Prop<number> },
+//     wave?: { amount (0..100), wavelength (px), cycles, phase (degrees): Prop<number>,
+//              units: 'pixels'|'cycles' } }
 //   { type: 'gradient-fill', gradientType: 'linear'|'radial', startPoint, endPoint: Prop<[x,y]>,
-//     highlightLength, highlightAngle: Prop<number>, stops: GradientStops|null,
-//     gradientTransform?: true (Scale/Rotation in use; reported), opacity, fillRule? }
+//     highlightLength, highlightAngle: Prop<number>, stops: Prop<GradientStops>|null,
+//     gradientScale?: Prop<[sx,sy]>, gradientRotation?: Prop<number>  (around the shape's origin),
+//     opacity, fillRule? }
 //   { type: 'gradient-stroke', …gradient fields, …stroke fields except color }
 //   { type: 'trim', start, end: Prop<number> (0..100), offset: Prop<number> (degrees),
 //     mode: 'simultaneously'|'individually' }
 //   { type: 'merge-paths', mode: 'merge'|'add'|'subtract'|'intersect'|'exclude' }
-//   Any other type (repeater, polystar, offset-paths, …) is reported and ignored.
+//   { type: 'repeater', copies, offset: Prop<number>, composite: 'below'|'above',
+//     transform: { anchor, position, scale, rotation }, startOpacity, endOpacity: Prop<number> }
+//   Any other type (polystar, offset-paths, …) is reported and ignored.
 //
 //   Paints (fill, stroke, gradient-*) draw every path above them in the same
 //   group, including paths in groups above. Trim Paths changes every path
 //   above it the same way, wherever the paints are. Merge Paths combines the
-//   paths above it for the paints below it.
+//   paths above it for the paints below it. A Repeater copies everything
+//   above it (paths and paints).
 //
 // @typedef {{ colors: number[][], alphas: number[][] }} GradientStops
 //   colors: [offset, midpoint, r, g, b] (0..1); alphas: [offset, midpoint, a].
-//   AE's scripting API can't read these; the extractor parses the saved .aep.
+//   AE's scripting API can't read these; the extractor parses the saved .aep
+//   (one XML per color keyframe; none at all when the colors were never
+//   edited, which means AE's default white to black). A bare object (no
+//   value/keyframes) is accepted as a static value.
 //
 // @typedef {{ vertices: number[][], inTangents: number[][], outTangents: number[][], closed: boolean }} Shape
 //   Tangents are relative to their vertex.

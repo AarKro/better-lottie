@@ -1,4 +1,5 @@
-// Shape layer contents → SVG: groups, paths, paints, Merge Paths, Trim Paths.
+// Shape layer contents → SVG: groups, paths, paints, Merge Paths, Trim Paths,
+// Repeaters.
 //
 // AE semantics this follows:
 // - A group's items draw bottom-up. Each paint draws the paths above it in
@@ -7,26 +8,33 @@
 //   groups above it, no matter where the paints are.
 // - Merge Paths combines the paths above it into one; paints below it draw
 //   the merged result.
+// - A Repeater copies everything above it (paths and paints); paints below it
+//   draw every copy.
 
 import { KIND, combineTracks, mapTrack, trackIsStatic, trackValueAt } from './timeline.js';
+import { outlineShape } from './taper.js';
 import { arrayToD, ellipseShape, rectShape, shapeToArray } from './path.js';
 import { orientClockwise, shapeLength, transformMatrix, transformShape } from './geometry.js';
 import { animate, displayToggle, element, finalize, newId, sampling, trackOf } from './anim.js';
 import { num } from './format.js';
 import { paint, PAINTS } from './paint.js';
-import { matrixTrack, wrapTransform } from './transform.js';
+import { matrixTrack, part, wrapParts, wrapTransform } from './transform.js';
 
 const GEOMETRY = new Set(['path', 'rect', 'ellipse']);
-const MODIFIERS = new Set(['trim', 'merge-paths']);
+const MODIFIERS = new Set(['trim', 'merge-paths', 'repeater']);
 
 export function renderContents(items, ctx, where) {
   assignTrims(items, [], ctx, where);
   return renderStack(items, ctx, where);
 }
 
-function renderStack(items, ctx, where) {
+// Renders items [0, end). A Repeater repeats everything above it, so the
+// lowest one splits the stack: items below it draw first, then the copies.
+function renderStack(items, ctx, where, end = items.length) {
+  let r = -1;
+  for (let i = end - 1; i >= 0 && r < 0; i--) if (items[i].type === 'repeater' && items[i].enabled !== false) r = i;
   let out = '';
-  for (let i = items.length - 1; i >= 0; i--) {
+  for (let i = end - 1; i > r; i--) {
     const it = items[i];
     if (it.enabled === false) continue;
     const w = `${where} › ${it.name || it.type}`;
@@ -39,6 +47,10 @@ function renderStack(items, ctx, where) {
     } else if (!GEOMETRY.has(it.type) && !MODIFIERS.has(it.type)) {
       ctx.warn(w, `shape item "${it.type}" is not supported (ignored)`);
     }
+  }
+  if (r >= 0) {
+    const above = renderStack(items, ctx, where, r);
+    if (above) out += repeat(items[r], above, ctx, `${where} › ${items[r].name || 'Repeater'}`);
   }
   return out;
 }
@@ -64,6 +76,12 @@ function collectGeometry(items, end, ctx, where) {
       }
     } else if (it.type === 'merge-paths' && entries.length) {
       entries = [mergeEntry(entries, it, ctx, w)];
+    } else if (it.type === 'repeater' && entries.length) {
+      entries = entries.map(e => ({
+        track: () => null,
+        trimmed: e.trimmed,
+        render: style => repeat(it, e.render(style), ctx, w),
+      }));
     }
   }
   return entries;
@@ -121,6 +139,7 @@ function withDash(attrs, style) {
 
 function pathElement(it, style, ctx, where) {
   const g = geometry(it, ctx, where);
+  if (style.outline) return outlineElement(it, g, style.outline, ctx, where);
   const attrs = { d: g.d, ...style.attrs };
   let kids = g.anim + style.anims;
   const info = ctx.trimOf.get(it);
@@ -142,6 +161,79 @@ function pathElement(it, style, ctx, where) {
     kids += withDash(attrs, style);
   }
   return element('path', attrs, kids);
+}
+
+// A tapered/waved stroke as a filled outline. Trim Paths cut the centerline
+// first, so the taper follows the visible part like in AE.
+function outlineElement(it, g, outline, ctx, where) {
+  const info = ctx.trimOf.get(it);
+  const trim = info ? trimFor(it, info, ctx) : null;
+  const inputs = [g.track, ...outline.tracks];
+  if (trim) inputs.push(trim.track);
+  const track = combineTracks(inputs,
+    (shape, ...rest) => outlineShape(shape, trim ? rest.slice(0, -1) : rest, outline, trim ? rest[rest.length - 1] : null),
+    sampling(ctx, 0.05, false));
+  const r = finalize(track, ctx, 0.05);
+  return element('path', { d: arrayToD(r.value), ...outline.attrs }, animate('d', r, arrayToD, ctx) + outline.anims);
+}
+
+// --- Repeater ---
+
+// Copy k (k = index + offset) is drawn with
+//   translate(position·k) · translate(anchor) · rotate(rotation·k) · scale(scale^k) · translate(−anchor)
+// — the position steps are not rotated or scaled by earlier copies. Copy i
+// has opacity start + (end − start) · i / ⌈copies⌉ (so End Opacity itself is
+// never reached), and a fractional copy count fades the last copy by the
+// fraction. Both measured against AE renders. The repeated content
+// is written once and the other copies <use> it.
+function repeat(rep, content, ctx, where) {
+  const tr = rep.transform || {};
+  const t = (p, fallback, kind, label) => trackOf(p ?? fallback, kind, ctx, `${where} › ${label}`);
+  const copies = t(rep.copies, 3, KIND.scalar, 'Copies');
+  const offset = t(rep.offset, 0, KIND.scalar, 'Offset');
+  const pos = t(tr.position, [0, 0], KIND.point, 'Position');
+  const anchor = t(tr.anchor, [0, 0], KIND.point, 'Anchor Point');
+  const rot = t(tr.rotation, 0, KIND.scalar, 'Rotation');
+  const scale = t(tr.scale, [100, 100], KIND.vec2, 'Scale');
+  const startOp = t(rep.startOpacity, 100, KIND.scalar, 'Start Opacity');
+  const endOp = t(rep.endOpacity, 100, KIND.scalar, 'End Opacity');
+  const maxCopies = Math.max(0, Math.ceil(Math.max(...copies.stops.map(s => s.v[0])) - 1e-9));
+  if (!maxCopies) return '';
+
+  const id = newId(ctx, 'rep');
+  const fixedOffset = trackIsStatic(offset);
+  const copyEls = [];
+  for (let i = 0; i < maxCopies; i++) {
+    const k = ([o]) => i + o[0];
+    const lin = sampling(ctx, 0.01, fixedOffset);
+    const parts = [
+      ...part('translate', finalize(combineTracks([pos, offset], (p, o) => [p[0] * k([o]), p[1] * k([o])], lin), ctx, 0.01),
+        v => `${num(v[0])} ${num(v[1])}`, '0 0'),
+      ...part('translate', finalize(anchor, ctx, 0.01), v => `${num(v[0])} ${num(v[1])}`, '0 0'),
+      ...part('rotate', finalize(combineTracks([rot, offset], (r, o) => [r[0] * k([o])], lin), ctx, 0.01), v => num(v[0]), '0'),
+      ...part('scale', finalize(combineTracks([scale, offset],
+        (s, o) => [Math.pow(s[0] / 100, k([o])), Math.pow(s[1] / 100, k([o]))], sampling(ctx, 0.0001, false)), ctx, 0.0001),
+      v => `${num(v[0], 4)} ${num(v[1], 4)}`, '1 1'),
+      ...part('translate', finalize(anchor, ctx, 0.01), v => `${num(-v[0])} ${num(-v[1])}`, '0 0'),
+    ];
+    const opacity = finalize(combineTracks([copies, startOp, endOp], ([c], [a], [b]) => {
+      const n = Math.ceil(c - 1e-9);
+      if (i >= n) return [0];
+      const ramp = a + (b - a) * (i / n);
+      const partial = i === n - 1 && c % 1 > 1e-9 ? c % 1 : 1;
+      return [Math.max(0, ramp * partial)];
+    }, sampling(ctx, 0.01, trackIsStatic(copies))), ctx, 0.01);
+    const innermost = { attrs: {}, anims: '' };
+    if (opacity.smil || opacity.value[0] !== 100) {
+      innermost.attrs.opacity = num(opacity.value[0] / 100, 4);
+      innermost.anims = animate('opacity', opacity, v => num(v[0] / 100, 4), ctx);
+    }
+    const body = i === 0 ? element('g', { id }, content) : element('use', { href: `#${id}` });
+    copyEls.push(wrapParts(parts, body, ctx, innermost));
+  }
+  // "Below": each copy goes under the previous one, so copy 0 is drawn last.
+  if (rep.composite !== 'above') copyEls.reverse();
+  return copyEls.join('');
 }
 
 // --- Trim Paths ---
@@ -207,6 +299,7 @@ function trimFor(it, { state, index }, ctx) {
     const fmtDash = v => `${num(v[0], 4)} ${num(Math.max(0, 1 - v[0]), 4)}`;
     const fmtOffset = v => num(-v[0], 4);
     result = {
+      track,
       attrs: { pathLength: '1', 'stroke-dasharray': fmtDash(length.value), 'stroke-dashoffset': fmtOffset(start.value) },
       anims: animate('stroke-dasharray', length, fmtDash, ctx) + animate('stroke-dashoffset', start, fmtOffset, ctx),
       display: () => displayToggle(t => trackValueAt(track, t)[0] < 1e-6, ctx),

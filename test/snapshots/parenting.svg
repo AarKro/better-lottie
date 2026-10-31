@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
-<!-- better-lottie 0.2.0 · comp "Parenting" -->
+<!-- better-lottie 0.3.0 · comp "Parenting" -->
 <rect width="400" height="400" fill="#121217"/>
 <g transform="translate(200 200)"><path d="M0 -45C24.853 -45 45 -24.853 45 0C45 24.853 24.853 45 0 45C-24.853 45 -45 24.853 -45 0C-45 -24.853 -24.853 -45 0 -45Z" fill="#ff9933"/></g>
 <g transform="translate(200 200)"><animateTransform attributeName="transform" type="rotate" values="0;360" keyTimes="0;1" additive="sum" dur="2s" begin="0s" repeatCount="indefinite"/><g transform="translate(130 0)"><animateTransform attributeName="transform" type="scale" values="1 1;1.5 1.5;1 1" keyTimes="0;0.5;1" additive="sum" dur="2s" begin="0s" repeatCount="indefinite"/><path d="M0 -18C9.941 -18 18 -9.941 18 0C18 9.941 9.941 18 0 18C-9.941 18 -18 9.941 -18 0C-18 -9.941 -9.941 -18 0 -18Z" fill="#d9e6ff"/></g></g>

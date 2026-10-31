@@ -49,3 +49,6 @@ Thumbs.db
 
 # Bundled converter for the panel (npm run build)
 extension/lib/
+
+# Scratch After Effects project for verifying features (binary, local only)
+test/ae/

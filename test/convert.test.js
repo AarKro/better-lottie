@@ -52,7 +52,7 @@ test('in/out points become a discrete visibility animation', () => {
 
 test('unsupported features are reported, not dropped silently', () => {
   const { warnings } = convert(load('baked-motion'));
-  assert.ok(warnings.some(w => w.includes("\"repeater\" is not supported")));
+  assert.ok(warnings.some(w => w.includes("\"offset-paths\" is not supported")));
   assert.ok(warnings.some(w => w.includes('text layers are not supported')));
 });
 

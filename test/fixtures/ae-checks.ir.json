@@ -1,0 +1,496 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "checks",
+  "width": 400,
+  "height": 400,
+  "duration": 2,
+  "frameRate": 25,
+  "background": [
+   0.101961,
+   0.101961,
+   0.121569
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "moving matte",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "enabled": false,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "keyframes": [
+      {
+       "t": 0,
+       "v": [
+        80,
+        320,
+        0
+       ],
+       "inType": "linear",
+       "outType": "linear",
+       "easeIn": [
+        {
+         "speed": 0,
+         "influence": 16.666667
+        }
+       ],
+       "easeOut": [
+        {
+         "speed": 120,
+         "influence": 16.666667
+        }
+       ],
+       "spatialIn": [
+        0,
+        0,
+        0
+       ],
+       "spatialOut": [
+        0,
+        0,
+        0
+       ]
+      },
+      {
+       "t": 2,
+       "v": [
+        320,
+        320,
+        0
+       ],
+       "inType": "linear",
+       "outType": "linear",
+       "easeIn": [
+        {
+         "speed": 120,
+         "influence": 16.666667
+        }
+       ],
+       "easeOut": [
+        {
+         "speed": 0,
+         "influence": 16.666667
+        }
+       ],
+       "spatialIn": [
+        0,
+        0,
+        0
+       ],
+       "spatialOut": [
+        0,
+        0,
+        0
+       ]
+      }
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "isMatte": true,
+   "contents": [
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 1",
+     "size": {
+      "value": [
+       80,
+       80
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       0,
+       0,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "matte target",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      200,
+      320,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "matte": {
+    "type": "alpha",
+    "layer": 1
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       300,
+       100
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.3,
+       0.7,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "repeater order 2",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      200,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       60,
+       60
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.9,
+       0.5,
+       0.2,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    },
+    {
+     "type": "stroke",
+     "name": "Stroke 1",
+     "color": {
+      "value": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "width": {
+      "value": 6
+     },
+     "lineCap": "butt",
+     "lineJoin": "miter",
+     "miterLimit": 4
+    },
+    {
+     "type": "repeater",
+     "name": "Repeater 1",
+     "copies": {
+      "value": 4
+     },
+     "offset": {
+      "value": 0
+     },
+     "composite": "above",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        30,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      }
+     },
+     "startOpacity": {
+      "value": 100
+     },
+     "endOpacity": {
+      "value": 100
+     }
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "repeater order 1",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       60,
+       60
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.9,
+       0.5,
+       0.2,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    },
+    {
+     "type": "stroke",
+     "name": "Stroke 1",
+     "color": {
+      "value": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "width": {
+      "value": 6
+     },
+     "lineCap": "butt",
+     "lineJoin": "miter",
+     "miterLimit": 4
+    },
+    {
+     "type": "repeater",
+     "name": "Repeater 1",
+     "copies": {
+      "value": 4
+     },
+     "offset": {
+      "value": 0
+     },
+     "composite": "below",
+     "transform": {
+      "anchor": {
+       "value": [
+        0,
+        0
+       ]
+      },
+      "position": {
+       "value": [
+        30,
+        0
+       ]
+      },
+      "scale": {
+       "value": [
+        100,
+        100
+       ]
+      },
+      "rotation": {
+       "value": 0
+      }
+     },
+     "startOpacity": {
+      "value": 100
+     },
+     "endOpacity": {
+      "value": 100
+     }
+    }
+   ]
+  }
+ ],
+ "warnings": []
+}

@@ -42,11 +42,13 @@ better-lottie/
     anim.js                # SMIL/element helpers shared by the modules below
     transform.js           # AE transforms → nested <g>; matrix tracks for flattening
     paint.js               # fill/stroke/gradients/dashes → styles (+ <defs>)
-    shapes.js              # shape contents: paint/group stacking, Trim Paths, Merge Paths
+    shapes.js              # shape contents: paint/group stacking, Trim Paths, Merge Paths, Repeaters
+    taper.js               # Taper/Wave strokes → filled outline polygons
+    masks.js               # layer masks and track mattes → <mask>
     svg.js                 # document, layers, parenting, in/out points
   bin/better-lottie.js     # CLI: better-lottie in.ir.json [-o out.svg] [--once]
   test/
-    fixtures/*.ir.json     # hand-written IR samples, one per feature area
+    fixtures/*.ir.json     # hand-written IR samples; ae-*.ir.json are extracted from real AE (scratch project)
     snapshots/*.svg        # expected output (npm run test:update to rewrite)
     *.test.js
   scripts/
@@ -69,9 +71,11 @@ better-lottie/
 - `npm run dev:install`: build, set `PlayerDebugMode` for CSXS 9–12, symlink `extension/` to `~/Library/Application Support/Adobe/CEP/extensions/better-lottie`. Restart AE → Window › Extensions › better-lottie. `npm run dev:uninstall` removes the link.
 
 ### Status
-- **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes, and Auto-Orient Along Path.
+- **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave.
 - **Extension:** panel (Export SVG, Preview, Save IR, loop/background options, warnings, usage snippet) and extractor. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
-- **Not built:** masks, track mattes, repeaters, animated gradient colors, gradient Scale/Rotation, stroke taper, work-area export, ZXP packaging/signing. Not yet checked in Safari/Firefox (pathLength-based trims especially).
+- **Verified against AE renders** (`test/ae/`, pixel diffs ≤ 2.5/255 on average, only anti-aliased edges differ): masks (all modes, feather, inverted, opacity, expansion, animated path), all four track matte types incl. an animated matte, repeaters (offset, fractional copies, composite order), taper (ease 0–100), wave, gradient Scale/Rotation.
+- **Not verified in AE:** animated gradient *colors* with different keyframe colors (scripts can't set gradient colors; the file layout was verified with identical keyframes).
+- **Not built:** work-area export, ZXP packaging/signing, mask modes lighten/darken/difference (approximated), adds after an intersect mask (approximated). Not yet checked in Safari/Firefox (pathLength trims, SMIL inside masks).
 
 Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The extractor only bakes what the converter can't see, i.e. expressions: it writes them as per-frame linear keyframes, and the converter's linear-run simplification shrinks them back down.
 
@@ -81,7 +85,13 @@ Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The
 - **Merge Paths mode** (`ADBE Vector Merge Type`): 1 merge, 2 add, 3 subtract, 4 intersect, 5 exclude. Illustrator-outlined artwork in this project uses intersect.
 - **Trim Paths:** `ADBE Vector Trim Start/End/Offset/Type` (Type 1 simultaneously, 2 individually). A trim at a layer's root trims strokes inside the groups above it.
 - **Auto-Orient** (`layer.autoOrient`, `AutoOrientType.ALONG_PATH`) is used on parented layers; without it the shaker comp rendered badly wrong.
-- Gradients also have `ADBE Vector Grad Scale`/`Rotation` (reported when modified).
+- **Gradient Scale/Rotation** (`ADBE Vector Grad Scale`/`Rotation`): `rotate(r) · scale(sx, sy)` around the shape's origin (0,0), fitted to 0.001 error.
+- **Unedited gradient colors** are not stored in the `.aep` at all (AE stores only modified streams) → AE's default white to black. Keyframed colors: one `Utf8` per keyframe inside the paint's `LIST GCky`.
+- **Masks:** `ADBE Mask Parade` > `ADBE Mask Atom` (`maskMode`, `inverted`) with `ADBE Mask Shape/Feather/Opacity/Offset`. A first Subtract mask starts from the full layer. Feather 12 ≈ Gaussian σ 5. Mask opacity scales the mask's coverage.
+- **Track mattes:** `trackMatteType`, `trackMatteLayer` (AE 2023+, else the layer above), matte layers report `enabled=false`, `isTrackMatte=true`. Luma uses sRGB luminance (0.4 gray at 60% → 0.24).
+- **Repeater:** `ADBE Vector Repeater Copies/Offset/Order` (Order 1 = below: copy 0 on top; 2 = above) and `…Transform` with `Anchor/Position/Scale/Rotation/Opacity 1/Opacity 2`. Copy k = translate(position·k) · rotate/scale^k about the anchor (positions are not rotated by earlier copies). Opacity of copy i = start + (end − start)·i/⌈copies⌉; a fractional count fades the last copy by the fraction.
+- **Taper/Wave:** Length Units 1 = percent (`…Start Length`), 2 = pixels (`…StartWidthPx`); Wave Units 1 = wavelength px, 2 = cycles. Width in a taper = start width + (1 − start width)·bezier(handles (0,e), (1−e,1)) with e = ease/100. Wave: W·(1 − A/2 − A/2·cos(2π·cycles·s + phase)). Setting a hidden stream (e.g. Wave Cycles while Units = px) throws in scripts.
+- `saveFrameToPng` writes colors already composited over the comp background, plus alpha: compare against SVGs rendered *with* the background.
 - Still unverified: ease `speed` units for color and path properties (treated as progress/s); `File.saveDlg` without a filter on macOS works in practice.
 
 ### Probing real AE from the terminal
@@ -89,6 +99,7 @@ With the user's OK (it drives their open AE), run read-only scripts via `osascri
 - Wrap probes in `app.beginSuppressDialogs()` / `app.endSuppressDialogs(false)`. AE shows a modal error dialog even for errors you catch, e.g. reading `.value` of a `NO_VALUE` property; check `propertyValueType` first.
 - `$.evalFile('…/extension/host/extract.jsx')` then `BetterLottie.extractCompById(id)` extracts any comp without touching the UI.
 - `comp.saveFrameToPng(t, file)` renders AE's reference frames for side-by-side comparison with the SVG (scrub the SVG with `pauseAnimations()` + `setCurrentTime(t)`). Re-render when the project changed.
+- To test features the user's project lacks, use the **scratch project** `test/ae/scratch.aep` (gitignored; with `frames/`, `ir/`, `shots/`). Only switch projects when the open one has no unsaved changes, and tell the user to reopen theirs afterwards. Scripts can build comps (`addShape`, `addProperty`, `setTrackMatte`, `addKey`) but cannot set gradient colors.
 
 ### Extension platform
 
@@ -121,14 +132,15 @@ With the user's OK (it drives their open AE), run read-only scripts via `osascri
 ### Phase 3 (done)
 - Trim Paths, Merge Paths, dashes, linear and radial gradients, Auto-Orient Along Path
 
+### Phase 4 (done)
+- Layer masks, track mattes, repeaters, animated gradient colors, gradient Scale/Rotation, stroke Taper/Wave
+
 ### Next candidates
-- Masks → `<clipPath>` / `<mask>`; track mattes
-- Solid layers (as rects); repeaters
-- Animated gradient colors (one GCky blob per keyframe, presumably; unverified)
+- Solid layers (as rects); precomps
 - Export the work area only; "start paused" option
 
 ### Out of scope
-Effects, 3D layers and cameras, blend modes, text (tell users to use "Create Shapes from Text"), images and video, and the remaining shape modifiers (offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
+Effects, 3D layers and cameras, blend modes, text (tell users to use "Create Shapes from Text"), images and video, and the remaining shape modifiers (polystar, offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
 
 ## Key conversion rules (where it's easy to get wrong)
 
@@ -189,6 +201,15 @@ When a segment can't be mapped exactly, the converter samples AE's curve itself 
 - **Merge Paths** flattens the paths above into the merge's group space (applying sub-group transforms; baked if those animate). add: concatenated subpaths with the fill's rule. merge: subpaths wound clockwise + nonzero = union. exclude: evenodd. intersect: first path inside nested `<clipPath>`s of the others. subtract: first path with a `<mask>` of the others (assumes the topmost path is the base; unverified).
 - **Gradients** go into `<defs>` with `gradientUnits="userSpaceOnUse"` (AE gradient points are in the shape's space). Radial: r = |end − start|, focal point from highlight length/angle (lottie-web's formula). Color and opacity stops are merged; a midpoint ≠ 0.5 becomes an extra stop.
 - **Ids** (`grad`, `clip`, `mask`) are prefixed per comp (hash of the name, or `options.idPrefix`) so several exports can be inlined on one page.
+
+### Masks and mattes (masks.js)
+- **Never put a mask inside a mask's content.** Chromium does not repaint a `<mask>` whose content is itself masked when the inner content animates (verified: the frame stays stale even during playback). Layer masks therefore become: one `<mask>` for consecutive add/subtract masks (white/black shapes), plus one `<mask>` per intersect, applied as nested `<g mask>` around the content. Inverted masks = white rect + black shape inside an opacity group.
+- Feather: `feGaussianBlur` with σ = feather / 2.4 on the shape, `filterUnits="userSpaceOnUse"` sized from the path's bounds over all keyframes. Expansion: stroke (grow) / `feMorphology erode` (shrink).
+- Track mattes: the matte layer is rendered (even though hidden) into a `<mask>` in comp space around the target layer's output. alpha → `feColorMatrix` to white-with-alpha; alpha-inverted → white rect + black-with-alpha; luma → as is; luma-inverted → white rect + color-inverted. `color-interpolation-filters="sRGB"`.
+
+### Repeaters and taper
+- Repeaters split the group's stack at the lowest repeater: items below draw first, then the copies of everything above. Copy 0 holds the content in `<g id>`; the others `<use>` it. Paints below a repeater draw every copy of the paths above.
+- Taper/Wave strokes become filled polygons (`taper.js`): 64 samples (denser near the ends), fixed-count caps so the structure stays constant for `d` animation, trimmed first so the taper follows the visible part. Always baked when animated.
 
 ### Auto-Orient
 The layer's rotation gets the motion path's direction added: the exact tangent of the spatial bezier at the eased arc-length position (`orientationTrack`), held before the first and after the last keyframe, and unwrapped so it never spins through ±180°.

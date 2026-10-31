@@ -21,7 +21,7 @@
       "contents": [
         { "type": "ellipse", "size": [50, 50], "position": [0, 0] },
         { "type": "fill", "color": [0.4, 0.9, 0.7, 1] },
-        { "type": "repeater", "name": "Repeater 1" }
+        { "type": "offset-paths", "name": "Offset Paths 1" }
       ]
     }
   ]

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: better-lottie <input.ir.json> [-o out.svg] [--once]
+// Usage: better-lottie <input.ir.json> [-o out.svg] [--once] [--no-background]
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { convert } from '../src/index.js';
@@ -10,11 +10,11 @@ const outIdx = args.indexOf('-o');
 const output = outIdx >= 0 ? args[outIdx + 1] : null;
 
 if (!input) {
-  console.error('Usage: better-lottie <input.ir.json> [-o out.svg] [--once]');
+  console.error('Usage: better-lottie <input.ir.json> [-o out.svg] [--once] [--no-background]');
   process.exit(1);
 }
 
-const { svg, warnings } = convert(JSON.parse(readFileSync(input, 'utf8')), { loop: !args.includes('--once') });
+const { svg, warnings } = convert(JSON.parse(readFileSync(input, 'utf8')), { loop: !args.includes('--once'), background: !args.includes('--no-background') });
 for (const w of warnings) console.error(`warning: ${w}`);
 if (output) writeFileSync(output, svg);
 else process.stdout.write(svg);

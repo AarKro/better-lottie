@@ -1,0 +1,500 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "gradient-transform",
+  "width": 400,
+  "height": 400,
+  "duration": 2,
+  "frameRate": 25,
+  "background": [
+   0.101961,
+   0.101961,
+   0.121569
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "radial rot30 scale60x",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "gradient-fill",
+     "name": "Gradient Fill 1",
+     "gradientType": "radial",
+     "startPoint": {
+      "value": [
+       -40,
+       -20
+      ]
+     },
+     "endPoint": {
+      "value": [
+       50,
+       30
+      ]
+     },
+     "highlightLength": {
+      "value": 0
+     },
+     "highlightAngle": {
+      "value": 0
+     },
+     "gradientScale": {
+      "value": [
+       60,
+       100
+      ]
+     },
+     "gradientRotation": {
+      "value": 30
+     },
+     "stops": {
+      "value": {
+       "colors": [
+        [
+         0,
+         0.5,
+         1,
+         1,
+         1
+        ],
+        [
+         1,
+         0.5,
+         0,
+         0,
+         0
+        ]
+       ],
+       "alphas": [
+        [
+         0,
+         0.5,
+         1
+        ],
+        [
+         1,
+         0.5,
+         1
+        ]
+       ]
+      }
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "radial plain",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "gradient-fill",
+     "name": "Gradient Fill 1",
+     "gradientType": "radial",
+     "startPoint": {
+      "value": [
+       -40,
+       -20
+      ]
+     },
+     "endPoint": {
+      "value": [
+       50,
+       30
+      ]
+     },
+     "highlightLength": {
+      "value": 0
+     },
+     "highlightAngle": {
+      "value": 0
+     },
+     "stops": {
+      "value": {
+       "colors": [
+        [
+         0,
+         0.5,
+         1,
+         1,
+         1
+        ],
+        [
+         1,
+         0.5,
+         0,
+         0,
+         0
+        ]
+       ],
+       "alphas": [
+        [
+         0,
+         0.5,
+         1
+        ],
+        [
+         1,
+         0.5,
+         1
+        ]
+       ]
+      }
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "linear rot45 scale50x",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "gradient-fill",
+     "name": "Gradient Fill 1",
+     "gradientType": "linear",
+     "startPoint": {
+      "value": [
+       -40,
+       -20
+      ]
+     },
+     "endPoint": {
+      "value": [
+       50,
+       30
+      ]
+     },
+     "highlightLength": {
+      "value": 0
+     },
+     "highlightAngle": {
+      "value": 0
+     },
+     "gradientScale": {
+      "value": [
+       50,
+       100
+      ]
+     },
+     "gradientRotation": {
+      "value": 45
+     },
+     "stops": {
+      "value": {
+       "colors": [
+        [
+         0,
+         0.5,
+         1,
+         1,
+         1
+        ],
+        [
+         1,
+         0.5,
+         0,
+         0,
+         0
+        ]
+       ],
+       "alphas": [
+        [
+         0,
+         0.5,
+         1
+        ],
+        [
+         1,
+         0.5,
+         1
+        ]
+       ]
+      }
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "linear plain",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "gradient-fill",
+     "name": "Gradient Fill 1",
+     "gradientType": "linear",
+     "startPoint": {
+      "value": [
+       -40,
+       -20
+      ]
+     },
+     "endPoint": {
+      "value": [
+       50,
+       30
+      ]
+     },
+     "highlightLength": {
+      "value": 0
+     },
+     "highlightAngle": {
+      "value": 0
+     },
+     "stops": {
+      "value": {
+       "colors": [
+        [
+         0,
+         0.5,
+         1,
+         1,
+         1
+        ],
+        [
+         1,
+         0.5,
+         0,
+         0,
+         0
+        ]
+       ],
+       "alphas": [
+        [
+         0,
+         0.5,
+         1
+        ],
+        [
+         1,
+         0.5,
+         1
+        ]
+       ]
+      }
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  }
+ ],
+ "warnings": []
+}

@@ -1,0 +1,742 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "mattes",
+  "width": 400,
+  "height": 400,
+  "duration": 2,
+  "frameRate": 25,
+  "background": [
+   0.101961,
+   0.101961,
+   0.121569
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "matte luma inverted",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "enabled": false,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "isMatte": true,
+   "contents": [
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 1",
+     "size": {
+      "value": [
+       100,
+       100
+      ]
+     },
+     "position": {
+      "value": [
+       -15,
+       0
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    },
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 2",
+     "size": {
+      "value": [
+       60,
+       60
+      ]
+     },
+     "position": {
+      "value": [
+       30,
+       10
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 2",
+     "color": {
+      "value": [
+       0.4,
+       0.4,
+       0.4,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 60
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "target luma inverted",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "matte": {
+    "type": "luma-inverted",
+    "layer": 1
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.95,
+       0.3,
+       0.35,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "matte luma",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "enabled": false,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "isMatte": true,
+   "contents": [
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 1",
+     "size": {
+      "value": [
+       100,
+       100
+      ]
+     },
+     "position": {
+      "value": [
+       -15,
+       0
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    },
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 2",
+     "size": {
+      "value": [
+       60,
+       60
+      ]
+     },
+     "position": {
+      "value": [
+       30,
+       10
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 2",
+     "color": {
+      "value": [
+       0.4,
+       0.4,
+       0.4,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 60
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "target luma",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "matte": {
+    "type": "luma",
+    "layer": 3
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.95,
+       0.3,
+       0.35,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "matte alpha inverted",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "enabled": false,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "isMatte": true,
+   "contents": [
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 1",
+     "size": {
+      "value": [
+       100,
+       100
+      ]
+     },
+     "position": {
+      "value": [
+       -15,
+       0
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    },
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 2",
+     "size": {
+      "value": [
+       60,
+       60
+      ]
+     },
+     "position": {
+      "value": [
+       30,
+       10
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 2",
+     "color": {
+      "value": [
+       0.4,
+       0.4,
+       0.4,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 60
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "name": "target alpha inverted",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "matte": {
+    "type": "alpha-inverted",
+    "layer": 5
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.95,
+       0.3,
+       0.35,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "name": "matte alpha",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "enabled": false,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "isMatte": true,
+   "contents": [
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 1",
+     "size": {
+      "value": [
+       100,
+       100
+      ]
+     },
+     "position": {
+      "value": [
+       -15,
+       0
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       1,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    },
+    {
+     "type": "ellipse",
+     "name": "Ellipse Path 2",
+     "size": {
+      "value": [
+       60,
+       60
+      ]
+     },
+     "position": {
+      "value": [
+       30,
+       10
+      ]
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 2",
+     "color": {
+      "value": [
+       0.4,
+       0.4,
+       0.4,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 60
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "name": "target alpha",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "matte": {
+    "type": "alpha",
+    "layer": 7
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       150,
+       150
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.95,
+       0.3,
+       0.35,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  }
+ ],
+ "warnings": []
+}

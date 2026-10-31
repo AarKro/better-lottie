@@ -6,8 +6,9 @@ import { num, hex, escComment } from './format.js';
 import { element, timing } from './anim.js';
 import { renderContents } from './shapes.js';
 import { wrapTransform } from './transform.js';
+import { applyMasks, applyMatte } from './masks.js';
 
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 
 /**
  * @param {import('./ir.js').IR} ir
@@ -35,6 +36,7 @@ export function convert(ir, options = {}) {
     trimOf: new Map(),
     trimCache: new Map(),
     merges: new Map(),
+    mattes: new Set(),
     warn(where, msg) {
       const s = `${where}: ${msg}`;
       if (!seen.has(s)) { seen.add(s); warnings.push(s); }
@@ -65,19 +67,21 @@ function hash(s) {
   return (h >>> 0).toString(36).slice(0, 5);
 }
 
-function renderLayer(layer, ctx) {
+// force: render even when hidden (track matte layers are hidden in AE).
+function renderLayer(layer, ctx, { force = false } = {}) {
   const where = `layer "${layer.name}"`;
-  if (layer.enabled === false || layer.type === 'null') return '';
+  if ((layer.enabled === false && !force) || layer.type === 'null') return '';
   if (layer.type !== 'shape') {
     ctx.warn(where, `${layer.type} layers are not supported (skipped)`);
     return '';
   }
   if (layer.threeD) ctx.warn(where, '3D layer exported as 2D');
   if (layer.blendMode && layer.blendMode !== 'normal') ctx.warn(where, `blend mode "${layer.blendMode}" is not supported (exported as normal)`);
-  if (layer.trackMatte) ctx.warn(where, 'track mattes are not supported (ignored)');
+  if (layer.trackMatte) ctx.warn(where, 'track mattes need a newer extractor; re-export from After Effects');
 
-  const content = renderContents(layer.contents || [], ctx, where);
+  let content = renderContents(layer.contents || [], ctx, where);
   if (!content) return '';
+  content = applyMasks(layer, content, ctx, where);
   let out = wrapTransform(layer.transform, content, ctx, where, { opacity: true });
 
   // AE parenting passes down transforms but not opacity.
@@ -89,7 +93,22 @@ function renderLayer(layer, ctx) {
     out = wrapTransform(p.transform, out, ctx, `layer "${p.name}"`, { opacity: false });
     pid = p.parent;
   }
-  return withVisibility(layer, out, ctx);
+  return withMatte(layer, withVisibility(layer, out, ctx), ctx, where);
+}
+
+function withMatte(layer, out, ctx, where) {
+  const m = layer.matte;
+  if (!m || !out) return out;
+  const matteLayer = ctx.byId.get(m.layer);
+  if (!matteLayer || ctx.mattes.has(m.layer)) {
+    ctx.warn(where, 'track matte layer not found (matte ignored)');
+    return out;
+  }
+  ctx.mattes.add(m.layer);
+  const matte = renderLayer(matteLayer, ctx, { force: true });
+  ctx.mattes.delete(m.layer);
+  // An empty matte hides everything (or nothing, when inverted).
+  return applyMatte(m.type || 'alpha', matte, out, ctx);
 }
 
 // Layer in/out points → a discrete visibility animation.

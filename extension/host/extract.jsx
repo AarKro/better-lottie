@@ -167,6 +167,10 @@ var BetterLottie = (function () {
   var LINE_CAPS = { 1: 'butt', 2: 'round', 3: 'square' };
   var LINE_JOINS = { 1: 'miter', 2: 'round', 3: 'bevel' };
   var MERGE_MODES = { 1: 'merge', 2: 'add', 3: 'subtract', 4: 'intersect', 5: 'exclude' };
+  var REPEATER_TRANSFORM = {
+    anchor: 'ADBE Vector Repeater Anchor', position: 'ADBE Vector Repeater Position',
+    scale: 'ADBE Vector Repeater Scale', rotation: 'ADBE Vector Repeater Rotation'
+  };
 
   function value(group, matchName) {
     var p = group.property(matchName);
@@ -215,7 +219,38 @@ var BetterLottie = (function () {
     it.lineJoin = LINE_JOINS[value(p, 'ADBE Vector Stroke Line Join')] || 'miter';
     it.miterLimit = value(p, 'ADBE Vector Stroke Miter Limit');
     readDashes(p, it, ctx, w);
-    if (anyModified(p.property('ADBE Vector Stroke Taper')) || anyModified(p.property('ADBE Vector Stroke Wave'))) it.taper = true;
+    readTaper(p, it, ctx, w);
+  }
+
+  // Taper and Wave exist on every stroke; only modified ones are in use.
+  // Length Units 1 = percent of the path ('Start Length'), 2 = pixels
+  // ('StartWidthPx', which AE also labels 'Start Length'). Wave Units 1 =
+  // wavelength in pixels, 2 = cycles over the path.
+  function readTaper(p, it, ctx, w) {
+    var taper = p.property('ADBE Vector Stroke Taper'), wave = p.property('ADBE Vector Stroke Wave');
+    if (anyModified(taper)) {
+      var px = value(taper, 'ADBE Vector Taper Length Units') === 2;
+      var tp = function (name, label) { return readProp(taper.property(name), ctx, w + ' > Taper ' + label); };
+      it.taper = {
+        units: px ? 'pixels' : 'percent',
+        startLength: tp(px ? 'ADBE Vector Taper StartWidthPx' : 'ADBE Vector Taper Start Length', 'Start Length'),
+        endLength: tp(px ? 'ADBE Vector Taper EndWidthPx' : 'ADBE Vector Taper End Length', 'End Length'),
+        startWidth: tp('ADBE Vector Taper Start Width', 'Start Width'),
+        endWidth: tp('ADBE Vector Taper End Width', 'End Width'),
+        startEase: tp('ADBE Vector Taper Start Ease', 'Start Ease'),
+        endEase: tp('ADBE Vector Taper End Ease', 'End Ease')
+      };
+    }
+    if (anyModified(wave)) {
+      var wv = function (name, label) { return readProp(wave.property(name), ctx, w + ' > Wave ' + label); };
+      it.wave = {
+        amount: wv('ADBE Vector Taper Wave Amount', 'Amount'),
+        units: value(wave, 'ADBE Vector Taper Wave Units') === 2 ? 'cycles' : 'pixels',
+        wavelength: wv('ADBE Vector Taper Wavelength', 'Wavelength'),
+        cycles: wv('ADBE Vector Taper Wave Cycles', 'Cycles'),
+        phase: wv('ADBE Vector Taper Wave Phase', 'Phase')
+      };
+    }
   }
 
   // Shared by Gradient Fill and Gradient Stroke. Colors come from the project
@@ -226,13 +261,43 @@ var BetterLottie = (function () {
     it.endPoint = readProp(p.property('ADBE Vector Grad End Pt'), ctx, w + ' > End Point');
     it.highlightLength = readProp(p.property('ADBE Vector Grad HiLite Length'), ctx, w + ' > Highlight Length');
     it.highlightAngle = readProp(p.property('ADBE Vector Grad HiLite Angle'), ctx, w + ' > Highlight Angle');
-    if (modified(p.property('ADBE Vector Grad Scale')) || modified(p.property('ADBE Vector Grad Rotation'))) it.gradientTransform = true;
-    var colors = p.property('ADBE Vector Grad Colors');
-    if (colors && colors.numKeys > 0) ctx.warn(w, 'animated gradient colors are exported with the first keyframe\'s colors');
+    var scale = p.property('ADBE Vector Grad Scale'), rotation = p.property('ADBE Vector Grad Rotation');
+    if (modified(scale)) it.gradientScale = readProp(scale, ctx, w + ' > Scale');
+    if (modified(rotation)) it.gradientRotation = readProp(rotation, ctx, w + ' > Rotation');
     var blobs = ctx.layerGradients ? ctx.layerGradients[ctx.gradientIndex] : null;
     ctx.gradientIndex++;
-    it.stops = blobs && blobs.length ? parseGradient(blobs[0]) : null;
+    it.stops = gradientStops(p.property('ADBE Vector Grad Colors'), blobs, ctx, w);
     ctx.gradientItems.push(it);
+  }
+
+  // AE's gradient when the colors were never edited (it stores nothing then).
+  var DEFAULT_GRADIENT = { colors: [[0, 0.5, 1, 1, 1], [1, 0.5, 0, 0, 0]], alphas: [[0, 0.5, 1], [1, 0.5, 1]] };
+
+  // Prop<GradientStops> from the project file's XML: one blob per keyframe.
+  // null when the project file couldn't be read.
+  function gradientStops(colors, blobs, ctx, w) {
+    if (!blobs) return null;
+    if (!blobs.length) return { value: DEFAULT_GRADIENT };
+    var n = colors ? colors.numKeys : 0;
+    if (n < 2 || blobs.length !== n) {
+      if (n >= 2) ctx.warn(w, 'gradient color keyframes could not be matched to the saved project; using the first');
+      return { value: parseGradient(blobs[0]) };
+    }
+    var kfs = [];
+    for (var k = 1; k <= n; k++) {
+      var kf = {
+        t: colors.keyTime(k),
+        v: parseGradient(blobs[k - 1]),
+        inType: interpName(colors.keyInInterpolationType(k)),
+        outType: interpName(colors.keyOutInterpolationType(k))
+      };
+      try {
+        kf.easeIn = eases(colors.keyInTemporalEase(k));
+        kf.easeOut = eases(colors.keyOutTemporalEase(k));
+      } catch (e) { /* no temporal ease */ }
+      kfs.push(kf);
+    }
+    return { keyframes: kfs };
   }
 
   function readContents(vectors, ctx, where) {
@@ -289,6 +354,15 @@ var BetterLottie = (function () {
         case 'merge-paths':
           it.mode = MERGE_MODES[value(p, 'ADBE Vector Merge Type')] || 'add';
           break;
+        case 'repeater':
+          var rt = p.property('ADBE Vector Repeater Transform');
+          it.copies = readProp(p.property('ADBE Vector Repeater Copies'), ctx, w + ' > Copies');
+          it.offset = readProp(p.property('ADBE Vector Repeater Offset'), ctx, w + ' > Offset');
+          it.composite = value(p, 'ADBE Vector Repeater Order') === 2 ? 'above' : 'below';
+          it.transform = readTransform(rt, REPEATER_TRANSFORM, ctx, w);
+          it.startOpacity = readProp(rt.property('ADBE Vector Repeater Opacity 1'), ctx, w + ' > Start Opacity');
+          it.endOpacity = readProp(rt.property('ADBE Vector Repeater Opacity 2'), ctx, w + ' > End Opacity');
+          break;
         default:
           // Unsupported: the converter reports it by type.
           break;
@@ -341,18 +415,21 @@ var BetterLottie = (function () {
       if (layer.autoOrient === AutoOrientType.ALONG_PATH) L.transform.autoOrient = true;
       else if (layer.autoOrient !== AutoOrientType.NO_AUTO_ORIENT) ctx.warn(where, 'auto-orient towards camera is not supported (ignored)');
     } catch (e0) { /* layer type without auto-orient */ }
-    if (L.enabled === false) return L;
+    // A track matte layer is hidden but still needed: read it in full.
+    var isMatte = false;
+    try { isMatte = layer.isTrackMatte; } catch (e6) {}
+    if (isMatte) L.isMatte = true;
+    if (L.enabled === false && !isMatte) return L;
 
     try { if (layer.threeDLayer) L.threeD = true; } catch (e1) {}
     try { if (layer.blendingMode !== BlendingMode.NORMAL) L.blendMode = blendName(layer.blendingMode); } catch (e2) {}
-    try { if (layer.trackMatteType !== TrackMatteType.NO_TRACK_MATTE) L.trackMatte = true; } catch (e3) {}
+    L.matte = readMatte(layer);
     try { if (layer.timeRemapEnabled) ctx.warn(where, 'time remapping is not supported (ignored)'); } catch (e4) {}
     try {
       var fx = layer.property('ADBE Effect Parade');
       if (fx && fx.numProperties) ctx.warn(where, 'effects are not supported (ignored)');
-      var masks = layer.property('ADBE Mask Parade');
-      if (masks && masks.numProperties) ctx.warn(where, 'masks are not supported yet (ignored)');
     } catch (e5) {}
+    L.masks = readMasks(layer, ctx, where);
 
     if (L.type === 'shape') {
       var gradients = ctx.projectGradients();
@@ -367,6 +444,51 @@ var BetterLottie = (function () {
       }
     }
     return L;
+  }
+
+  var MATTE_TYPES = { ALPHA: 'alpha', ALPHA_INVERTED: 'alpha-inverted', LUMA: 'luma', LUMA_INVERTED: 'luma-inverted' };
+
+  // AE 2023+ names the matte layer (trackMatteLayer); before that it is
+  // always the layer directly above.
+  function readMatte(layer) {
+    try {
+      if (layer.trackMatteType === TrackMatteType.NO_TRACK_MATTE) return undefined;
+      var type = null;
+      for (var name in MATTE_TYPES) {
+        if (MATTE_TYPES.hasOwnProperty(name) && TrackMatteType[name] === layer.trackMatteType) type = MATTE_TYPES[name];
+      }
+      var matte = null;
+      try { matte = layer.trackMatteLayer; } catch (e) { /* older AE */ }
+      return { type: type || 'alpha', layer: matte ? matte.index : layer.index - 1 };
+    } catch (e2) {
+      return undefined;
+    }
+  }
+
+  var MASK_MODES = ['ADD', 'SUBTRACT', 'INTERSECT', 'LIGHTEN', 'DARKEN', 'DIFFERENCE'];
+
+  function readMasks(layer, ctx, where) {
+    var parade = layer.property('ADBE Mask Parade');
+    if (!parade || !parade.numProperties) return undefined;
+    var out = [];
+    for (var i = 1; i <= parade.numProperties; i++) {
+      var m = parade.property(i), mode = null;
+      for (var j = 0; j < MASK_MODES.length; j++) {
+        if (MaskMode[MASK_MODES[j]] === m.maskMode) mode = MASK_MODES[j].toLowerCase();
+      }
+      if (!mode) continue; // None
+      var w = where + ' > ' + m.name;
+      out.push({
+        name: m.name,
+        mode: mode,
+        inverted: m.inverted,
+        path: readProp(m.property('ADBE Mask Shape'), ctx, w + ' > Mask Path'),
+        feather: readProp(m.property('ADBE Mask Feather'), ctx, w + ' > Mask Feather'),
+        opacity: readProp(m.property('ADBE Mask Opacity'), ctx, w + ' > Mask Opacity'),
+        expansion: readProp(m.property('ADBE Mask Offset'), ctx, w + ' > Mask Expansion')
+      });
+    }
+    return out.length ? out : undefined;
   }
 
   // --- gradient colors from the saved project file ---
@@ -395,7 +517,7 @@ var BetterLottie = (function () {
     return false;
   }
 
-  // Returns { layerIndex: [[xml, …] per gradient property, in order] } or null.
+  // Returns { layerIndex: [[xml per keyframe] per gradient paint, in order] } or null.
   function readProjectGradients(comp, ctx) {
     var saved = app.project.file;
     if (!saved || !saved.exists) {
@@ -480,6 +602,9 @@ var BetterLottie = (function () {
     return id;
   }
 
+  // One entry per Gradient Fill/Stroke in tree order, holding the XML of each
+  // color keyframe (one when not animated). AE stores only edited streams, so
+  // a gradient whose colors were never changed gets [] (white to black).
   function collectGradients(f, start, end, out) {
     var lastName = '';
     eachChunk(f, start, end, function (id, body, size) {
@@ -487,9 +612,9 @@ var BetterLottie = (function () {
         var raw = readAt(f, body, size), nul = raw.indexOf(String.fromCharCode(0));
         lastName = nul < 0 ? raw : raw.substring(0, nul);
       } else if (id === 'LIST') {
-        if (lastName === 'ADBE Vector Grad Colors') {
+        if (lastName === 'ADBE Vector Graphic - G-Fill' || lastName === 'ADBE Vector Graphic - G-Stroke') {
           var blobs = [];
-          collectXml(f, body + 4, body + size, blobs);
+          collectColorXml(f, body + 4, body + size, blobs);
           out.push(blobs);
         } else {
           collectGradients(f, body + 4, body + size, out);
@@ -500,17 +625,17 @@ var BetterLottie = (function () {
     });
   }
 
-  function collectXml(f, start, end, out) {
+  // Every Utf8 in the paint's LIST 'GCky' (one per color keyframe).
+  function collectColorXml(f, start, end, out) {
     eachChunk(f, start, end, function (id, body, size) {
       if (id !== 'LIST') return true;
       if (readAt(f, body, 4) === 'GCky') {
         eachChunk(f, body + 4, body + size, function (cid, b, s) {
-          if (cid !== 'Utf8') return true;
-          out.push(readAt(f, b, s));
-          return false;
+          if (cid === 'Utf8') out.push(readAt(f, b, s));
+          return true;
         });
       } else {
-        collectXml(f, body + 4, body + size, out);
+        collectColorXml(f, body + 4, body + size, out);
       }
       return true;
     });

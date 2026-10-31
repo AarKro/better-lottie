@@ -10,6 +10,8 @@ export const KeyframeInterpolationType = { LINEAR: 6612, BEZIER: 6613, HOLD: 661
 export const BlendingMode = { NORMAL: 5212, MULTIPLY: 5213, SCREEN: 5214, ADD: 5215, OVERLAY: 5216 };
 export const TrackMatteType = { NO_TRACK_MATTE: 5012, ALPHA: 5013 };
 export const AutoOrientType = { NO_AUTO_ORIENT: 4212, ALONG_PATH: 4213, CAMERA_OR_POINT_OF_INTEREST: 4214 };
+export const MaskMode = { NONE: 6812, ADD: 6813, SUBTRACT: 6814, INTERSECT: 6815, LIGHTEN: 6816, DARKEN: 6817, DIFFERENCE: 6818 };
+Object.assign(TrackMatteType, { ALPHA_INVERTED: 5014, LUMA: 5015, LUMA_INVERTED: 5016 });
 
 export class KeyframeEase {
   constructor(speed, influence) { this.speed = speed; this.influence = influence; }
@@ -76,7 +78,7 @@ export class Layer {
       enabled: true, guideLayer: false, parent: null, inPoint: 0, outPoint: 0, threeDLayer: false,
       blendingMode: BlendingMode.NORMAL, trackMatteType: TrackMatteType.NO_TRACK_MATTE,
       timeRemapEnabled: false, nullLayer: false, adjustmentLayer: false, source: null, groups: {},
-      autoOrient: AutoOrientType.NO_AUTO_ORIENT,
+      autoOrient: AutoOrientType.NO_AUTO_ORIENT, isTrackMatte: false, trackMatteLayer: null,
     }, props);
   }
   property(matchName) { return this.groups[matchName] || null; }
@@ -149,30 +151,41 @@ export const fill = (name, color, opacity = 100) => G('ADBE Vector Graphic - Fil
 
 // Every stroke carries hidden Dash 1–3 / Gap 1–3 / Offset streams at 10 / 0;
 // `dashes` sets (and marks modified) the first ones, e.g. [20, 10].
-function strokeExtras(dashes = [], dashOffset) {
+function strokeExtras(dashes = [], dashOffset, taper = {}) {
+  const t = (name, label, key, fallback) => P(name, label, taper[key] ?? fallback, { modified: taper[key] !== undefined });
   const names = ['Dash 1', 'Gap 1', 'Dash 2', 'Gap 2', 'Dash 3', 'Gap 3'];
   return [
     G('ADBE Vector Stroke Dashes', 'Dashes', [
       ...names.map((n, i) => P(`ADBE Vector Stroke ${n}`, n.replace(' 1', ''), i < dashes.length ? dashes[i] : 10, { modified: i < dashes.length })),
       P('ADBE Vector Stroke Offset', 'Offset', dashOffset ?? 0, { modified: dashOffset !== undefined }),
     ]),
-    G('ADBE Vector Stroke Taper', 'Taper', [P('ADBE Vector Taper Start Length', 'Start Length', 0)]),
+    G('ADBE Vector Stroke Taper', 'Taper', [
+      t('ADBE Vector Taper Length Units', 'Length Units', 'units', 1),
+      t('ADBE Vector Taper Start Length', 'Start Length', 'startLength', 0),
+      t('ADBE Vector Taper End Length', 'End Length', 'endLength', 0),
+      t('ADBE Vector Taper StartWidthPx', 'Start Length', 'startPx', 0),
+      t('ADBE Vector Taper EndWidthPx', 'End Length', 'endPx', 0),
+      t('ADBE Vector Taper Start Width', 'Start Width', 'startWidth', 0),
+      t('ADBE Vector Taper End Width', 'End Width', 'endWidth', 0),
+      t('ADBE Vector Taper Start Ease', 'Start Ease', 'startEase', 0),
+      t('ADBE Vector Taper End Ease', 'End Ease', 'endEase', 0),
+    ]),
     G('ADBE Vector Stroke Wave', 'Wave', [P('ADBE Vector Taper Wave Amount', 'Amount', 0)]),
   ];
 }
 
-export const stroke = (name, color, width, { cap = 1, join = 1, dashes, dashOffset } = {}) => G('ADBE Vector Graphic - Stroke', name, [
+export const stroke = (name, color, width, { cap = 1, join = 1, dashes, dashOffset, taper } = {}) => G('ADBE Vector Graphic - Stroke', name, [
   P('ADBE Vector Stroke Color', 'Color', color),
   P('ADBE Vector Stroke Opacity', 'Opacity', 100),
   P('ADBE Vector Stroke Width', 'Stroke Width', width),
   P('ADBE Vector Stroke Line Cap', 'Line Cap', cap),
   P('ADBE Vector Stroke Line Join', 'Line Join', join),
   P('ADBE Vector Stroke Miter Limit', 'Miter Limit', 4),
-  ...strokeExtras(dashes, dashOffset),
+  ...strokeExtras(dashes, dashOffset, taper),
 ]);
 
 // Gradient colors have no scriptable value; the extractor reads them from the project file.
-export const gradientFill = (name, { type = 1, start = [0, -50], end = [0, 50] } = {}) => G('ADBE Vector Graphic - G-Fill', name, [
+export const gradientFill = (name, { type = 1, start = [0, -50], end = [0, 50], colorKeys = [] } = {}) => G('ADBE Vector Graphic - G-Fill', name, [
   P('ADBE Vector Fill Rule', 'Fill Rule', 1),
   P('ADBE Vector Grad Type', 'Type', type),
   P('ADBE Vector Grad Start Pt', 'Start Point', start, { spatial: true }),
@@ -181,9 +194,34 @@ export const gradientFill = (name, { type = 1, start = [0, -50], end = [0, 50] }
   P('ADBE Vector Grad HiLite Angle', 'Highlight Angle', 0),
   P('ADBE Vector Grad Scale', 'Scale', [100, 100]),
   P('ADBE Vector Grad Rotation', 'Rotation', 0),
-  P('ADBE Vector Grad Colors', 'Colors', undefined),
+  P('ADBE Vector Grad Colors', 'Colors', colorKeys.length ? { keys: colorKeys.map(t => ({ t, v: undefined })) } : undefined),
   P('ADBE Vector Fill Opacity', 'Opacity', 100),
 ]);
+
+export const repeater = (name, { copies = 3, offset = 0, order = 1, position = [50, 0], rotation = 0, scale = [100, 100], startOpacity = 100, endOpacity = 100 } = {}) =>
+  G('ADBE Vector Filter - Repeater', name, [
+    P('ADBE Vector Repeater Copies', 'Copies', copies),
+    P('ADBE Vector Repeater Offset', 'Offset', offset),
+    P('ADBE Vector Repeater Order', 'Composite', order),
+    G('ADBE Vector Repeater Transform', 'Transform', [
+      P('ADBE Vector Repeater Anchor', 'Anchor Point', [0, 0], { spatial: true }),
+      P('ADBE Vector Repeater Position', 'Position', position, { spatial: true }),
+      P('ADBE Vector Repeater Scale', 'Scale', scale),
+      P('ADBE Vector Repeater Rotation', 'Rotation', rotation),
+      P('ADBE Vector Repeater Opacity 1', 'Start Opacity', startOpacity),
+      P('ADBE Vector Repeater Opacity 2', 'End Opacity', endOpacity),
+    ]),
+  ]);
+
+export function mask(name, verts, { mode = MaskMode.ADD, inverted = false, feather = [0, 0], opacity = 100, expansion = 0 } = {}) {
+  const atom = G('ADBE Mask Atom', name, [
+    P('ADBE Mask Shape', 'Mask Path', new Shape({ vertices: verts })),
+    P('ADBE Mask Feather', 'Mask Feather', feather),
+    P('ADBE Mask Opacity', 'Mask Opacity', opacity),
+    P('ADBE Mask Offset', 'Mask Expansion', expansion),
+  ]);
+  return Object.assign(atom, { maskMode: mode, inverted });
+}
 
 export const merge = (name, mode) => G('ADBE Vector Filter - Merge', name, [P('ADBE Vector Merge Type', 'Mode', mode)]);
 
@@ -194,14 +232,14 @@ export const trim = (name, { start = 0, end = 100, offset = 0, type = 1 } = {}) 
   P('ADBE Vector Trim Type', 'Trim Multiple Shapes', type),
 ]);
 
-export function shapeLayer(props, contents, { effects = 0 } = {}) {
+export function shapeLayer(props, contents, { effects = 0, masks = [] } = {}) {
   return new ShapeLayer({
     ...props,
     groups: {
       'ADBE Transform Group': props.transform || layerTransform(),
       'ADBE Root Vectors Group': G('ADBE Root Vectors Group', 'Contents', contents),
       'ADBE Effect Parade': G('ADBE Effect Parade', 'Effects', Array.from({ length: effects }, (_, i) => G('ADBE Glo2', `Glow ${i + 1}`))),
-      'ADBE Mask Parade': G('ADBE Mask Parade', 'Masks', []),
+      'ADBE Mask Parade': G('ADBE Mask Parade', 'Masks', masks),
     },
   });
 }
@@ -244,7 +282,7 @@ export function loadHost(file, activeItem, { projectFile = null, items = [] } = 
       },
     },
     File: MockFile,
-    KeyframeInterpolationType, BlendingMode, TrackMatteType, AutoOrientType, Shape,
+    KeyframeInterpolationType, BlendingMode, TrackMatteType, AutoOrientType, MaskMode, Shape,
     CompItem, ShapeLayer, TextLayer, CameraLayer, LightLayer, SolidSource,
   });
   vm.runInContext(readFileSync(file, 'utf8'), context, { filename: file });
@@ -272,7 +310,9 @@ export function gradientXml(colors, alphas = [[0, 0.5, 1], [1, 0.5, 1]]) {
     + `</prop.list></prop.pair></prop.list></prop.map>`;
 }
 
-// comps: [{ id, layers: [[xml per gradient property, …] per layer] }]
+// comps: [{ id, layers: [[entry per gradient paint, …] per layer] }]; an entry
+// is one XML string, an array of them (one per color keyframe), or null for
+// a gradient whose colors were never edited (AE stores no Colors stream).
 export function buildAep(comps) {
   const tdmn = name => { const b = Buffer.alloc(40); b.write(name, 'latin1'); return rifxChunk('tdmn', b); };
   const items = comps.map(({ id, layers }) => {
@@ -284,11 +324,14 @@ export function buildAep(comps) {
         rifxChunk('Utf8', Buffer.from('layer')),
         rifxList('tdgp', [
           tdmn('ADBE Root Vectors Group'),
-          rifxList('tdgp', grads.flatMap(xml => [
+          rifxList('tdgp', grads.flatMap(entry => [
             tdmn('ADBE Vector Graphic - G-Fill'),
             rifxList('tdgp', [
               tdmn('ADBE Vector Grad Start Pt'), rifxList('tdbs', []),
-              tdmn('ADBE Vector Grad Colors'), rifxList('GCst', [rifxList('GCky', [rifxChunk('Utf8', Buffer.from(xml))])]),
+              ...(entry == null ? [] : [
+                tdmn('ADBE Vector Grad Colors'),
+                rifxList('tdbs', [rifxList('GCky', [].concat(entry).map(xml => rifxChunk('Utf8', Buffer.from(xml))))]),
+              ]),
             ]),
           ])),
         ]),

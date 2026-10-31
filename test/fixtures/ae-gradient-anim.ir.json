@@ -1,0 +1,254 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "Animated gradient (colors edited by hand)",
+  "width": 400,
+  "height": 400,
+  "duration": 2,
+  "frameRate": 25,
+  "background": [
+   0,
+   0,
+   0
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "animated gradient",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      200,
+      200,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       300,
+       300
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "gradient-fill",
+     "name": "Gradient Fill 1",
+     "gradientType": "linear",
+     "startPoint": {
+      "value": [
+       -150,
+       0
+      ]
+     },
+     "endPoint": {
+      "value": [
+       150,
+       0
+      ]
+     },
+     "highlightLength": {
+      "value": 0
+     },
+     "highlightAngle": {
+      "value": 0
+     },
+     "stops": {
+      "keyframes": [
+       {
+        "t": 0,
+        "v": {
+         "colors": [
+          [
+           0,
+           0.5,
+           1,
+           1,
+           1
+          ],
+          [
+           1,
+           0.5,
+           0,
+           0,
+           0
+          ]
+         ],
+         "alphas": [
+          [
+           0,
+           0.5,
+           1
+          ],
+          [
+           1,
+           0.5,
+           1
+          ]
+         ]
+        },
+        "inType": "linear",
+        "outType": "linear",
+        "easeIn": [
+         {
+          "speed": 0,
+          "influence": 16.666667
+         }
+        ],
+        "easeOut": [
+         {
+          "speed": 1,
+          "influence": 16.666667
+         }
+        ]
+       },
+       {
+        "t": 1,
+        "v": {
+         "colors": [
+          [
+           0,
+           0.5,
+           1,
+           0.3,
+           0.2
+          ],
+          [
+           0.6,
+           0.5,
+           0.2,
+           0.4,
+           1
+          ],
+          [
+           1,
+           0.5,
+           0.1,
+           0.9,
+           0.5
+          ]
+         ],
+         "alphas": [
+          [
+           0,
+           0.5,
+           1
+          ],
+          [
+           1,
+           0.5,
+           0.5
+          ]
+         ]
+        },
+        "inType": "linear",
+        "outType": "linear",
+        "easeIn": [
+         {
+          "speed": 1,
+          "influence": 16.666667
+         }
+        ],
+        "easeOut": [
+         {
+          "speed": 1,
+          "influence": 16.666667
+         }
+        ]
+       },
+       {
+        "t": 2,
+        "v": {
+         "colors": [
+          [
+           0,
+           0.5,
+           0.2,
+           0.9,
+           0.6
+          ],
+          [
+           1,
+           0.3,
+           1,
+           0.9,
+           0.2
+          ]
+         ],
+         "alphas": [
+          [
+           0,
+           0.5,
+           1
+          ],
+          [
+           1,
+           0.5,
+           1
+          ]
+         ]
+        },
+        "inType": "linear",
+        "outType": "linear",
+        "easeIn": [
+         {
+          "speed": 1,
+          "influence": 16.666667
+         }
+        ],
+        "easeOut": [
+         {
+          "speed": 0,
+          "influence": 16.666667
+         }
+        ]
+       }
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  }
+ ],
+ "warnings": []
+}

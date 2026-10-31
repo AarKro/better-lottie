@@ -47,9 +47,24 @@ function rotation(tr, ctx, where) {
 
 export function wrapTransform(tr, inner, ctx, where, { opacity }) {
   tr = tr || {};
+  const extra = {};
+  let anims = '';
+  if (opacity) {
+    const o = resolve(tr.opacity ?? 100, KIND.scalar, ctx, `${where} › Opacity`);
+    if (o.smil || o.value[0] !== 100) {
+      extra.opacity = fmtOpacity(o.value);
+      anims = animate('opacity', o, fmtOpacity, ctx);
+    }
+  }
+  return wrapParts(transformParts(tr, ctx, where), inner, ctx, { attrs: extra, anims });
+}
+
+// Parts [{ type, r: { value, smil }, fmt }] (outer first) → nested groups.
+// `innermost` adds attributes/animations (e.g. opacity) to the innermost group.
+export function wrapParts(parts, inner, ctx, innermost = { attrs: {}, anims: '' }) {
   const groups = [];
   let statics = [];
-  for (const p of transformParts(tr, ctx, where)) {
+  for (const p of parts) {
     if (!p.r.smil) { statics.push(`${p.type}(${p.fmt(p.r.value)})`); continue; }
     const additive = statics.length ? ' additive="sum"' : '';
     const base = statics.length ? statics.join(' ') : `${p.type}(${p.fmt(p.r.value)})`;
@@ -60,18 +75,18 @@ export function wrapTransform(tr, inner, ctx, where, { opacity }) {
     statics = [];
   }
   if (statics.length) groups.push({ attrs: { transform: statics.join(' ') }, anims: '' });
-
-  if (opacity) {
-    const o = resolve(tr.opacity ?? 100, KIND.scalar, ctx, `${where} › Opacity`);
-    if (o.smil || o.value[0] !== 100) {
-      if (!groups.length) groups.push({ attrs: {}, anims: '' });
-      const g = groups[groups.length - 1];
-      g.attrs.opacity = fmtOpacity(o.value);
-      g.anims += animate('opacity', o, fmtOpacity, ctx);
-    }
+  if (Object.keys(innermost.attrs).length || innermost.anims) {
+    if (!groups.length) groups.push({ attrs: {}, anims: '' });
+    const g = groups[groups.length - 1];
+    Object.assign(g.attrs, innermost.attrs);
+    g.anims += innermost.anims;
   }
-
   return groups.reduceRight((acc, g) => element('g', g.attrs, g.anims + acc), inner);
+}
+
+// A transform part for wrapParts(); dropped when static and identity.
+export function part(type, r, fmt, identity) {
+  return r.smil || fmt(r.value) !== identity ? [{ type, r, fmt }] : [];
 }
 
 // The transform as a track of affine matrices (for flattening paths into a

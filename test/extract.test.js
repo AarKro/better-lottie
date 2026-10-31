@@ -7,6 +7,7 @@ import { convert } from '../src/index.js';
 import {
   loadHost, CompItem, AVLayer, CameraLayer, TextLayer, Shape, EASY, AutoOrientType, buildAep, gradientXml,
   shapeLayer, plainLayer, layerTransform, group, rect, ellipse, path, fill, stroke, trim, merge, gradientFill, BlendingMode,
+  MaskMode, TrackMatteType, mask, repeater,
 } from './helpers/ae-mock.js';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -197,8 +198,8 @@ test('reads gradient colors from the project file, matched by comp id and layer'
   const g = ir.layers[1].contents[0].contents[3];
   assert.equal(g.type, 'gradient-fill');
   assert.equal(g.gradientType, 'linear');
-  assert.deepEqual(g.stops.colors, GOLD);
-  assert.deepEqual(g.stops.alphas, [[0, 0.5, 1], [1, 0.5, 1]]);
+  assert.deepEqual(g.stops.value.colors, GOLD);
+  assert.deepEqual(g.stops.value.alphas, [[0, 0.5, 1], [1, 0.5, 1]]);
   assert.deepEqual(ir.warnings, []);
 });
 
@@ -221,4 +222,65 @@ test('feature comp converts end to end', () => {
   assert.match(svg, /pathLength="1" stroke-dasharray="0 1"/);
   assert.match(svg, /type="rotate" values="-45/, 'auto-orient starts along the path tangent');
   assert.ok(warnings.some(w => w.includes('dashes are replaced by Trim Paths')));
+});
+
+// --- masks, mattes, repeaters, taper, gradient keyframes ---
+
+function layeredComp() {
+  const comp = new CompItem({ id: 9, name: 'Layered', width: 200, height: 200, duration: 2, frameRate: 25, bgColor: [0, 0, 0] });
+  const matte = shapeLayer({ index: 1, name: 'Matte', enabled: false, isTrackMatte: true, outPoint: 2 },
+    [ellipse('Dot', [80, 80]), fill('Fill 1', [1, 1, 1, 1])]);
+  const target = shapeLayer({
+    index: 2, name: 'Target', outPoint: 2, trackMatteType: TrackMatteType.LUMA_INVERTED, trackMatteLayer: matte,
+  }, [
+    group('Tiles', [rect('Tile', [20, 20]), fill('Fill 1', [1, 0, 0, 1])]),
+    repeater('Repeater 1', { copies: 4, order: 2, startOpacity: 100, endOpacity: 20 }),
+    path('Line', new Shape({ vertices: [[0, 0], [100, 0]], closed: false })),
+    stroke('Tapered', [1, 1, 1, 1], 10, { taper: { startLength: 50, startEase: 25, endWidth: 30 } }),
+    gradientFill('Animated', { colorKeys: [0, 1] }),
+    gradientFill('Untouched'),
+  ], {
+    masks: [
+      mask('Mask 1', [[0, 0], [50, 0], [50, 50]], { feather: [8, 8] }),
+      mask('Mask 2', [[10, 10], [20, 10], [20, 20]], { mode: MaskMode.SUBTRACT, inverted: true, opacity: 50 }),
+      mask('Mask 3', [[0, 0], [1, 1], [0, 1]], { mode: MaskMode.NONE }),
+    ],
+  });
+  comp.layers = [matte, target];
+  return comp;
+}
+
+test('reads masks, track mattes (incl. hidden matte layers) and repeaters', () => {
+  const [matteLayer, target] = JSON.parse(loadHost(HOST, layeredComp()).extractActiveComp()).layers;
+  assert.equal(matteLayer.isMatte, true);
+  assert.equal(matteLayer.contents.length, 2, 'hidden matte layers keep their contents');
+  assert.deepEqual(target.matte, { type: 'luma-inverted', layer: 1 });
+  assert.deepEqual(target.masks.map(m => [m.mode, m.inverted]), [['add', false], ['subtract', true]], 'mode None is skipped');
+  assert.deepEqual(target.masks[0].feather.value, [8, 8]);
+  const rep = target.contents[1];
+  assert.equal(rep.type, 'repeater');
+  assert.equal(rep.composite, 'above');
+  assert.equal(rep.copies.value, 4);
+  assert.deepEqual(rep.transform.position.value, [50, 0]);
+  assert.equal(rep.endOpacity.value, 20);
+});
+
+test('reads taper settings in the right units', () => {
+  const target = JSON.parse(loadHost(HOST, layeredComp()).extractActiveComp()).layers[1];
+  const taper = target.contents[3].taper;
+  assert.equal(taper.units, 'percent');
+  assert.equal(taper.startLength.value, 50);
+  assert.equal(taper.startEase.value, 25);
+  assert.equal(taper.endWidth.value, 30);
+  assert.equal(target.contents[3].wave, undefined, 'unmodified wave is not exported');
+});
+
+test('reads gradient color keyframes, and AE defaults for untouched gradients', () => {
+  const RED = [[0, 0.5, 1, 0, 0], [1, 0.5, 0.5, 0, 0]], BLUE = [[0, 0.5, 0, 0, 1], [1, 0.5, 0, 0, 0.5]];
+  const file = projectFile([{ id: 9, layers: [[], [[gradientXml(RED), gradientXml(BLUE)], null]] }]);
+  const ir = JSON.parse(loadHost(HOST, layeredComp(), { projectFile: file }).extractActiveComp());
+  const [animated, untouched] = ir.layers[1].contents.slice(4);
+  assert.deepEqual(animated.stops.keyframes.map(k => [k.t, k.v.colors]), [[0, RED], [1, BLUE]]);
+  assert.deepEqual(untouched.stops.value.colors, [[0, 0.5, 1, 1, 1], [1, 0.5, 0, 0, 0]], 'white to black');
+  assert.deepEqual(ir.warnings, []);
 });

@@ -1,0 +1,1246 @@
+{
+ "version": 1,
+ "comp": {
+  "name": "masks",
+  "width": 400,
+  "height": 400,
+  "duration": 2,
+  "frameRate": 25,
+  "background": [
+   0.101961,
+   0.101961,
+   0.121569
+  ]
+ },
+ "layers": [
+  {
+   "id": 1,
+   "name": "mask animated",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      200,
+      200,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "masks": [
+    {
+     "name": "Mask 1",
+     "mode": "add",
+     "inverted": false,
+     "path": {
+      "keyframes": [
+       {
+        "t": 0,
+        "v": {
+         "vertices": [
+          [
+           0,
+           -10
+          ],
+          [
+           10,
+           0
+          ],
+          [
+           0,
+           10
+          ],
+          [
+           -10,
+           0
+          ]
+         ],
+         "inTangents": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ],
+         "outTangents": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ],
+         "closed": true
+        },
+        "inType": "linear",
+        "outType": "linear",
+        "easeIn": [
+         {
+          "speed": 0,
+          "influence": 16.666667
+         }
+        ],
+        "easeOut": [
+         {
+          "speed": 1,
+          "influence": 16.666667
+         }
+        ]
+       },
+       {
+        "t": 2,
+        "v": {
+         "vertices": [
+          [
+           0,
+           -45
+          ],
+          [
+           45,
+           0
+          ],
+          [
+           0,
+           45
+          ],
+          [
+           -45,
+           0
+          ]
+         ],
+         "inTangents": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ],
+         "outTangents": [
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ],
+          [
+           0,
+           0
+          ]
+         ],
+         "closed": true
+        },
+        "inType": "linear",
+        "outType": "linear",
+        "easeIn": [
+         {
+          "speed": 1,
+          "influence": 16.666667
+         }
+        ],
+        "easeOut": [
+         {
+          "speed": 0,
+          "influence": 16.666667
+         }
+        ]
+       }
+      ]
+     },
+     "feather": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "expansion": {
+      "value": 0
+     }
+    }
+   ],
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       60,
+       60
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       0.3,
+       0.8,
+       1,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "mask feather+inverted+offset",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "masks": [
+    {
+     "name": "Mask 1",
+     "mode": "add",
+     "inverted": false,
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         0,
+         -45
+        ],
+        [
+         45,
+         0
+        ],
+        [
+         0,
+         45
+        ],
+        [
+         -45,
+         0
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": true
+      }
+     },
+     "feather": {
+      "value": [
+       12,
+       12
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "expansion": {
+      "value": 0
+     }
+    },
+    {
+     "name": "Mask 2",
+     "mode": "intersect",
+     "inverted": true,
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         0,
+         -18
+        ],
+        [
+         9,
+         -15.588455
+        ],
+        [
+         15.588455,
+         -9
+        ],
+        [
+         18,
+         0
+        ],
+        [
+         15.588455,
+         9
+        ],
+        [
+         9,
+         15.588455
+        ],
+        [
+         0,
+         18
+        ],
+        [
+         -9,
+         15.588455
+        ],
+        [
+         -15.588455,
+         9
+        ],
+        [
+         -18,
+         0
+        ],
+        [
+         -15.588455,
+         -9
+        ],
+        [
+         -9,
+         -15.588455
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": true
+      }
+     },
+     "feather": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "opacity": {
+      "value": 70
+     },
+     "expansion": {
+      "value": 4
+     }
+    }
+   ],
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       140,
+       140
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       0.55,
+       0.2,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "mask add+intersect",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      300,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "masks": [
+    {
+     "name": "Mask 1",
+     "mode": "add",
+     "inverted": false,
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         -20,
+         -60
+        ],
+        [
+         22.426407,
+         -42.426407
+        ],
+        [
+         40,
+         0
+        ],
+        [
+         22.426407,
+         42.426407
+        ],
+        [
+         -20,
+         60
+        ],
+        [
+         -62.426407,
+         42.426407
+        ],
+        [
+         -80,
+         0
+        ],
+        [
+         -62.426407,
+         -42.426407
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": true
+      }
+     },
+     "feather": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "expansion": {
+      "value": 0
+     }
+    },
+    {
+     "name": "Mask 2",
+     "mode": "intersect",
+     "inverted": false,
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         25,
+         -55
+        ],
+        [
+         63.890869,
+         -38.890869
+        ],
+        [
+         80,
+         0
+        ],
+        [
+         63.890869,
+         38.890869
+        ],
+        [
+         25,
+         55
+        ],
+        [
+         -13.890869,
+         38.890869
+        ],
+        [
+         -30,
+         0
+        ],
+        [
+         -13.890869,
+         -38.890869
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": true
+      }
+     },
+     "feather": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "expansion": {
+      "value": 0
+     }
+    }
+   ],
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       140,
+       140
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       0.55,
+       0.2,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "mask subtract",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      300,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "masks": [
+    {
+     "name": "Mask 1",
+     "mode": "subtract",
+     "inverted": false,
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         0,
+         -40
+        ],
+        [
+         38.042267,
+         -12.360687
+        ],
+        [
+         23.511414,
+         32.360687
+        ],
+        [
+         -23.511414,
+         32.360687
+        ],
+        [
+         -38.042267,
+         -12.360687
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": true
+      }
+     },
+     "feather": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "expansion": {
+      "value": 0
+     }
+    }
+   ],
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       140,
+       140
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       0.55,
+       0.2,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "mask add",
+   "type": "shape",
+   "inPoint": 0,
+   "outPoint": 2,
+   "transform": {
+    "anchor": {
+     "value": [
+      0,
+      0,
+      0
+     ]
+    },
+    "position": {
+     "value": [
+      100,
+      100,
+      0
+     ]
+    },
+    "scale": {
+     "value": [
+      100,
+      100,
+      100
+     ]
+    },
+    "rotation": {
+     "value": 0
+    },
+    "opacity": {
+     "value": 100
+    }
+   },
+   "masks": [
+    {
+     "name": "Mask 1",
+     "mode": "add",
+     "inverted": false,
+     "path": {
+      "value": {
+       "vertices": [
+        [
+         0,
+         -60
+        ],
+        [
+         51.961517,
+         -30
+        ],
+        [
+         51.961517,
+         30
+        ],
+        [
+         0,
+         60
+        ],
+        [
+         -51.961517,
+         30
+        ],
+        [
+         -51.961517,
+         -30
+        ]
+       ],
+       "inTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "outTangents": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         0
+        ]
+       ],
+       "closed": true
+      }
+     },
+     "feather": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "expansion": {
+      "value": 0
+     }
+    }
+   ],
+   "contents": [
+    {
+     "type": "rect",
+     "name": "Rectangle Path 1",
+     "size": {
+      "value": [
+       140,
+       140
+      ]
+     },
+     "position": {
+      "value": [
+       0,
+       0
+      ]
+     },
+     "roundness": {
+      "value": 0
+     }
+    },
+    {
+     "type": "fill",
+     "name": "Fill 1",
+     "color": {
+      "value": [
+       1,
+       0.55,
+       0.2,
+       1
+      ]
+     },
+     "opacity": {
+      "value": 100
+     },
+     "fillRule": "nonzero"
+    }
+   ]
+  }
+ ],
+ "warnings": []
+}
