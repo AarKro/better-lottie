@@ -292,9 +292,13 @@ function assignTrims(items, inherited, ctx, where) {
 }
 
 // Trim → dash on a path normalized with pathLength="1": a dash of the visible
-// length, a gap of the rest, shifted to the visible start. The period of
-// exactly 1 makes segments that cross the path's end wrap around, like AE.
-// Tracks hold [visible length, start], both as fractions of the path.
+// length, shifted to the visible start. Tracks hold [visible length, start],
+// both as fractions of the path.
+// The gap must keep the next dash off the path: a dash starting exactly at
+// the path's end is drawn or not depending on rounding, and with round caps
+// that shows as a flickering dot. So the gap is 1.001 (next dash past the end)
+// unless the visible part wraps around the end (offsets on closed paths);
+// then the period is 1 plus a hair, which still wraps like AE.
 function trimFor(it, { state, index }, ctx) {
   if (ctx.trimCache.has(it)) return ctx.trimCache.get(it);
   const T = state.item, w = state.where;
@@ -321,7 +325,9 @@ function trimFor(it, { state, index }, ctx) {
     // Split so a constant length or start doesn't get an animation.
     const length = finalize(mapTrack(track, v => [v[0]]), ctx, 1e-4);
     const start = finalize(mapTrack(track, v => [v[1]]), ctx, 1e-4);
-    const fmtDash = v => `${num(v[0], 4)} ${num(Math.max(0, 1 - v[0]), 4)}`;
+    const wraps = track.stops.some(({ v: [len, from] }) => from < -1e-6 || from + len > 1 + 1e-6);
+    const gap = len => (wraps ? Math.max(0, 1 - len) : 1) + 0.001;
+    const fmtDash = v => `${num(v[0], 4)} ${num(gap(v[0]), 4)}`;
     const fmtOffset = v => num(-v[0], 4);
     result = {
       track,

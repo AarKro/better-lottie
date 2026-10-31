@@ -80,3 +80,25 @@ test('layer blend modes extracted from AE convert without surprises', () => {
   assert.equal((svg.match(/mix-blend-mode:/g) || []).length, 16);
   assert.equal(warnings.length, 2);
 });
+
+test('blended layers never blend with the comp background', () => {
+  const svg = svgOf('blend-modes');
+  // background first, then all layers inside their own isolated group
+  assert.match(svg, /<rect width="600" height="300" fill="#808080"\/>\n<g style="isolation:isolate">/);
+});
+
+test('trim dashes keep the next dash off the path (no flickering cap dots)', () => {
+  const svg = svgOf('modifiers');
+  const arrays = [...svg.matchAll(/stroke-dasharray"? values="([^"]+)"|stroke-dasharray="([^"]+)"/g)].map(m => m[1] || m[2]);
+  const trimmed = arrays.filter(a => a.split(';').every(v => v.split(' ').length === 2));
+  assert.ok(trimmed.length);
+  for (const list of trimmed) for (const pair of list.split(';')) {
+    const [dash, gap] = pair.split(' ').map(Number);
+    assert.ok(dash + gap > 1, `period ${dash} + ${gap} must exceed the path length`);
+  }
+});
+
+test('visibility switches land half a frame before their frame', () => {
+  // parenting fixture: 30 fps, layer in at 1 s → switch at 1 − 1/60 s
+  assert.match(svgOf('parenting'), /keyTimes="0;0\.491667;0\.741667"/);
+});

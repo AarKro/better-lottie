@@ -46,6 +46,10 @@ export function newId(ctx, kind) {
   return `${ctx.idPrefix}-${kind}${ctx.idCount}`;
 }
 
+// Time of a discrete switch that should take effect on frame time t: half a
+// frame early, so rounding in keyTime × dur never lands it after the frame.
+export const switchTime = (t, ctx) => Math.max(0, t - 0.5 / ctx.fps);
+
 // Discrete show/hide of an element from a per-frame predicate. Uses
 // `display` rather than `visibility`: a child set to visibility="visible"
 // would override a hidden layer, while display can only hide.
@@ -55,7 +59,7 @@ export function displayToggle(isHidden, ctx) {
   for (let f = 0; f <= frames; f++) {
     const t = Math.min(f / ctx.fps, ctx.D);
     const v = isHidden(t) ? 'none' : 'inline';
-    if (values[values.length - 1] !== v) { values.push(v); times.push(t / ctx.D); }
+    if (values[values.length - 1] !== v) { values.push(v); times.push(f ? switchTime(t, ctx) / ctx.D : 0); }
   }
   if (values.length === 1) return values[0] === 'none' ? { attrs: { display: 'none' }, anims: '' } : { attrs: {}, anims: '' };
   return {

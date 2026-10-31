@@ -221,7 +221,7 @@ test('feature comp converts end to end', () => {
   const { svg, warnings } = convert(JSON.parse(loadHost(HOST, featureComp(), { projectFile: file }).extractActiveComp()));
   assert.match(svg, /<linearGradient [^>]*><stop offset="0" stop-color="#f5c759"\/><stop offset="1" stop-color="#f26617"\/>/);
   assert.match(svg, /<clipPath id="[^"]+"><path d="M0 -40C/);
-  assert.match(svg, /pathLength="1" stroke-dasharray="0 1"/);
+  assert.match(svg, /pathLength="1" stroke-dasharray="0 1.001"/);
   assert.match(svg, /type="rotate" values="-45/, 'auto-orient starts along the path tangent');
   assert.ok(warnings.some(w => w.includes('dashes are replaced by Trim Paths')));
 });

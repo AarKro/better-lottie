@@ -47,7 +47,7 @@ test('parenting inherits transforms but not opacity', () => {
 
 test('in/out points become a discrete visibility animation', () => {
   const { svg } = convert(load('parenting'));
-  assert.match(svg, /values="hidden;visible;hidden" keyTimes="0;0.5;0.75"/);
+  assert.match(svg, /values="hidden;visible;hidden" keyTimes="0;0.491667;0.741667"/);
 });
 
 test('unsupported features are reported, not dropped silently', () => {

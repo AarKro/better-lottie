@@ -3,7 +3,7 @@
 
 import { validate } from './ir.js';
 import { num, hex, escComment } from './format.js';
-import { element, timing } from './anim.js';
+import { element, switchTime, timing } from './anim.js';
 import { renderContents } from './shapes.js';
 import { wrapTransform } from './transform.js';
 import { applyMasks, applyMatte } from './masks.js';
@@ -54,6 +54,11 @@ export function convert(ir, options = {}) {
     if (out) body.push(out);
   }
 
+  // AE never blends with the comp background color (it isn't a layer), so
+  // blended layers composite among themselves first, then over the background.
+  if (ctx.blends && body.length && body[0].startsWith('<rect')) {
+    body.splice(1, body.length - 1, element('g', { style: 'isolation:isolate' }, body.slice(1).join('\n')));
+  }
   const head = [`<!-- ${escComment(`better-lottie ${VERSION} · comp "${comp.name || ''}"`)} -->`];
   if (ctx.defs.length) head.push(`<defs>${ctx.defs.join('')}</defs>`);
   // Blending stays inside the SVG, like in AE, even when it's inlined in a page.
@@ -133,8 +138,8 @@ function withVisibility(layer, out, ctx) {
   if (tOut <= 0 || tIn >= D || tOut <= tIn) return '';
   const values = [], times = [];
   if (tIn > 0) { values.push('hidden'); times.push(0); }
-  values.push('visible'); times.push(tIn > 0 ? tIn / D : 0);
-  if (tOut < D) { values.push('hidden'); times.push(tOut / D); }
+  values.push('visible'); times.push(tIn > 0 ? switchTime(tIn, ctx) / D : 0);
+  if (tOut < D) { values.push('hidden'); times.push(switchTime(tOut, ctx) / D); }
   return `<g visibility="${values[0]}"><animate attributeName="visibility" calcMode="discrete" `
     + `values="${values.join(';')}" keyTimes="${times.map(t => num(t, 6)).join(';')}" ${timing(ctx)}/>${out}</g>`;
 }
