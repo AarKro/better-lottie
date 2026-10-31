@@ -42,7 +42,7 @@ Every After Effects feature gets verified against AE's own renders (scratch proj
 - [ ] **Copy as inline SVG / data URI** (S): one-click snippets in the panel besides `<img>`.
 - [ ] **Batch export** (S): export several comps at once.
 - [ ] **Browser checks** (M): verify output in Safari and Firefox (trim paths with `pathLength`, SMIL inside masks, `plus-lighter`), ideally automated with Playwright's WebKit and Firefox engines.
-- [ ] **Packaged release** (M): a signed `.zxp` so people can install without Node.js.
+- [x] **Packaged release** (M): a signed `.zxp` so people can install without Node.js.
 
 ## Not planned
 

@@ -83,6 +83,7 @@ better-lottie/
 - **Extension:** panel (Export SVG, Preview, Save IR, loop/background options, warnings, usage snippet) and extractor. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
 - **Verified against AE renders** (`test/ae/`, pixel diffs ≤ 2.5/255 on average, only anti-aliased edges differ): masks (all modes, feather, inverted, opacity, expansion, animated path), all four track matte types incl. an animated matte, repeaters (offset, fractional copies, composite order), taper (ease 0–100), wave, gradient Scale/Rotation.
 - **Blend modes verified in AE:** every layer and shape-level mode with a CSS equivalent matches AE renders to within 2/255 (Soft Light included); comps `blend-layers` and `blend-shapes` in the scratch project.
+- **Release package:** the 0.3.1 `.zxp` installs via aescripts' ZXP Installer and loads in AE 2026 on macOS with the dev link removed. Windows install untested.
 - **Not verified in AE:** animated gradient *colors* with different keyframe colors (scripts can't set gradient colors; the file layout was verified with identical keyframes).
 - **Not built:** work-area export, mask modes lighten/darken/difference (approximated), adds after an intersect mask (approximated). Not yet checked in Safari/Firefox (pathLength trims, SMIL inside masks).
 
