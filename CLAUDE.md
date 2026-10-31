@@ -44,29 +44,46 @@ better-lottie/
     fixtures/*.ir.json     # hand-written IR samples, one per feature area
     snapshots/*.svg        # expected output (npm run test:update to rewrite)
     *.test.js
-  scripts/build-preview.js # → preview/index.html (gitignored)
-  extension/               # TODO: CEP panel + ExtendScript extractor
-    CSXS/manifest.xml
-    index.html, panel.js   # panel UI: export button, options, warnings list
-    host/extract.jsx       # ExtendScript: comp → IR
-    host/json2.js          # JSON polyfill (ExtendScript has no JSON object)
+  scripts/
+    build-preview.js       # → preview/index.html (gitignored)
+    install-dev.js         # PlayerDebugMode + symlink extension/ into AE's CEP folder
+  extension/               # the CEP extension; this folder is what AE loads
+    CSXS/manifest.xml      # AEFT 16.0+ (AE 2019), CSXS 9.0+
+    .debug                 # DevTools at http://localhost:8099 (dev only)
+    index.html, panel.css
+    panel.js               # UI; calls the host via __adobe_cep__.evalScript (no CSInterface.js)
+    lib/better-lottie.js   # converter bundle, built by `npm run build` (gitignored)
+    host/extract.jsx       # ExtendScript: active comp → IR JSON string; save dialog + file write
 ```
 
 ### Commands
-- `npm test`: unit + snapshot tests (`node --test`, no dependencies)
+- `npm test`: unit, snapshot and extractor tests (`node --test`)
 - `npm run test:update`: rewrite snapshots after an intended output change. Review the diff.
 - `npm run preview`: build `preview/index.html`. Serve it (`python3 -m http.server -d preview`) or open it directly.
+- `npm run build`: bundle `src/` into `extension/lib/better-lottie.js` (esbuild, IIFE, global `BetterLottieSVG`, target chrome61 for CEP 9). Rerun after every converter change, then reopen the panel.
+- `npm run dev:install`: build, set `PlayerDebugMode` for CSXS 9–12, symlink `extension/` to `~/Library/Application Support/Adobe/CEP/extensions/better-lottie`. Restart AE → Window › Extensions › better-lottie. `npm run dev:uninstall` removes the link.
 
 ### Status
-The converter covers Phase 1, most of Phase 2 (morphing, colors, stroke width, group transforms, parenting/nulls, holds, separated position), and converter-side baking. Not built yet: the extension (`extension/`), trim paths, masks, gradients.
+- **Converter:** Phase 1, most of Phase 2 (morphing, colors, stroke width, group transforms, parenting/nulls, holds, separated position), and converter-side baking.
+- **Extension:** panel (Export SVG, Preview, Save IR, loop/background options, warnings, usage snippet) and extractor are built. Tested against a mock of the AE DOM (`test/helpers/ae-mock.js`) and the panel against a stubbed CEP bridge. **Not yet run inside real After Effects.**
+- **Not built:** trim paths, masks, gradients, work-area export, ZXP packaging/signing.
 
-Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The extractor only needs to bake what the converter can't see, i.e. expressions: it writes them as per-frame linear keyframes.
+Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The extractor only bakes what the converter can't see, i.e. expressions: it writes them as per-frame linear keyframes, and the converter's linear-run simplification shrinks them back down.
+
+### AE API assumptions to verify in real AE
+The mock encodes these; if real AE disagrees, fix both `extract.jsx` and the mock:
+- `keyTime()` and `valueAtTime()` use comp time (layer start offsets are already applied)
+- Ease `speed` units for color and path properties (the converter treats them as progress/s)
+- Dashes: an un-dashed stroke has no enabled children in `ADBE Vector Stroke Dashes`
+- `File.saveDlg` on macOS with no filter argument
+- An outer fill/stroke paints paths inside sub-groups above it
 
 ### Extension platform
 
-- Use **CEP** (HTML/JS panel + ExtendScript). It's the proven route for AE. Check whether AE's UXP support is mature enough before investing heavily, but don't block on it. The extractor/converter split means only the thin host layer would need porting.
-- **ExtendScript is ES3.** It has no `JSON`, `Array.prototype.forEach/map`, `let/const`, arrow functions or template literals. Write `.jsx` in ES3 and include the `json2.js` polyfill.
-- Dev setup (macOS): enable unsigned extensions with `defaults write com.adobe.CSXS.<N> PlayerDebugMode 1`. `<N>` depends on the AE/CEP version (11, 12, …). Then symlink `extension/` into `~/Library/Application Support/Adobe/CEP/extensions/better-lottie`. Add a `.debug` file to get Chrome DevTools on a localhost port.
+- Use **CEP** (HTML/JS panel + ExtendScript). It's the proven route for AE. AE 2026 ships CEP 12 and also UXP frameworks. Revisit UXP later; the extractor/converter split means only the thin host layer would need porting.
+- **ExtendScript is ES3.** It has no `JSON`, `Array.prototype.forEach/map/indexOf`, `let/const`, arrow functions, template literals or trailing commas. `extract.jsx` has its own `stringify`, and `test/extract.test.js` parses it with acorn at `ecmaVersion: 3` and bans newer APIs. Use `Object.prototype.toString` for array checks, not `instanceof Array`.
+- Strings sent to ExtendScript go through `literal()` in panel.js (JSON plus U+2028/2029 escaping). Don't build script strings by hand.
+- Don't put raw U+2028/U+2029 characters in source files; always write them as ` ` escapes.
 
 ## Feature scope
 

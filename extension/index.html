@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>better-lottie</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <main>
+    <section class="actions">
+      <button type="button" id="export" class="primary">Export SVG…</button>
+      <div class="row">
+        <button type="button" id="preview">Preview</button>
+        <button type="button" id="save-ir" title="Save the extracted data for bug reports and test fixtures">Save IR…</button>
+      </div>
+    </section>
+
+    <section class="options">
+      <label><input type="checkbox" id="opt-loop" checked> Loop</label>
+      <label><input type="checkbox" id="opt-background"> Include comp background</label>
+    </section>
+
+    <p id="status" class="status" role="status">Select a composition, then export.</p>
+
+    <section id="result" hidden>
+      <div id="stage" class="stage"></div>
+      <p id="meta" class="meta"></p>
+
+      <details id="warnings-box" hidden>
+        <summary id="warnings-title"></summary>
+        <ul id="warnings"></ul>
+      </details>
+
+      <div class="usage">
+        <div class="usage-head">
+          <span>Use it</span>
+          <button type="button" id="copy" class="small">Copy</button>
+        </div>
+        <pre id="snippet"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script src="lib/better-lottie.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

@@ -199,15 +199,28 @@ export function propToTrack(prop, kind, ctx) {
     if (isHold(A, B)) { segs.push(HOLD); stops.push({ t: B.t, v: vB }); continue; }
     const spline = exactSpline(A, B, kind);
     if (spline) { segs.push({ spline }); stops.push({ t: B.t, v: vB }); continue; }
-    const run = [stops[stops.length - 1]];
     for (let j = 1; A.t + j * step < B.t - step * 1e-3; j++) {
       const t = A.t + j * step;
-      run.push({ t, v: segmentValueAt(A, B, kind, t) });
+      segs.push({ spline: LINEAR }); stops.push({ t, v: segmentValueAt(A, B, kind, t) });
     }
-    run.push({ t: B.t, v: vB });
-    for (const s of simplify(run, kind.tol).slice(1)) { segs.push({ spline: LINEAR }); stops.push(s); }
+    segs.push({ spline: LINEAR }); stops.push({ t: B.t, v: vB });
   }
-  return { stops, segs };
+  return simplifyLinearRuns({ stops, segs }, kind.tol);
+}
+
+// Simplify every run of consecutive linear segments: baked samples, and
+// per-frame keyframes from expressions the extractor baked.
+function simplifyLinearRuns({ stops, segs }, tol) {
+  const linear = s => !s.hold && isLinearSpline(s.spline);
+  const out = { stops: [stops[0]], segs: [] };
+  for (let i = 0; i < segs.length;) {
+    if (!linear(segs[i])) { out.segs.push(segs[i]); out.stops.push(stops[i + 1]); i++; continue; }
+    let j = i;
+    while (j < segs.length && linear(segs[j])) j++;
+    for (const s of simplify(stops.slice(i, j + 1), tol).slice(1)) { out.segs.push({ spline: LINEAR }); out.stops.push(s); }
+    i = j;
+  }
+  return out;
 }
 
 export function mapTrack(track, fn) {

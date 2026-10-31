@@ -46,3 +46,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Bundled converter for the panel (npm run build)
+extension/lib/

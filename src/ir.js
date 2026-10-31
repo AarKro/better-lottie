@@ -11,6 +11,7 @@
 // @property {1} version
 // @property {Comp} comp
 // @property {Layer[]} layers
+// @property {string[]} [warnings]      from the extractor; passed through to the export report
 //
 // @typedef {Object} Comp
 // @property {string} name

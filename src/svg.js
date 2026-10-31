@@ -13,14 +13,16 @@ const GEOMETRY = new Set(['path', 'rect', 'ellipse']);
 
 /**
  * @param {import('./ir.js').IR} ir
- * @param {{ loop?: boolean }} [options]
+ * @param {{ loop?: boolean, background?: boolean }} [options]
+ *   loop: repeat forever (default) or play once and hold the last frame
+ *   background: draw comp.background if the IR has one (default true)
  * @returns {{ svg: string, warnings: string[] }}
  */
 export function convert(ir, options = {}) {
   validate(ir);
   const comp = ir.comp;
-  const warnings = [];
-  const seen = new Set();
+  const warnings = (ir.warnings || []).slice();
+  const seen = new Set(warnings);
   const ctx = {
     D: comp.duration,
     fps: comp.frameRate,
@@ -34,7 +36,7 @@ export function convert(ir, options = {}) {
   };
 
   const parts = [`<!-- ${escComment(`better-lottie ${VERSION} · comp "${comp.name || ''}"`)} -->`];
-  if (comp.background) {
+  if (comp.background && options.background !== false) {
     parts.push(`<rect width="${num(comp.width)}" height="${num(comp.height)}" fill="${hex(comp.background)}"/>`);
   }
   // AE lists the top layer first; SVG paints in document order.
@@ -250,7 +252,7 @@ function primitive(it, ctx) {
     const mapped = mapTrack(track, v => build(statics.map((s, j) => (j === i ? v : s))));
     return finalizeTrack(mapped, ctx.D, ctx.fps, KIND.shape.tol);
   }
-  const times = animated.flatMap(i => asProp(props[i][0]).keyframes.map(k => k.t));
+  const times = [].concat(...animated.map(i => asProp(props[i][0]).keyframes.map(k => k.t)));
   const track = bakeFunction(
     t => build(props.map(([p, k]) => propValueAt(p, k, t))),
     Math.min(...times), Math.max(...times), ctx.fps, KIND.shape.tol,

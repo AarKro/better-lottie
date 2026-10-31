@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Dev only: with PlayerDebugMode on, open http://localhost:8099 in Chrome for DevTools. -->
+<ExtensionList>
+  <Extension Id="com.betterlottie.panel">
+    <HostList>
+      <Host Name="AEFT" Port="8099"/>
+    </HostList>
+  </Extension>
+</ExtensionList>
