@@ -33,12 +33,17 @@ The point of the split: almost all the logic lives in the converter, which can b
 
 ```
 better-lottie/
-  src/                     # converter (built)
+  src/                     # converter
     ir.js                  # IR spec (JSDoc) + validate(). Source of truth for the IR.
     easing.js              # AE speed/influence ↔ bezier, keySpline normalization
-    path.js                # AE shape → path data; rect/ellipse → shapes
-    timeline.js            # props → tracks (exact or baked) → SMIL timing
-    svg.js                 # IR → SVG string (layers, transforms, parenting, paints)
+    timeline.js            # props → tracks (exact or baked) → SMIL timing; combineTracks; auto-orient
+    path.js                # shape arrays (multi-subpath blocks) → path data; rect/ellipse → shapes
+    geometry.js            # matrices, orientation, path length on shape arrays
+    anim.js                # SMIL/element helpers shared by the modules below
+    transform.js           # AE transforms → nested <g>; matrix tracks for flattening
+    paint.js               # fill/stroke/gradients/dashes → styles (+ <defs>)
+    shapes.js              # shape contents: paint/group stacking, Trim Paths, Merge Paths
+    svg.js                 # document, layers, parenting, in/out points
   bin/better-lottie.js     # CLI: better-lottie in.ir.json [-o out.svg] [--once]
   test/
     fixtures/*.ir.json     # hand-written IR samples, one per feature area
@@ -64,26 +69,33 @@ better-lottie/
 - `npm run dev:install`: build, set `PlayerDebugMode` for CSXS 9–12, symlink `extension/` to `~/Library/Application Support/Adobe/CEP/extensions/better-lottie`. Restart AE → Window › Extensions › better-lottie. `npm run dev:uninstall` removes the link.
 
 ### Status
-- **Converter:** Phase 1, most of Phase 2 (morphing, colors, stroke width, group transforms, parenting/nulls, holds, separated position), and converter-side baking.
-- **Extension:** panel (Export SVG, Preview, Save IR, loop/background options, warnings, usage snippet) and extractor are built. Tested against a mock of the AE DOM (`test/helpers/ae-mock.js`) and the panel against a stubbed CEP bridge. **Not yet run inside real After Effects.**
-- **Not built:** trim paths, masks, gradients, work-area export, ZXP packaging/signing.
+- **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes, and Auto-Orient Along Path.
+- **Extension:** panel (Export SVG, Preview, Save IR, loop/background options, warnings, usage snippet) and extractor. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
+- **Not built:** masks, track mattes, repeaters, animated gradient colors, gradient Scale/Rotation, stroke taper, work-area export, ZXP packaging/signing. Not yet checked in Safari/Firefox (pathLength-based trims especially).
 
 Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The extractor only bakes what the converter can't see, i.e. expressions: it writes them as per-frame linear keyframes, and the converter's linear-run simplification shrinks them back down.
 
-### AE API assumptions to verify in real AE
-The mock encodes these; if real AE disagrees, fix both `extract.jsx` and the mock:
-- `keyTime()` and `valueAtTime()` use comp time (layer start offsets are already applied)
-- Ease `speed` units for color and path properties (the converter treats them as progress/s)
-- Dashes: an un-dashed stroke has no enabled children in `ADBE Vector Stroke Dashes`
-- `File.saveDlg` on macOS with no filter argument
-- An outer fill/stroke paints paths inside sub-groups above it
+### Facts verified in AE 2026 (keep the mock in `test/helpers/ae-mock.js` in sync)
+- **Dashes:** every stroke has `Dash 1–3`, `Gap 1–3` and `Offset` streams, all `enabled`, default 10/0, even when the UI shows none. Only `isModified` (or keys/expressions) tells real dashes apart. Strokes also always have `ADBE Vector Stroke Taper` and `…Wave` groups.
+- **Gradient colors:** `ADBE Vector Grad Colors` is `NO_VALUE`; scripting can't read it. The saved `.aep` (RIFX, big-endian) stores the stops as XML in `LIST GCky > Utf8`, after the `tdmn` naming `ADBE Vector Grad Colors`. A comp is `LIST Item` whose `idta` has the item id at byte 16; its layers are `LIST Layr` children in timeline order. The project can contain several comps with the same name (e.g. imported Illustrator comps), so match by id. `app.project.dirty` exists.
+- **Merge Paths mode** (`ADBE Vector Merge Type`): 1 merge, 2 add, 3 subtract, 4 intersect, 5 exclude. Illustrator-outlined artwork in this project uses intersect.
+- **Trim Paths:** `ADBE Vector Trim Start/End/Offset/Type` (Type 1 simultaneously, 2 individually). A trim at a layer's root trims strokes inside the groups above it.
+- **Auto-Orient** (`layer.autoOrient`, `AutoOrientType.ALONG_PATH`) is used on parented layers; without it the shaker comp rendered badly wrong.
+- Gradients also have `ADBE Vector Grad Scale`/`Rotation` (reported when modified).
+- Still unverified: ease `speed` units for color and path properties (treated as progress/s); `File.saveDlg` without a filter on macOS works in practice.
+
+### Probing real AE from the terminal
+With the user's OK (it drives their open AE), run read-only scripts via `osascript -e 'tell application "Adobe After Effects 2026" to DoScriptFile "/path/probe.jsx"'`. DoScript does not return the script's result: write output to a file (e.g. `~/Downloads/…`) and read it.
+- Wrap probes in `app.beginSuppressDialogs()` / `app.endSuppressDialogs(false)`. AE shows a modal error dialog even for errors you catch, e.g. reading `.value` of a `NO_VALUE` property; check `propertyValueType` first.
+- `$.evalFile('…/extension/host/extract.jsx')` then `BetterLottie.extractCompById(id)` extracts any comp without touching the UI.
+- `comp.saveFrameToPng(t, file)` renders AE's reference frames for side-by-side comparison with the SVG (scrub the SVG with `pauseAnimations()` + `setCurrentTime(t)`). Re-render when the project changed.
 
 ### Extension platform
 
 - Use **CEP** (HTML/JS panel + ExtendScript). It's the proven route for AE. AE 2026 ships CEP 12 and also UXP frameworks. Revisit UXP later; the extractor/converter split means only the thin host layer would need porting.
 - **ExtendScript is ES3.** It has no `JSON`, `Array.prototype.forEach/map/indexOf`, `let/const`, arrow functions, template literals or trailing commas. `extract.jsx` has its own `stringify`, and `test/extract.test.js` parses it with acorn at `ecmaVersion: 3` and bans newer APIs. Use `Object.prototype.toString` for array checks, not `instanceof Array`.
 - Strings sent to ExtendScript go through `literal()` in panel.js (JSON plus U+2028/2029 escaping). Don't build script strings by hand.
-- Don't put raw U+2028/U+2029 characters in source files; always write them as ` ` escapes.
+- Don't put raw U+2028/U+2029 characters in source files; write them as backslash-u escape sequences. (Some editing tools turn typed escapes into the raw character; check with `od -c` when a parser reports an unterminated string or regex.)
 
 ## Feature scope
 
@@ -106,15 +118,17 @@ The mock encodes these; if real AE disagrees, fix both `extract.jsx` and the moc
 - Separated position dimensions (X Position / Y Position)
 - Baking fallback (see below) for expressions and anything that can't be mapped exactly
 
-### Phase 3: nice to have
-- Trim paths (`pathLength="1"` + `stroke-dasharray` / `stroke-dashoffset`)
-- Masks → `<clipPath>` / `<mask>`
-- Linear and radial gradients
-- Solid layers (as rects)
+### Phase 3 (done)
+- Trim Paths, Merge Paths, dashes, linear and radial gradients, Auto-Orient Along Path
+
+### Next candidates
+- Masks → `<clipPath>` / `<mask>`; track mattes
+- Solid layers (as rects); repeaters
+- Animated gradient colors (one GCky blob per keyframe, presumably; unverified)
 - Export the work area only; "start paused" option
 
 ### Out of scope
-Effects, 3D layers and cameras, blend modes, track mattes (maybe later), text (tell users to use "Create Shapes from Text"), images and video, repeaters, merge paths, and other shape modifiers. **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
+Effects, 3D layers and cameras, blend modes, text (tell users to use "Create Shapes from Text"), images and video, and the remaining shape modifiers (offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
 
 ## Key conversion rules (where it's easy to get wrong)
 
@@ -164,7 +178,20 @@ Notes:
 - Every animation in the file uses `begin="0s"`, so the timeline stays shared.
 
 ### Baking fallback
-When a property can't be mapped exactly, sample it in the extractor with `prop.valueAtTime(t, false)` on every frame and write linear keyframes. Cases: expressions, spatial bezier motion paths (curved position paths), overshoot easing, mismatched per-dimension ease. Then **simplify**: drop samples that lie on the straight line between their neighbours within a tolerance. Baking must be per property and per segment, never all or nothing for the whole file.
+When a segment can't be mapped exactly, the converter samples AE's curve itself (`propValueAt`) on every frame and writes linear keyframes. Cases: curved motion paths, overshoot easing, mismatched per-dimension ease. The extractor bakes only expressions (`valueAtTime`). Then **simplify**: drop samples that lie on the straight line between their neighbours within a tolerance. Baking is per property and per segment, never all or nothing for the whole file.
+
+`combineTracks` handles values built from several inputs (rect = size + position + roundness, trims, merged paths, radial gradient radius): if one input moves and the result is linear in it, its keyframes and easing carry over; otherwise it bakes.
+
+### Shape contents (shapes.js)
+- Shape arrays are flat number arrays of subpath blocks `[n, closed, (vx,vy,ix,iy,ox,oy)×n, …]`, so merged paths are concatenations and still interpolate.
+- **Paints** draw every path above them in their group, including sub-groups (wrapped in the sub-group's transforms).
+- **Trim Paths** applies to every path above it, including sub-groups, regardless of paint position. A pre-pass (`assignTrims`) links each path to its nearest trim. Output: `pathLength="1"`, `stroke-dasharray="len 1-len"`, `stroke-dashoffset="-start"`; the period of 1 makes offsets wrap like AE. "Simultaneously" lays the member paths end to end by length (`localTrim`). Zero length with round/square caps is hidden with a discrete `display` animation (a zero dash still draws caps). Trim affects strokes only; fills stay whole (warned).
+- **Merge Paths** flattens the paths above into the merge's group space (applying sub-group transforms; baked if those animate). add: concatenated subpaths with the fill's rule. merge: subpaths wound clockwise + nonzero = union. exclude: evenodd. intersect: first path inside nested `<clipPath>`s of the others. subtract: first path with a `<mask>` of the others (assumes the topmost path is the base; unverified).
+- **Gradients** go into `<defs>` with `gradientUnits="userSpaceOnUse"` (AE gradient points are in the shape's space). Radial: r = |end − start|, focal point from highlight length/angle (lottie-web's formula). Color and opacity stops are merged; a midpoint ≠ 0.5 becomes an extra stop.
+- **Ids** (`grad`, `clip`, `mask`) are prefixed per comp (hash of the name, or `options.idPrefix`) so several exports can be inlined on one page.
+
+### Auto-Orient
+The layer's rotation gets the motion path's direction added: the exact tangent of the spatial bezier at the eased arc-length position (`orientationTrack`), held before the first and after the last keyframe, and unwrapped so it never spins through ±180°.
 
 ## Output conventions
 - Round numbers (about 3 decimals for coordinates, 4 for keyTimes) and strip trailing zeros
@@ -192,3 +219,4 @@ When a property can't be mapped exactly, sample it in the extractor with `prop.v
 ## Working rules
 - Converter code stays pure: IR in, string out, no AE, DOM or filesystem calls.
 - Any new AE feature means: extend the IR (document it in `src/ir.js`), extract it, convert it, add a fixture test, and add a warning for the cases you don't handle.
+- Verify AE behaviour against real AE (see "Probing real AE") before encoding assumptions in the extractor or the mock.

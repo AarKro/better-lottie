@@ -1,0 +1,627 @@
+{
+  "version": 1,
+  "comp": {
+    "name": "Modifiers",
+    "width": 480,
+    "height": 320,
+    "duration": 2,
+    "frameRate": 30,
+    "background": [
+      0.07,
+      0.07,
+      0.09
+    ]
+  },
+  "layers": [
+    {
+      "id": 1,
+      "name": "Flyer",
+      "type": "shape",
+      "transform": {
+        "autoOrient": true,
+        "position": {
+          "keyframes": [
+            {
+              "t": 0,
+              "v": [
+                40,
+                280
+              ],
+              "spatialOut": [
+                80,
+                -200
+              ],
+              "easeOut": [
+                {
+                  "speed": 0,
+                  "influence": 33.333
+                }
+              ]
+            },
+            {
+              "t": 2,
+              "v": [
+                440,
+                280
+              ],
+              "spatialIn": [
+                -80,
+                -200
+              ],
+              "easeIn": [
+                {
+                  "speed": 0,
+                  "influence": 33.333
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "contents": [
+        {
+          "type": "rect",
+          "size": [
+            36,
+            14
+          ],
+          "position": [
+            0,
+            0
+          ],
+          "roundness": 7
+        },
+        {
+          "type": "fill",
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Swirl",
+      "type": "shape",
+      "transform": {
+        "position": [
+          80,
+          80
+        ]
+      },
+      "contents": [
+        {
+          "type": "path",
+          "path": {
+            "value": {
+              "closed": false,
+              "vertices": [
+                [
+                  -40,
+                  20
+                ],
+                [
+                  0,
+                  -30
+                ],
+                [
+                  40,
+                  20
+                ]
+              ],
+              "inTangents": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  -25,
+                  0
+                ],
+                [
+                  0,
+                  -20
+                ]
+              ],
+              "outTangents": [
+                [
+                  0,
+                  -20
+                ],
+                [
+                  25,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "type": "gradient-stroke",
+          "gradientType": "radial",
+          "startPoint": [
+            0,
+            0
+          ],
+          "endPoint": [
+            50,
+            0
+          ],
+          "highlightLength": 30,
+          "highlightAngle": 45,
+          "width": 10,
+          "lineCap": "round",
+          "lineJoin": "round",
+          "stops": {
+            "colors": [
+              [
+                0,
+                0.5,
+                1,
+                0.85,
+                0.3
+              ],
+              [
+                1,
+                0.3,
+                0.95,
+                0.3,
+                0.1
+              ]
+            ],
+            "alphas": [
+              [
+                0,
+                0.5,
+                1
+              ],
+              [
+                1,
+                0.5,
+                0.6
+              ]
+            ]
+          }
+        },
+        {
+          "type": "trim",
+          "name": "Trim Paths 1",
+          "mode": "simultaneously",
+          "start": 0,
+          "offset": 0,
+          "end": {
+            "keyframes": [
+              {
+                "t": 0.2,
+                "v": 0,
+                "easeOut": [
+                  {
+                    "speed": 0,
+                    "influence": 33.333
+                  }
+                ]
+              },
+              {
+                "t": 1.2,
+                "v": 100,
+                "easeIn": [
+                  {
+                    "speed": 0,
+                    "influence": 33.333
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Dashes",
+      "type": "shape",
+      "transform": {
+        "position": [
+          240,
+          40
+        ]
+      },
+      "contents": [
+        {
+          "type": "path",
+          "path": {
+            "value": {
+              "closed": false,
+              "vertices": [
+                [
+                  -80,
+                  0
+                ],
+                [
+                  80,
+                  0
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "type": "stroke",
+          "color": [
+            0.6,
+            0.8,
+            1,
+            1
+          ],
+          "width": 4,
+          "lineCap": "round",
+          "dashes": [
+            {
+              "type": "dash",
+              "value": 12
+            },
+            {
+              "type": "gap",
+              "value": 8
+            }
+          ],
+          "dashOffset": {
+            "keyframes": [
+              {
+                "t": 0,
+                "v": 0
+              },
+              {
+                "t": 2,
+                "v": -40
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Liquid",
+      "type": "shape",
+      "transform": {
+        "position": [
+          400,
+          90
+        ]
+      },
+      "contents": [
+        {
+          "type": "group",
+          "name": "Outline",
+          "transform": {
+            "rotation": 8
+          },
+          "contents": [
+            {
+              "type": "rect",
+              "size": [
+                70,
+                100
+              ],
+              "position": [
+                0,
+                0
+              ],
+              "roundness": 12
+            },
+            {
+              "type": "stroke",
+              "color": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "width": 3
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "name": "Group 1",
+          "transform": {},
+          "contents": [
+            {
+              "type": "rect",
+              "name": "Level",
+              "size": [
+                120,
+                80
+              ],
+              "position": {
+                "keyframes": [
+                  {
+                    "t": 0,
+                    "v": [
+                      0,
+                      90
+                    ],
+                    "easeOut": [
+                      {
+                        "speed": 0,
+                        "influence": 33.333
+                      }
+                    ]
+                  },
+                  {
+                    "t": 1.5,
+                    "v": [
+                      0,
+                      30
+                    ],
+                    "easeIn": [
+                      {
+                        "speed": 0,
+                        "influence": 33.333
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "type": "group",
+              "name": "Glass",
+              "transform": {
+                "rotation": 8
+              },
+              "contents": [
+                {
+                  "type": "rect",
+                  "size": [
+                    70,
+                    100
+                  ],
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "roundness": 12
+                }
+              ]
+            },
+            {
+              "type": "merge-paths",
+              "mode": "intersect"
+            },
+            {
+              "type": "gradient-fill",
+              "gradientType": "linear",
+              "startPoint": [
+                0,
+                -50
+              ],
+              "endPoint": [
+                0,
+                50
+              ],
+              "stops": {
+                "colors": [
+                  [
+                    0,
+                    0.5,
+                    0.96,
+                    0.78,
+                    0.35
+                  ],
+                  [
+                    1,
+                    0.5,
+                    0.95,
+                    0.4,
+                    0.09
+                  ]
+                ],
+                "alphas": [
+                  [
+                    0,
+                    0.5,
+                    1
+                  ],
+                  [
+                    1,
+                    0.5,
+                    1
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Donut",
+      "type": "shape",
+      "transform": {
+        "position": [
+          80,
+          230
+        ]
+      },
+      "contents": [
+        {
+          "type": "ellipse",
+          "size": [
+            90,
+            90
+          ],
+          "position": [
+            0,
+            0
+          ]
+        },
+        {
+          "type": "ellipse",
+          "size": {
+            "keyframes": [
+              {
+                "t": 0,
+                "v": [
+                  20,
+                  20
+                ]
+              },
+              {
+                "t": 1,
+                "v": [
+                  60,
+                  60
+                ]
+              },
+              {
+                "t": 2,
+                "v": [
+                  20,
+                  20
+                ]
+              }
+            ]
+          },
+          "position": [
+            0,
+            0
+          ]
+        },
+        {
+          "type": "merge-paths",
+          "mode": "subtract"
+        },
+        {
+          "type": "fill",
+          "color": [
+            0.4,
+            0.9,
+            0.7,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Rings",
+      "type": "shape",
+      "transform": {
+        "position": [
+          240,
+          230
+        ]
+      },
+      "contents": [
+        {
+          "type": "ellipse",
+          "size": [
+            80,
+            80
+          ],
+          "position": [
+            -22,
+            0
+          ]
+        },
+        {
+          "type": "ellipse",
+          "size": [
+            80,
+            80
+          ],
+          "position": [
+            22,
+            0
+          ]
+        },
+        {
+          "type": "merge-paths",
+          "mode": "exclude"
+        },
+        {
+          "type": "fill",
+          "color": [
+            0.55,
+            0.45,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Union",
+      "type": "shape",
+      "transform": {
+        "position": [
+          400,
+          230
+        ]
+      },
+      "contents": [
+        {
+          "type": "ellipse",
+          "size": [
+            70,
+            70
+          ],
+          "position": [
+            -18,
+            0
+          ]
+        },
+        {
+          "type": "path",
+          "path": {
+            "value": {
+              "closed": true,
+              "vertices": [
+                [
+                  0,
+                  -30
+                ],
+                [
+                  -50,
+                  -30
+                ],
+                [
+                  -50,
+                  30
+                ],
+                [
+                  0,
+                  30
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "type": "merge-paths",
+          "mode": "merge"
+        },
+        {
+          "type": "fill",
+          "color": [
+            1,
+            0.45,
+            0.35,
+            1
+          ]
+        }
+      ]
+    }
+  ]
+}

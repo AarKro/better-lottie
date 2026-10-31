@@ -21,7 +21,7 @@
       "contents": [
         { "type": "ellipse", "size": [50, 50], "position": [0, 0] },
         { "type": "fill", "color": [0.4, 0.9, 0.7, 1] },
-        { "type": "trim", "name": "Trim Paths 1", "start": 0, "end": 50 }
+        { "type": "repeater", "name": "Repeater 1" }
       ]
     }
   ]

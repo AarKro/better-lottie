@@ -42,20 +42,38 @@
 // @property {Prop<number>} [rotation]      degrees, clockwise
 // @property {Prop<number>} [opacity]       0..100
 // @property {Prop<number>} [skew]          shape groups only; reported if nonzero
+// @property {boolean} [autoOrient]         layers only: "Auto-Orient: Along Path";
+//                                          the path's direction is added to rotation
 //
 // @typedef {{ separated: true, x: Prop<number>, y: Prop<number> }} SeparatedPosition
 //
-// @typedef {Object} ShapeItem
+// @typedef {Object} ShapeItem   (AE order: top item first)
 //   { type: 'group', name, enabled?, transform, contents: ShapeItem[] }
 //   { type: 'path', path: Prop<Shape> }
 //   { type: 'rect', size: Prop<[w,h]>, position: Prop<[x,y]>, roundness: Prop<number> }
 //   { type: 'ellipse', size: Prop<[w,h]>, position: Prop<[x,y]> }
 //   { type: 'fill', color: Prop<rgb>, opacity: Prop<number>, fillRule?: 'nonzero'|'evenodd' }
 //   { type: 'stroke', color, opacity, width: Prop<number>,
-//     lineCap?: 'butt'|'round'|'square', lineJoin?: 'miter'|'round'|'bevel', miterLimit?: number }
-//   Any other type (trim, repeater, gradient-fill, …) is reported and ignored.
-//   A fill or stroke paints every path above it in the same group,
-//   including paths in groups above it.
+//     lineCap?: 'butt'|'round'|'square', lineJoin?: 'miter'|'round'|'bevel', miterLimit?: number,
+//     dashes?: [{ type: 'dash'|'gap', value: Prop<number> }], dashOffset?: Prop<number>,
+//     taper?: true   (taper/wave in use; reported) }
+//   { type: 'gradient-fill', gradientType: 'linear'|'radial', startPoint, endPoint: Prop<[x,y]>,
+//     highlightLength, highlightAngle: Prop<number>, stops: GradientStops|null,
+//     gradientTransform?: true (Scale/Rotation in use; reported), opacity, fillRule? }
+//   { type: 'gradient-stroke', …gradient fields, …stroke fields except color }
+//   { type: 'trim', start, end: Prop<number> (0..100), offset: Prop<number> (degrees),
+//     mode: 'simultaneously'|'individually' }
+//   { type: 'merge-paths', mode: 'merge'|'add'|'subtract'|'intersect'|'exclude' }
+//   Any other type (repeater, polystar, offset-paths, …) is reported and ignored.
+//
+//   Paints (fill, stroke, gradient-*) draw every path above them in the same
+//   group, including paths in groups above. Trim Paths changes every path
+//   above it the same way, wherever the paints are. Merge Paths combines the
+//   paths above it for the paints below it.
+//
+// @typedef {{ colors: number[][], alphas: number[][] }} GradientStops
+//   colors: [offset, midpoint, r, g, b] (0..1); alphas: [offset, midpoint, a].
+//   AE's scripting API can't read these; the extractor parses the saved .aep.
 //
 // @typedef {{ vertices: number[][], inTangents: number[][], outTangents: number[][], closed: boolean }} Shape
 //   Tangents are relative to their vertex.

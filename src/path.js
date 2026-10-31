@@ -2,8 +2,10 @@
 //
 // An AE shape is { vertices, inTangents, outTangents, closed } with tangents
 // relative to their vertex. Shapes travel through the timeline as flat number
-// arrays [closed, vx, vy, ix, iy, ox, oy, …] so they can be interpolated and
-// simplified like any other value.
+// arrays of one or more subpath blocks:
+//   [n, closed, (vx, vy, ix, iy, ox, oy) × n,  n, closed, …]
+// so they can be interpolated and simplified like any other value, and merged
+// paths are just concatenated blocks.
 //
 // Path data is always `M` followed only by `C` commands (straight segments get
 // zero tangents). Every keyframe of a morph then has the same command
@@ -14,9 +16,9 @@ import { num } from './format.js';
 const K = 0.5522847498; // cubic bezier circle constant
 
 export function shapeToArray(shape) {
-  const out = [shape.closed ? 1 : 0];
   const ins = shape.inTangents || [];
   const outs = shape.outTangents || [];
+  const out = [shape.vertices.length, shape.closed ? 1 : 0];
   shape.vertices.forEach((v, i) => {
     const a = ins[i] || [0, 0];
     const b = outs[i] || [0, 0];
@@ -25,23 +27,36 @@ export function shapeToArray(shape) {
   return out;
 }
 
-// Two shape arrays can morph into each other only with equal point counts
-// and the same open/closed state.
-export const compatibleShapes = (a, b) => a.length === b.length && a[0] === b[0];
+// Calls fn(start, n, closed) for each subpath block.
+export function forEachBlock(arr, fn) {
+  for (let i = 0; i < arr.length; i += 2 + 6 * arr[i]) fn(i, arr[i], arr[i + 1]);
+}
+
+// Shapes can morph into each other only with the same subpaths: equal point
+// counts and open/closed state, block by block.
+export function compatibleShapes(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 2 + 6 * a[i]) {
+    if (a[i] !== b[i] || a[i + 1] !== b[i + 1]) return false;
+  }
+  return true;
+}
 
 export function arrayToD(arr) {
-  const n = (arr.length - 1) / 6;
-  if (n < 1) return '';
-  const at = (i, o) => [arr[1 + i * 6 + o], arr[2 + i * 6 + o]];
+  let d = '';
   const p = (x, y) => `${num(x)} ${num(y)}`;
-  const seg = (i, j) => {
-    const [vx, vy] = at(i, 0), [ox, oy] = at(i, 4);
-    const [wx, wy] = at(j, 0), [ix, iy] = at(j, 2);
-    return `C${p(vx + ox, vy + oy)} ${p(wx + ix, wy + iy)} ${p(wx, wy)}`;
-  };
-  let d = `M${p(...at(0, 0))}`;
-  for (let i = 0; i < n - 1; i++) d += seg(i, i + 1);
-  if (arr[0] && n > 1) d += `${seg(n - 1, 0)}Z`;
+  forEachBlock(arr, (start, n, closed) => {
+    if (n < 1) return;
+    const at = (i, o) => [arr[start + 2 + i * 6 + o], arr[start + 3 + i * 6 + o]];
+    const seg = (i, j) => {
+      const [vx, vy] = at(i, 0), [ox, oy] = at(i, 4);
+      const [wx, wy] = at(j, 0), [ix, iy] = at(j, 2);
+      return `C${p(vx + ox, vy + oy)} ${p(wx + ix, wy + iy)} ${p(wx, wy)}`;
+    };
+    d += `M${p(...at(0, 0))}`;
+    for (let i = 0; i < n - 1; i++) d += seg(i, i + 1);
+    if (closed && n > 1) d += `${seg(n - 1, 0)}Z`;
+  });
   return d;
 }
 

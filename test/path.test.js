@@ -15,8 +15,14 @@ test('closed path gets a closing C and Z', () => {
 
 test('ellipse points sit on the axes', () => {
   const arr = shapeToArray(ellipseShape([40, 20], [5, 5]));
-  assert.deepEqual([arr[1], arr[2]], [5, -5]);   // top
-  assert.deepEqual([arr[7], arr[8]], [25, 5]);   // right
+  assert.deepEqual(arr.slice(0, 2), [4, 1]);     // block header: 4 points, closed
+  assert.deepEqual([arr[2], arr[3]], [5, -5]);   // top
+  assert.deepEqual([arr[8], arr[9]], [25, 5]);   // right
+});
+
+test('concatenated blocks become one compound path', () => {
+  const a = shapeToArray(rectShape([10, 10], [0, 0])), b = shapeToArray(ellipseShape([4, 4], [0, 0]));
+  assert.equal(commands(arrayToD([...a, ...b])), 'MCCCCZMCCCCZ');
 });
 
 test('rect: 4 points when sharp, 8 when rounded or forced', () => {
@@ -31,5 +37,5 @@ test('rect roundness is clamped to half the short side', () => {
 });
 
 test('empty shape → empty path', () => {
-  assert.equal(arrayToD([1]), '');
+  assert.equal(arrayToD([0, 1]), '');
 });

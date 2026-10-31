@@ -98,6 +98,67 @@ function segmentValueAt(A, B, kind, t) {
   return a.map((x, i) => easeValue(x, b[i], aeHandles(A, B, i, (b[i] - x) / d, d), u));
 }
 
+// AE "Auto-Orient: Along Path": the motion path's direction over time, in
+// degrees (y-down, clockwise, 0 = pointing right). Taken from the path's
+// geometry rather than the velocity, so it stays defined where easing slows
+// to a stop. Holds the first/last direction outside the keyframes. Returns
+// null for an unanimated position.
+export function orientationTrack(prop, fps) {
+  prop = asProp(prop);
+  const k = prop.keyframes;
+  if (!k || k.length < 2) return null;
+  const segments = k.slice(0, -1).map((A, i) => {
+    const ctrl = spatialCtrl(A, k[i + 1]);
+    return { ctrl, tab: arcTable(ctrl) };
+  });
+  // Exact tangent of the cubic at the parameter for this distance. Where a
+  // handle sits on its vertex the derivative vanishes; fall back to the next
+  // control point, then to the chord.
+  const dirAt = (i, dist) => {
+    const { ctrl: [p0, p1, p2, p3], tab: { len } } = segments[i];
+    const n = len.length - 1;
+    let j = 1;
+    while (j < n && len[j] < dist) j++;
+    const f = (dist - len[j - 1]) / (len[j] - len[j - 1] || 1);
+    const s = Math.min(1, Math.max(0, (j - 1 + f) / n)), m = 1 - s;
+    const d = c => 3 * m * m * (p1[c] - p0[c]) + 6 * m * s * (p2[c] - p1[c]) + 3 * s * s * (p3[c] - p2[c]);
+    const candidates = [[d(0), d(1)], s < 0.5 ? [p2[0] - p0[0], p2[1] - p0[1]] : [p3[0] - p1[0], p3[1] - p1[1]], [p3[0] - p0[0], p3[1] - p0[1]]];
+    const v = candidates.find(([x, y]) => Math.hypot(x, y) > 1e-9);
+    return v ? (Math.atan2(v[1], v[0]) * 180) / Math.PI : null;
+  };
+  const angleAt = t => {
+    for (let i = 0; i < k.length - 1; i++) {
+      if (t >= k[i + 1].t && i < k.length - 2) continue;
+      const A = k[i], B = k[i + 1], tab = segments[i].tab, d = B.t - A.t;
+      const u = Math.min(1, Math.max(0, (t - A.t) / d));
+      if (isHold(A, B)) return dirAt(i, 0);
+      const dist = easeValue(0, tab.L, aeHandles(A, B, 0, tab.L / d, d), u);
+      return dirAt(i, Math.min(tab.L, Math.max(0, dist)));
+    }
+    return null;
+  };
+  const step = 1 / fps, t0 = k[0].t, t1 = k[k.length - 1].t;
+  const pts = [];
+  let prev = null;
+  for (let j = 0; t0 + j * step < t1 - step * 1e-3; j++) pts.push({ t: t0 + j * step });
+  pts.push({ t: t1 });
+  for (const p of pts) {
+    let a = angleAt(p.t);
+    if (a === null) a = prev;
+    if (a !== null && prev !== null) {
+      while (a - prev > 180) a -= 360;
+      while (a - prev < -180) a += 360;
+    }
+    p.v = [a];
+    if (a !== null) prev = a;
+  }
+  const firstKnown = pts.find(p => p.v[0] !== null);
+  if (!firstKnown) return null;
+  for (const p of pts) if (p.v[0] === null) p.v = firstKnown.v;
+  const stops = simplify(pts, 0.01);
+  return { stops, segs: stops.slice(1).map(() => ({ spline: LINEAR })) };
+}
+
 // Value of an IR prop at time t, exactly as AE would compute it.
 export function propValueAt(prop, kind, t) {
   prop = asProp(prop);
@@ -225,6 +286,22 @@ function simplifyLinearRuns({ stops, segs }, tol) {
 
 export function mapTrack(track, fn) {
   return { stops: track.stops.map(s => ({ t: s.t, v: fn(s.v) })), segs: track.segs };
+}
+
+// Track of fn(v1, v2, …) over several input tracks. If only one input moves
+// and fn is linear (affine) in it, that input's keyframes and easing carry
+// over unchanged. Otherwise the result is sampled per frame and simplified.
+export function combineTracks(tracks, fn, { linear = true, fps, tol = 0.01 }) {
+  const values = tracks.map(t => t.stops[0].v);
+  const moving = tracks.map((t, i) => (trackIsStatic(t) ? -1 : i)).filter(i => i >= 0);
+  if (!moving.length) return { stops: [{ t: 0, v: fn(...values) }], segs: [] };
+  if (linear && moving.length === 1) {
+    const i = moving[0];
+    return mapTrack(tracks[i], v => fn(...values.map((s, j) => (j === i ? v : s))));
+  }
+  const t0 = Math.min(...moving.map(i => tracks[i].stops[0].t));
+  const t1 = Math.max(...moving.map(i => tracks[i].stops[tracks[i].stops.length - 1].t));
+  return bakeFunction(t => fn(...tracks.map(tr => trackValueAt(tr, t))), t0, t1, fps, tol);
 }
 
 const sameArr = (a, b) => a.length === b.length && a.every((x, i) => Math.abs(x - b[i]) < EPS);

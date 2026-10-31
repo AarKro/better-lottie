@@ -5,9 +5,12 @@ import { fileURLToPath } from 'node:url';
 import * as acorn from 'acorn';
 import { convert } from '../src/index.js';
 import {
-  loadHost, CompItem, AVLayer, CameraLayer, TextLayer, Shape, EASY,
-  shapeLayer, plainLayer, layerTransform, group, rect, ellipse, path, fill, stroke, trim, BlendingMode,
+  loadHost, CompItem, AVLayer, CameraLayer, TextLayer, Shape, EASY, AutoOrientType, buildAep, gradientXml,
+  shapeLayer, plainLayer, layerTransform, group, rect, ellipse, path, fill, stroke, trim, merge, gradientFill, BlendingMode,
 } from './helpers/ae-mock.js';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const HOST = fileURLToPath(new URL('../extension/host/extract.jsx', import.meta.url));
 const source = readFileSync(HOST, 'utf8');
@@ -18,7 +21,7 @@ test('extract.jsx is valid ES3', () => {
 
 test('extract.jsx avoids APIs ExtendScript lacks', () => {
   const code = source.replace(/\/\/.*$/gm, '');
-  const banned = /\.(map|forEach|filter|reduce|some|every|indexOf|lastIndexOf|trim|bind)\(|\bJSON\.|Object\.(keys|create|assign|defineProperty)|Array\.isArray/g;
+  const banned = /\.(map|forEach|filter|reduce|some|every|lastIndexOf|trim|bind)\(|\bJSON\.|Object\.(keys|create|assign|defineProperty)|Array\.isArray/g;
   assert.deepEqual(code.match(banned), null);
 });
 
@@ -125,11 +128,97 @@ test('extracted IR converts end to end', () => {
   // Hold keyframes on the hidden null still drive the child.
   assert.match(svg, /type="scale" values="1 1;0.5 0.5;0.5 0.5" keyTimes="0;0.5;1" calcMode="discrete"/);
   assert.match(svg, /stroke-linecap="round" stroke-linejoin="round"/);
-  for (const expected of ['text layers are not supported', '"trim" is not supported', 'blend mode "multiply"', 'expression baked']) {
+  for (const expected of ['text layers are not supported', 'blend mode "multiply"', 'expression baked']) {
     assert.ok(warnings.some(w => w.includes(expected)), expected);
   }
 });
 
 test('asks for a comp when none is active', () => {
   assert.deepEqual(JSON.parse(loadHost(HOST, null).extractActiveComp()), { error: 'Open or select a composition first.' });
+});
+
+// --- dashes, trim, merge, auto-orient, gradients ---
+
+function featureComp() {
+  const comp = new CompItem({ id: 42, name: 'Features', width: 200, height: 200, duration: 1, frameRate: 25, bgColor: [0, 0, 0] });
+  const flyer = shapeLayer({
+    index: 1, name: 'Flyer', outPoint: 1, autoOrient: AutoOrientType.ALONG_PATH,
+    transform: layerTransform({ position: { keys: [
+      { t: 0, v: [0, 0, 0], spatialOut: [50, -50, 0] }, { t: 1, v: [200, 0, 0], spatialIn: [-50, -50, 0] },
+    ] } }),
+  }, [
+    group('Lines', [
+      path('A', new Shape({ vertices: [[0, 0], [100, 0]], closed: false })),
+      stroke('Dashed', [1, 1, 1, 1], 2, { dashes: [20, 10], dashOffset: 5 }),
+      stroke('Plain', [1, 1, 1, 1], 2),
+    ]),
+    trim('Trim Paths 1', { end: { keys: [{ t: 0, v: 0 }, { t: 1, v: 100 }] }, type: 2 }),
+  ]);
+  const liquid = shapeLayer({ index: 2, name: 'Liquid', outPoint: 1 }, [
+    group('Group 1', [
+      rect('Level', [100, 50]),
+      group('Glass', [ellipse('Glass Path', [80, 80])]),
+      merge('Merge Paths 1', 4),
+      gradientFill('Gradient Fill 1'),
+    ]),
+  ]);
+  comp.layers = [flyer, liquid];
+  return comp;
+}
+
+const GOLD = [[0, 0.5, 0.96, 0.78, 0.35], [1, 0.5, 0.95, 0.4, 0.09]];
+
+function projectFile(comps) {
+  const file = join(mkdtempSync(join(tmpdir(), 'bl-')), 'project.aep');
+  writeFileSync(file, buildAep(comps));
+  return file;
+}
+
+test('reads only the dashes in use, plus trim, merge mode and auto-orient', () => {
+  const ir = JSON.parse(loadHost(HOST, featureComp()).extractActiveComp());
+  const [flyer, liquid] = ir.layers;
+  assert.equal(flyer.transform.autoOrient, true);
+  const [lines, trimItem] = flyer.contents;
+  const [, dashed, plain] = lines.contents;
+  assert.deepEqual(dashed.dashes.map(d => [d.type, d.value.value]), [['dash', 20], ['gap', 10]]);
+  assert.equal(dashed.dashOffset.value, 5);
+  assert.equal(plain.dashes, undefined, 'hidden default dash streams are not dashes');
+  assert.equal(trimItem.mode, 'individually');
+  assert.equal(trimItem.end.keyframes.length, 2);
+  assert.equal(liquid.contents[0].contents[2].mode, 'intersect');
+});
+
+test('reads gradient colors from the project file, matched by comp id and layer', () => {
+  const file = projectFile([
+    { id: 7, layers: [[], [gradientXml([[0, 0.5, 1, 0, 0], [1, 0.5, 0, 1, 0]])]] }, // a decoy comp
+    { id: 42, layers: [[], [gradientXml(GOLD)]] },
+  ]);
+  const ir = JSON.parse(loadHost(HOST, featureComp(), { projectFile: file }).extractActiveComp());
+  const g = ir.layers[1].contents[0].contents[3];
+  assert.equal(g.type, 'gradient-fill');
+  assert.equal(g.gradientType, 'linear');
+  assert.deepEqual(g.stops.colors, GOLD);
+  assert.deepEqual(g.stops.alphas, [[0, 0.5, 1], [1, 0.5, 1]]);
+  assert.deepEqual(ir.warnings, []);
+});
+
+test('gradient colors: unsaved projects and mismatches warn instead of guessing', () => {
+  const unsaved = JSON.parse(loadHost(HOST, featureComp()).extractActiveComp());
+  assert.equal(unsaved.layers[1].contents[0].contents[3].stops, null);
+  assert.ok(unsaved.warnings.some(w => w.includes('save the project')));
+
+  const file = projectFile([{ id: 42, layers: [[], [gradientXml(GOLD), gradientXml(GOLD)]] }]);
+  const mismatch = JSON.parse(loadHost(HOST, featureComp(), { projectFile: file }).extractActiveComp());
+  assert.equal(mismatch.layers[1].contents[0].contents[3].stops, null);
+  assert.ok(mismatch.warnings.some(w => w.includes('could not be matched')));
+});
+
+test('feature comp converts end to end', () => {
+  const file = projectFile([{ id: 42, layers: [[], [gradientXml(GOLD)]] }]);
+  const { svg, warnings } = convert(JSON.parse(loadHost(HOST, featureComp(), { projectFile: file }).extractActiveComp()));
+  assert.match(svg, /<linearGradient [^>]*><stop offset="0" stop-color="#f5c759"\/><stop offset="1" stop-color="#f26617"\/>/);
+  assert.match(svg, /<clipPath id="[^"]+"><path d="M0 -40C/);
+  assert.match(svg, /pathLength="1" stroke-dasharray="0 1"/);
+  assert.match(svg, /type="rotate" values="-45/, 'auto-orient starts along the path tangent');
+  assert.ok(warnings.some(w => w.includes('dashes are replaced by Trim Paths')));
 });

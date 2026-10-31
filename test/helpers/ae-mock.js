@@ -4,11 +4,12 @@
 // against the real thing (Save IR…) when something looks off.
 
 import vm from 'node:vm';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 
 export const KeyframeInterpolationType = { LINEAR: 6612, BEZIER: 6613, HOLD: 6614 };
 export const BlendingMode = { NORMAL: 5212, MULTIPLY: 5213, SCREEN: 5214, ADD: 5215, OVERLAY: 5216 };
 export const TrackMatteType = { NO_TRACK_MATTE: 5012, ALPHA: 5013 };
+export const AutoOrientType = { NO_AUTO_ORIENT: 4212, ALONG_PATH: 4213, CAMERA_OR_POINT_OF_INTEREST: 4214 };
 
 export class KeyframeEase {
   constructor(speed, influence) { this.speed = speed; this.influence = influence; }
@@ -25,7 +26,7 @@ export class Shape {
 export class Property {
   // spec: a plain value, { keys: [{ t, v, inType, outType, easeIn, easeOut, spatialIn, spatialOut }] },
   // or { expr: t => value }
-  constructor(matchName, name, spec, { spatial = false, separated = false } = {}) {
+  constructor(matchName, name, spec, { spatial = false, separated = false, modified = false } = {}) {
     const isSpec = spec && typeof spec === 'object' && !Array.isArray(spec) && !(spec instanceof Shape);
     this.matchName = matchName;
     this.name = name;
@@ -38,6 +39,8 @@ export class Property {
     this.expressionEnabled = !!this.exprFn;
     this.expression = this.exprFn ? '/* mock */' : '';
     this.enabled = true;
+    // AE: true once edited, keyframed or given an expression.
+    this.isModified = modified || this.keys.length > 0 || !!this.exprFn;
   }
   get numKeys() { return this.keys.length; }
   key(i) { return this.keys[i - 1]; }
@@ -73,6 +76,7 @@ export class Layer {
       enabled: true, guideLayer: false, parent: null, inPoint: 0, outPoint: 0, threeDLayer: false,
       blendingMode: BlendingMode.NORMAL, trackMatteType: TrackMatteType.NO_TRACK_MATTE,
       timeRemapEnabled: false, nullLayer: false, adjustmentLayer: false, source: null, groups: {},
+      autoOrient: AutoOrientType.NO_AUTO_ORIENT,
     }, props);
   }
   property(matchName) { return this.groups[matchName] || null; }
@@ -143,17 +147,52 @@ export const fill = (name, color, opacity = 100) => G('ADBE Vector Graphic - Fil
   P('ADBE Vector Fill Opacity', 'Opacity', opacity),
 ]);
 
-export const stroke = (name, color, width, { cap = 1, join = 1 } = {}) => G('ADBE Vector Graphic - Stroke', name, [
+// Every stroke carries hidden Dash 1–3 / Gap 1–3 / Offset streams at 10 / 0;
+// `dashes` sets (and marks modified) the first ones, e.g. [20, 10].
+function strokeExtras(dashes = [], dashOffset) {
+  const names = ['Dash 1', 'Gap 1', 'Dash 2', 'Gap 2', 'Dash 3', 'Gap 3'];
+  return [
+    G('ADBE Vector Stroke Dashes', 'Dashes', [
+      ...names.map((n, i) => P(`ADBE Vector Stroke ${n}`, n.replace(' 1', ''), i < dashes.length ? dashes[i] : 10, { modified: i < dashes.length })),
+      P('ADBE Vector Stroke Offset', 'Offset', dashOffset ?? 0, { modified: dashOffset !== undefined }),
+    ]),
+    G('ADBE Vector Stroke Taper', 'Taper', [P('ADBE Vector Taper Start Length', 'Start Length', 0)]),
+    G('ADBE Vector Stroke Wave', 'Wave', [P('ADBE Vector Taper Wave Amount', 'Amount', 0)]),
+  ];
+}
+
+export const stroke = (name, color, width, { cap = 1, join = 1, dashes, dashOffset } = {}) => G('ADBE Vector Graphic - Stroke', name, [
   P('ADBE Vector Stroke Color', 'Color', color),
   P('ADBE Vector Stroke Opacity', 'Opacity', 100),
   P('ADBE Vector Stroke Width', 'Stroke Width', width),
   P('ADBE Vector Stroke Line Cap', 'Line Cap', cap),
   P('ADBE Vector Stroke Line Join', 'Line Join', join),
   P('ADBE Vector Stroke Miter Limit', 'Miter Limit', 4),
-  G('ADBE Vector Stroke Dashes', 'Dashes', []),
+  ...strokeExtras(dashes, dashOffset),
 ]);
 
-export const trim = name => G('ADBE Vector Filter - Trim', name, [P('ADBE Vector Trim Start', 'Start', 0)]);
+// Gradient colors have no scriptable value; the extractor reads them from the project file.
+export const gradientFill = (name, { type = 1, start = [0, -50], end = [0, 50] } = {}) => G('ADBE Vector Graphic - G-Fill', name, [
+  P('ADBE Vector Fill Rule', 'Fill Rule', 1),
+  P('ADBE Vector Grad Type', 'Type', type),
+  P('ADBE Vector Grad Start Pt', 'Start Point', start, { spatial: true }),
+  P('ADBE Vector Grad End Pt', 'End Point', end, { spatial: true }),
+  P('ADBE Vector Grad HiLite Length', 'Highlight Length', 0),
+  P('ADBE Vector Grad HiLite Angle', 'Highlight Angle', 0),
+  P('ADBE Vector Grad Scale', 'Scale', [100, 100]),
+  P('ADBE Vector Grad Rotation', 'Rotation', 0),
+  P('ADBE Vector Grad Colors', 'Colors', undefined),
+  P('ADBE Vector Fill Opacity', 'Opacity', 100),
+]);
+
+export const merge = (name, mode) => G('ADBE Vector Filter - Merge', name, [P('ADBE Vector Merge Type', 'Mode', mode)]);
+
+export const trim = (name, { start = 0, end = 100, offset = 0, type = 1 } = {}) => G('ADBE Vector Filter - Trim', name, [
+  P('ADBE Vector Trim Start', 'Start', start),
+  P('ADBE Vector Trim End', 'End', end),
+  P('ADBE Vector Trim Offset', 'Offset', offset),
+  P('ADBE Vector Trim Type', 'Trim Multiple Shapes', type),
+]);
 
 export function shapeLayer(props, contents, { effects = 0 } = {}) {
   return new ShapeLayer({
@@ -171,21 +210,94 @@ export function plainLayer(Class, props) {
   return new Class({ ...props, groups: { 'ADBE Transform Group': props.transform || layerTransform() } });
 }
 
+// ExtendScript's File, enough for reading the project binary.
+class MockFile {
+  constructor(path) { this.fsName = path; this.encoding = 'UTF-8'; this.pos = 0; }
+  get exists() { return existsSync(this.fsName); }
+  get length() { return statSync(this.fsName).size; }
+  open() { this.buf = readFileSync(this.fsName); return true; }
+  seek(pos) { this.pos = pos; return true; }
+  read(n) {
+    const s = this.buf.toString(this.encoding === 'BINARY' ? 'latin1' : 'utf8', this.pos, this.pos + n);
+    this.pos += n;
+    return s;
+  }
+  close() { this.buf = null; return true; }
+}
+
 // Runs a host script against `activeItem` and returns its BetterLottie object.
-export function loadHost(file, activeItem) {
+// projectFile: path of a RIFX file standing in for the saved .aep.
+export function loadHost(file, activeItem, { projectFile = null, items = [] } = {}) {
   const settings = new Map();
   const context = vm.createContext({
     app: {
-      project: { activeItem },
+      project: {
+        activeItem,
+        file: projectFile ? new MockFile(projectFile) : null,
+        dirty: false,
+        itemByID: id => [activeItem, ...items].find(i => i && i.id === id) || null,
+      },
       settings: {
         haveSetting: (s, k) => settings.has(`${s}/${k}`),
         getSetting: (s, k) => settings.get(`${s}/${k}`),
         saveSetting: (s, k, v) => settings.set(`${s}/${k}`, v),
       },
     },
-    KeyframeInterpolationType, BlendingMode, TrackMatteType, Shape,
+    File: MockFile,
+    KeyframeInterpolationType, BlendingMode, TrackMatteType, AutoOrientType, Shape,
     CompItem, ShapeLayer, TextLayer, CameraLayer, LightLayer, SolidSource,
   });
   vm.runInContext(readFileSync(file, 'utf8'), context, { filename: file });
   return context.BetterLottie;
+}
+
+// --- a minimal .aep (RIFX) for gradient colors ---
+
+function rifxChunk(id, data) {
+  const head = Buffer.alloc(8);
+  head.write(id, 0, 'latin1');
+  head.writeUInt32BE(data.length, 4);
+  return Buffer.concat([head, data, Buffer.alloc(data.length % 2)]);
+}
+const rifxList = (type, children) => rifxChunk('LIST', Buffer.concat([Buffer.from(type, 'latin1'), ...children]));
+
+export function gradientXml(colors, alphas = [[0, 0.5, 1], [1, 0.5, 1]]) {
+  const stop = (key, i, values) => `<prop.pair><key>Stop-${i}</key><prop.list><prop.pair><key>${key}</key><array>`
+    + `<array.type><float/></array.type>${values.map(v => `<float>${v}</float>`).join('')}</array></prop.pair></prop.list></prop.pair>`;
+  const section = (name, key, stops) => `<prop.pair><key>${name}</key><prop.list><prop.pair><key>Stops List</key><prop.list>`
+    + stops.map((s, i) => stop(key, i, s)).join('') + `</prop.list></prop.pair><prop.pair><key>Stops Size</key>`
+    + `<int type='unsigned' size='32'>${stops.length}</int></prop.pair></prop.list></prop.pair>`;
+  return `<?xml version='1.0'?><prop.map version='4'><prop.list><prop.pair><key>Gradient Color Data</key><prop.list>`
+    + section('Alpha Stops', 'Stops Alpha', alphas) + section('Color Stops', 'Stops Color', colors.map(c => [...c, 1]))
+    + `</prop.list></prop.pair></prop.list></prop.map>`;
+}
+
+// comps: [{ id, layers: [[xml per gradient property, …] per layer] }]
+export function buildAep(comps) {
+  const tdmn = name => { const b = Buffer.alloc(40); b.write(name, 'latin1'); return rifxChunk('tdmn', b); };
+  const items = comps.map(({ id, layers }) => {
+    const idta = Buffer.alloc(80);
+    idta.writeUInt32BE(id, 16);
+    return rifxList('Item', [
+      rifxChunk('idta', idta),
+      ...layers.map(grads => rifxList('Layr', [
+        rifxChunk('Utf8', Buffer.from('layer')),
+        rifxList('tdgp', [
+          tdmn('ADBE Root Vectors Group'),
+          rifxList('tdgp', grads.flatMap(xml => [
+            tdmn('ADBE Vector Graphic - G-Fill'),
+            rifxList('tdgp', [
+              tdmn('ADBE Vector Grad Start Pt'), rifxList('tdbs', []),
+              tdmn('ADBE Vector Grad Colors'), rifxList('GCst', [rifxList('GCky', [rifxChunk('Utf8', Buffer.from(xml))])]),
+            ]),
+          ])),
+        ]),
+      ])),
+    ]);
+  });
+  const body = Buffer.concat([Buffer.from('Egg!'), rifxChunk('head', Buffer.alloc(20)), rifxList('Fold', items)]);
+  const head = Buffer.alloc(8);
+  head.write('RIFX', 0, 'latin1');
+  head.writeUInt32BE(body.length, 4);
+  return Buffer.concat([head, body]);
 }
