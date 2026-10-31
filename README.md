@@ -8,15 +8,6 @@ Turn After Effects animations into **animated SVG files** you can put straight o
 
 That's all the website needs.
 
-## Why?
-
-Tools like Lottie export your animation as data that needs a JavaScript player on the page. better-lottie exports a single, self-contained `.svg` file instead:
-
-- **Works anywhere an image works:** `<img>` tags, CSS backgrounds, CMS image fields, email-friendly HTML
-- **Small files:** usually a few kilobytes
-- **Sharp at any size:** it's vector, so it looks crisp on every screen
-- **Easing is preserved:** your keyframe curves come through as they are in After Effects
-
 ## Prerequisites
 
 - **Adobe After Effects 2019 or newer** (tested with After Effects 2026)
@@ -59,6 +50,15 @@ Download the latest version (`git pull`), then run `npm install` and `npm run bu
 ```sh
 npm run dev:uninstall
 ```
+
+## Why?
+
+Tools like Lottie export your animation as data that needs a JavaScript player on the page. better-lottie exports a single, self-contained `.svg` file instead:
+
+- **Works anywhere an image works:** `<img>` tags, CSS backgrounds, CMS image fields, email-friendly HTML
+- **Small files:** usually a few kilobytes
+- **Sharp at any size:** it's vector, so it looks crisp on every screen
+- **Easing is preserved:** your keyframe curves come through as they are in After Effects
 
 ## How to use it
 
