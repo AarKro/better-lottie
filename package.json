@@ -12,7 +12,8 @@
     "test:update": "UPDATE_SNAPSHOTS=1 node --test \"test/*.test.js\"",
     "preview": "node scripts/build-preview.js",
     "dev:install": "npm run build && node scripts/install-dev.js",
-    "dev:uninstall": "node scripts/install-dev.js --uninstall"
+    "dev:uninstall": "node scripts/install-dev.js --uninstall",
+    "package": "node scripts/package.js"
   },
   "engines": {
     "node": ">=20"

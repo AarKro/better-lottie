@@ -54,6 +54,7 @@ better-lottie/
   scripts/
     build-preview.js       # → preview/index.html (gitignored)
     install-dev.js         # PlayerDebugMode + symlink extension/ into AE's CEP folder
+    package.js             # signed release .zxp (downloads Adobe's ZXPSignCmd 4.1.3, hash-checked)
   extension/               # the CEP extension; this folder is what AE loads
     CSXS/manifest.xml      # AEFT 16.0+ (AE 2019), CSXS 9.0+
     .debug                 # DevTools at http://localhost:8099 (dev only)
@@ -69,6 +70,7 @@ better-lottie/
 - `npm run preview`: build `preview/index.html`. Serve it (`python3 -m http.server -d preview`) or open it directly.
 - `npm run build`: bundle `src/` into `extension/lib/better-lottie.js` (esbuild, IIFE, global `BetterLottieSVG`, target chrome61 for CEP 9). Rerun after every converter change, then reopen the panel.
 - `npm run dev:install`: build, set `PlayerDebugMode` for CSXS 9–12, symlink `extension/` to `~/Library/Application Support/Adobe/CEP/extensions/better-lottie`. Restart AE → Window › Extensions › better-lottie. `npm run dev:uninstall` removes the link.
+- `npm run package`: build, copy `extension/` without `.debug` to `dist/stage/`, sign with ZXPSignCmd 4.1.3 (downloaded from Adobe's CEP-Resources into `node_modules/.cache/`, pinned commit + SHA-256; 4.1.1 from npm segfaults with `-tsa` on macOS; the macOS build is x86_64, so Rosetta on Apple Silicon; timestamped via DigiCert TSA, so it needs network) → `dist/better-lottie-<version>.zxp`, then verify. Fails if `package.json` and manifest `ExtensionBundleVersion` differ. The first run creates a self-signed cert at `certs/better-lottie.p12` (gitignored; password `ZXP_CERT_PASSWORD` or the default). Users install the `.zxp` with aescripts' ZXP Installer; a signed extension doesn't need `PlayerDebugMode`.
 
 ### Status
 - **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave.
@@ -76,7 +78,7 @@ better-lottie/
 - **Verified against AE renders** (`test/ae/`, pixel diffs ≤ 2.5/255 on average, only anti-aliased edges differ): masks (all modes, feather, inverted, opacity, expansion, animated path), all four track matte types incl. an animated matte, repeaters (offset, fractional copies, composite order), taper (ease 0–100), wave, gradient Scale/Rotation.
 - **Blend modes verified in AE:** every layer and shape-level mode with a CSS equivalent matches AE renders to within 2/255 (Soft Light included); comps `blend-layers` and `blend-shapes` in the scratch project.
 - **Not verified in AE:** animated gradient *colors* with different keyframe colors (scripts can't set gradient colors; the file layout was verified with identical keyframes).
-- **Not built:** work-area export, ZXP packaging/signing, mask modes lighten/darken/difference (approximated), adds after an intersect mask (approximated). Not yet checked in Safari/Firefox (pathLength trims, SMIL inside masks).
+- **Not built:** work-area export, mask modes lighten/darken/difference (approximated), adds after an intersect mask (approximated). Not yet checked in Safari/Firefox (pathLength trims, SMIL inside masks).
 
 Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The extractor only bakes what the converter can't see, i.e. expressions: it writes them as per-frame linear keyframes, and the converter's linear-run simplification shrinks them back down.
 

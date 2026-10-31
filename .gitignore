@@ -23,6 +23,7 @@ Adobe After Effects Auto-Save/
 # Signing certificates for ZXP packaging: never commit
 *.p12
 *.pfx
+certs/
 
 # Logs and debug
 npm-debug.log*
