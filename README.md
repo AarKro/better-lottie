@@ -147,7 +147,7 @@ You need **[Node.js](https://nodejs.org) 20 or newer** and **Git** (or download 
 
 ### Making a release
 
-1. Set the same new version in `package.json` and in `ExtensionBundleVersion` and the `Extension` `Version` in `extension/CSXS/manifest.xml`.
+1. Set the same new version in `package.json`, `VERSION` in `src/svg.js`, and `ExtensionBundleVersion` and the `Extension` `Version` in `extension/CSXS/manifest.xml`. Run `npm run test:update` (the version is in every snapshot's header comment).
 2. Run `npm run package`. It builds the extension, signs it and writes `dist/better-lottie-<version>.zxp`. Signing needs an internet connection (for the signature timestamp).
 3. Create a GitHub release for the version and attach the `.zxp` file.
 

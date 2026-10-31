@@ -26,8 +26,9 @@ const EXCLUDE = new Set(['.debug', '.DS_Store', '__MACOSX']);
 const { version } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const manifest = readFileSync(join(source, 'CSXS', 'manifest.xml'), 'utf8');
 const manifestVersion = manifest.match(/ExtensionBundleVersion="([^"]+)"/)?.[1];
-if (manifestVersion !== version) {
-  console.error(`Version mismatch: package.json is ${version}, extension/CSXS/manifest.xml is ${manifestVersion}.`);
+const converterVersion = readFileSync(join(root, 'src', 'svg.js'), 'utf8').match(/export const VERSION = '([^']+)'/)?.[1];
+if (manifestVersion !== version || converterVersion !== version) {
+  console.error(`Version mismatch: package.json is ${version}, extension/CSXS/manifest.xml is ${manifestVersion}, src/svg.js is ${converterVersion}.`);
   process.exit(1);
 }
 const output = join(dist, `better-lottie-${version}.zxp`);
