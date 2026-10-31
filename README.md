@@ -20,7 +20,7 @@ That's all the website needs.
 1. **Download the project**
 
    ```sh
-   git clone <repository-url> better-lottie
+   git clone https://github.com/AarKro/better-lottie.git
    cd better-lottie
    ```
 
