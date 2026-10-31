@@ -144,11 +144,3 @@ You need **[Node.js](https://nodejs.org) 20 or newer** and **Git** (or download 
 **Updating:** `git pull`, then `npm install` and `npm run build`. Close and reopen the panel in After Effects. You don't need to link it again.
 
 **Uninstalling:** `npm run dev:uninstall`
-
-### Making a release
-
-1. Set the same new version in `package.json`, `VERSION` in `src/svg.js`, and `ExtensionBundleVersion` and the `Extension` `Version` in `extension/CSXS/manifest.xml`. Run `npm run test:update` (the version is in every snapshot's header comment).
-2. Run `npm run package`. It builds the extension, signs it and writes `dist/better-lottie-<version>.zxp`. Signing needs an internet connection (for the signature timestamp).
-3. Create a GitHub release for the version and attach the `.zxp` file.
-
-The first `npm run package` creates a self-signed certificate in `certs/` (not committed). Keep it and use it for every release. Set `ZXP_CERT_PASSWORD` to use your own certificate password. If signing fails with "bad CPU type" on an Apple Silicon Mac, install Rosetta (`softwareupdate --install-rosetta`) and try again.

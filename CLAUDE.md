@@ -72,6 +72,12 @@ better-lottie/
 - `npm run dev:install`: build, set `PlayerDebugMode` for CSXS 9–12, symlink `extension/` to `~/Library/Application Support/Adobe/CEP/extensions/better-lottie`. Restart AE → Window › Extensions › better-lottie. `npm run dev:uninstall` removes the link.
 - `npm run package`: build, copy `extension/` without `.debug` to `dist/stage/`, sign with ZXPSignCmd 4.1.3 (downloaded from Adobe's CEP-Resources into `node_modules/.cache/`, pinned commit + SHA-256; 4.1.1 from npm segfaults with `-tsa` on macOS; the macOS build is x86_64, so Rosetta on Apple Silicon; timestamped via DigiCert TSA, so it needs network) → `dist/better-lottie-<version>.zxp`, then verify. Fails if `package.json`, manifest `ExtensionBundleVersion` and `VERSION` in `src/svg.js` differ. The first run creates a self-signed cert at `certs/better-lottie.p12` (gitignored; password `ZXP_CERT_PASSWORD` or the default). Users install the `.zxp` with aescripts' ZXP Installer; a signed extension doesn't need `PlayerDebugMode`.
 
+### Making a release
+1. Bump the version in all three places: `package.json` (`npm version X.Y.Z --no-git-tag-version`, which also updates the lockfile), `VERSION` in `src/svg.js`, and `ExtensionBundleVersion` plus the `Extension` `Version` in `extension/CSXS/manifest.xml`. Then `npm run test:update`: the version is in every snapshot's header comment, so only that line should change.
+2. `npm run package` → `dist/better-lottie-<version>.zxp`. Signing needs network (timestamp). Keep `certs/better-lottie.p12` and sign every release with it. "bad CPU type" on Apple Silicon → `softwareupdate --install-rosetta`.
+3. Commit "Release X.Y.Z", annotated tag `vX.Y.Z`, push the branch **and** the tag (`git push origin main vX.Y.Z`; a plain `git push` leaves the tag behind). Never move a tag that's already pushed; bump the patch version instead.
+4. The user creates the GitHub release from the tag and attaches the `.zxp`. The README's install guide links to `releases/latest`.
+
 ### Status
 - **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave.
 - **Extension:** panel (Export SVG, Preview, Save IR, loop/background options, warnings, usage snippet) and extractor. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
