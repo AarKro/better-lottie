@@ -443,10 +443,13 @@ function mergeEntry(entries, it, ctx, where) {
   return entry;
 }
 
-// add: subpaths side by side (the fill's own rule decides holes).
-// merge: union, via clockwise subpaths + nonzero. exclude: evenodd (XOR).
+// Verified against AE renders (comp merge-modes in the scratch project):
+// merge: subpaths as drawn, so the fill's rule and the windings decide holes
+//   (AE builds Illustrator compound paths this way).
+// add: union whatever the windings or fill rule, via clockwise subpaths +
+//   nonzero. exclude: evenodd (XOR).
 function combinedEntry(tracks, mode, ctx, where) {
-  const prepared = mode === 'merge' ? tracks.map(t => mapTrack(t, orientClockwise)) : tracks;
+  const prepared = mode === 'add' ? tracks.map(t => mapTrack(t, orientClockwise)) : tracks;
   const combined = concatShapes(prepared, ctx);
   const r = finalize(combined, ctx, KIND.shape.tol);
   const d = arrayToD(r.value);
@@ -457,9 +460,9 @@ function combinedEntry(tracks, mode, ctx, where) {
     render(style) {
       const attrs = { d, ...style.attrs };
       if (mode === 'exclude') attrs['fill-rule'] = 'evenodd';
-      if (mode === 'merge') {
+      if (mode === 'add') {
         delete attrs['fill-rule'];
-        if (style.kind === 'stroke' && tracks.length > 1) ctx.warn(where, 'strokes on a "merge" Merge Paths also outline overlapping parts');
+        if (style.kind === 'stroke' && tracks.length > 1) ctx.warn(where, 'strokes on an "add" Merge Paths also outline overlapping parts');
       }
       const dash = withDash(attrs, style);
       return element('path', attrs, anim + style.anims + dash);

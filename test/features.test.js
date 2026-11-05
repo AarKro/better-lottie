@@ -176,3 +176,23 @@ test('compound fill keeps keyframes when its paths are keyed together', () => {
   assert.ok(anim);
   assert.equal(anim[1].split(';').length, 2, 'two keyframes, not baked per frame');
 });
+
+test('Merge Paths: merge keeps windings and the fill rule, add is a union (AE renders)', () => {
+  const svg = svgOf('ae-merge-modes');
+  // Groups draw bottom-up: the last cell (mode 5, column 4) comes first.
+  const cells = [...svg.matchAll(/<path d="([^"]+)"([^>]*fill="#ff3333"[^>]*)>/g)].reverse();
+  const row = mode => cells.slice(5 * (mode - 1), 5 * mode).map(m => ({ d: m[1], evenodd: m[2].includes('evenodd') }));
+  const winding = d => {
+    const pts = [...d.split('M')[2].matchAll(/(-?[\d.]+) (-?[\d.]+)(?=C|Z|$)/g)].map(m => [+m[1], +m[2]]);
+    let a = 0;
+    for (let i = 0; i < pts.length; i++) { const [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length]; a += x1 * y2 - x2 * y1; }
+    return Math.sign(a);
+  };
+  const [mergeSame, mergeOpposite, , , mergeEvenodd] = row(1);
+  assert.equal(winding(mergeSame.d), 1, 'merge: inner path drawn clockwise stays clockwise');
+  assert.equal(winding(mergeOpposite.d), -1, 'merge: inner path drawn counter-clockwise stays so (→ hole)');
+  assert.ok(mergeEvenodd.evenodd, 'merge: the fill\'s evenodd rule applies');
+  const [, addOpposite, , , addEvenodd] = row(2);
+  assert.equal(winding(addOpposite.d), 1, 'add: every subpath clockwise (union)');
+  assert.ok(!addEvenodd.evenodd, 'add ignores the fill rule');
+});
