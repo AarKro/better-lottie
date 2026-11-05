@@ -296,3 +296,15 @@ test('maps shape-level blend mode numbers (AE menu positions) to names', () => {
   const items = JSON.parse(loadHost(HOST, comp).extractActiveComp()).layers[0].contents;
   assert.deepEqual(items.slice(1).map(i => i.blendMode), ['multiply', 'add', 'luminosity', undefined, undefined]);
 });
+
+test('reads Reverse Path Direction (3) on paths, rects and ellipses', () => {
+  const comp = new CompItem({ id: 11, name: 'Directions', width: 100, height: 100, duration: 1, frameRate: 30 });
+  comp.layers = [shapeLayer({ index: 1, name: 'Ring', outPoint: 1 }, [
+    ellipse('Inner', [40, 40], 3),
+    rect('Clockwise', [80, 80], 0, 2),
+    path('Drawn', new Shape({ vertices: [[0, 0], [10, 0], [10, 10]], closed: true }), 3),
+    fill('Fill 1', [1, 0, 0, 1]),
+  ])];
+  const [layer] = JSON.parse(loadHost(HOST, comp).extractActiveComp()).layers;
+  assert.deepEqual(layer.contents.map(it => it.direction), ['reversed', undefined, 'reversed', undefined]);
+});

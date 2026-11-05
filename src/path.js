@@ -32,6 +32,23 @@ export function forEachBlock(arr, fn) {
   for (let i = 0; i < arr.length; i += 2 + 6 * arr[i]) fn(i, arr[i], arr[i + 1]);
 }
 
+// AE "Reverse Path Direction": each closed subpath starts at the same vertex
+// and runs the other way (v0, vn-1, …, v1, tangents swapped). Open subpaths
+// draw unchanged. Both verified against AE renders with Trim Paths.
+export function reverseBlocks(arr) {
+  const out = arr.slice();
+  forEachBlock(arr, (start, n, closed) => {
+    if (!closed) return;
+    for (let k = 0; k < n; k++) {
+      const src = start + 2 + ((n - k) % n) * 6, dst = start + 2 + k * 6;
+      out[dst] = arr[src]; out[dst + 1] = arr[src + 1];
+      out[dst + 2] = arr[src + 4]; out[dst + 3] = arr[src + 5];
+      out[dst + 4] = arr[src + 2]; out[dst + 5] = arr[src + 3];
+    }
+  });
+  return out;
+}
+
 // Shapes can morph into each other only with the same subpaths: equal point
 // counts and open/closed state, block by block.
 export function compatibleShapes(a, b) {

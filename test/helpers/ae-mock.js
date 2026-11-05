@@ -129,18 +129,24 @@ export function group(name, items, { position = [0, 0], rotation = 0, opacity = 
   ]);
 }
 
-export const rect = (name, size, roundness = 0) => G('ADBE Vector Shape - Rect', name, [
+export const rect = (name, size, roundness = 0, direction = 1) => G('ADBE Vector Shape - Rect', name, [
+  P('ADBE Vector Shape Direction', 'Shape Direction', direction),
   P('ADBE Vector Rect Size', 'Size', size),
   P('ADBE Vector Rect Position', 'Position', [0, 0], { spatial: true }),
   P('ADBE Vector Rect Roundness', 'Roundness', roundness),
 ]);
 
-export const ellipse = (name, size) => G('ADBE Vector Shape - Ellipse', name, [
+export const ellipse = (name, size, direction = 1) => G('ADBE Vector Shape - Ellipse', name, [
+  P('ADBE Vector Shape Direction', 'Shape Direction', direction),
   P('ADBE Vector Ellipse Size', 'Size', size),
   P('ADBE Vector Ellipse Position', 'Position', [0, 0], { spatial: true }),
 ]);
 
-export const path = (name, spec) => G('ADBE Vector Shape - Group', name, [P('ADBE Vector Shape', 'Path', spec)]);
+// Shape Direction: 1 and 2 draw as drawn, 3 reverses (AE 2026).
+export const path = (name, spec, direction = 1) => G('ADBE Vector Shape - Group', name, [
+  P('ADBE Vector Shape Direction', 'Shape Direction', direction),
+  P('ADBE Vector Shape', 'Path', spec),
+]);
 
 export const fill = (name, color, opacity = 100, blend = 1) => G('ADBE Vector Graphic - Fill', name, [
   P('ADBE Vector Blend Mode', 'Blend Mode', blend),

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { convert } from '../src/index.js';
 import { outlineShape } from '../src/taper.js';
-import { shapeToArray } from '../src/path.js';
+import { reverseBlocks, shapeToArray } from '../src/path.js';
 
 const fixture = name => JSON.parse(readFileSync(new URL(`./fixtures/${name}.ir.json`, import.meta.url), 'utf8'));
 const svgOf = name => convert(fixture(name)).svg;
@@ -124,7 +124,43 @@ test('a fill draws all its paths as one compound path (inner paths cut holes)', 
   assert.equal(fills.length, 1, 'one filled <path>');
   assert.equal((fills[0][1].match(/M/g) || []).length, 2, 'both squares are subpaths of it');
   assert.match(fills[0][0], /fill-rule="evenodd"/);
-  assert.equal((svg.match(/stroke="#000000"/g) || []).length, 2, 'strokes stay one path each');
+  assert.equal((svg.match(/stroke="#000000"/g) || []).length, 1, 'the stroke is one compound path too');
+});
+
+test('reversed paths run the other way from the same first vertex; nonzero holes follow', () => {
+  const sq = shapeToArray({ vertices: [[0, 0], [1, 0], [1, 1], [0, 1]], closed: true, outTangents: [[1, 2], [0, 0], [0, 0], [0, 0]] });
+  const rev = reverseBlocks(sq);
+  const vertex = (arr, k) => arr.slice(2 + 6 * k, 4 + 6 * k);
+  assert.deepEqual([0, 1, 2, 3].map(k => vertex(rev, k)), [[0, 0], [0, 1], [1, 1], [1, 0]]);
+  assert.deepEqual(rev.slice(4, 6), [1, 2], 'out tangent becomes the in tangent');
+  const open = shapeToArray({ vertices: [[0, 0], [1, 0]], closed: false });
+  assert.deepEqual(reverseBlocks(open), open, 'open paths are unchanged (AE)');
+
+  const ir = {
+    version: 1,
+    comp: { name: 'ring', width: 200, height: 200, duration: 1, frameRate: 30 },
+    layers: [{ id: 1, name: 'Ring', type: 'shape', transform: { position: [100, 100] }, contents: [
+      { type: 'ellipse', size: [40, 40], direction: 'reversed' },
+      { type: 'ellipse', size: [80, 80] },
+      { type: 'fill', color: [1, 0, 0, 1], opacity: 100, fillRule: 'nonzero' },
+    ] }],
+  };
+  const d = convert(ir).svg.match(/<path d="([^"]+)"/)[1];
+  const [inner, outer] = d.split('M').filter(Boolean);
+  assert.match(outer, /^0 -40C22\.091 -40 40/, 'outer ellipse clockwise from the top');
+  assert.match(inner, /^0 -20C-11\.046 -20 -20/, 'reversed inner ellipse counter-clockwise from the top');
+});
+
+test('strokes with Trim Paths stay one path each', () => {
+  const line = y => ({ type: 'path', path: { closed: false, vertices: [[0, y], [100, y]] } });
+  const ir = {
+    version: 1,
+    comp: { name: 'trimmed', width: 200, height: 200, duration: 1, frameRate: 30 },
+    layers: [{ id: 1, name: 'L', type: 'shape', transform: {}, contents: [
+      line(0), line(20), { type: 'stroke', color: [1, 1, 1, 1], opacity: 50, width: 4 }, { type: 'trim', end: 50 },
+    ] }],
+  };
+  assert.equal((convert(ir).svg.match(/<path /g) || []).length, 2);
 });
 
 test('compound fill keeps keyframes when its paths are keyed together', () => {

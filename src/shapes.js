@@ -4,8 +4,9 @@
 // AE semantics this follows:
 // - A group's items draw bottom-up. Each paint draws the paths above it in
 //   the same group, including paths in groups above it.
-// - A fill fills all of those paths as one compound shape, so with its fill
-//   rule an inner path cuts a hole (outlined Illustrator artwork).
+// - A paint draws all of those paths as one compound shape: with a fill's
+//   rule an inner path cuts a hole (outlined Illustrator artwork), and
+//   overlaps of a translucent fill or stroke are not painted twice.
 // - A modifier (Trim Paths) changes every path above it, including paths in
 //   groups above it, no matter where the paints are.
 // - Merge Paths combines the paths above it into one; paints below it draw
@@ -15,7 +16,7 @@
 
 import { KIND, combineTracks, mapTrack, trackIsStatic, trackValueAt } from './timeline.js';
 import { outlineShape } from './taper.js';
-import { arrayToD, ellipseShape, rectShape, shapeToArray } from './path.js';
+import { arrayToD, ellipseShape, rectShape, reverseBlocks, shapeToArray } from './path.js';
 import { orientClockwise, shapeLength, transformMatrix, transformShape } from './geometry.js';
 import { animate, displayToggle, element, finalize, newId, sampling, trackOf } from './anim.js';
 import { num } from './format.js';
@@ -46,7 +47,7 @@ function renderStack(items, ctx, where, end = items.length) {
       const style = paint(it, ctx, w);
       if (blend) blendStyle(style, blend);
       const entries = collectGeometry(items, i, ctx, where);
-      out += (style.kind === 'fill' ? compoundFill(entries, style, ctx) : entries.map(e => e.render(style))).join('');
+      out += compoundPaint(entries, style, ctx).join('');
     } else if (it.type === 'group') {
       const inner = renderStack(it.contents || [], ctx, w);
       if (inner) {
@@ -86,7 +87,7 @@ function blendStyle(style, css) {
 // Drawable entries for everything above index `end`:
 //   { track(): shape track in this group's space (null if not expressible),
 //     trimmed: the path's Trim Paths info (or false),
-//     compound: a plain path a fill can join into one compound path without
+//     compound: a plain path a paint can join into one compound path without
 //       baking (no animated group transform, no modifier in between),
 //     render(style) → SVG string }
 function collectGeometry(items, end, ctx, where) {
@@ -137,19 +138,23 @@ function nestEntry(e, tr, ctx, where) {
   };
 }
 
-// A fill's paths as one <path>, so its fill rule sees all subpaths together
-// like AE does: holes cut by inner paths, no double-painted overlaps. Entries
+// A paint's paths as one <path>, like AE draws them (verified in AE 2026):
+// the fill rule sees all subpaths together, so inner paths cut holes, and a
+// translucent fill or stroke doesn't double up where paths overlap. Entries
 // that can't join (behind an animated group transform, repeated, boolean
-// merges) are drawn on their own as before.
-function compoundFill(entries, style, ctx) {
-  const members = entries.filter(e => e.compound);
+// merges) are drawn on their own, and so are strokes with dashes, taper or
+// Trim Paths, which work per path.
+function compoundPaint(entries, style, ctx) {
+  const isFill = style.kind === 'fill';
+  if (!isFill && (style.dash || style.outline)) return entries.map(e => e.render(style));
+  const members = entries.filter(e => e.compound && (isFill || !e.trimmed));
   if (members.length < 2) return entries.map(e => e.render(style));
   for (const e of members) {
     if (e.trimmed) ctx.warn(e.trimmed.state.where, 'Trim Paths only trims strokes in the export; fills stay whole');
   }
   const r = finalize(concatShapes(members.map(e => e.track()), ctx), ctx, KIND.shape.tol);
   const compound = element('path', { d: arrayToD(r.value), ...style.attrs }, animate('d', r, arrayToD, ctx) + style.anims);
-  return entries.map(e => (e === members[0] ? compound : e.compound ? '' : e.render(style)));
+  return entries.map(e => (e === members[0] ? compound : members.includes(e) ? '' : e.render(style)));
 }
 
 // Shape tracks → one track of their concatenated subpaths. Concatenation is
@@ -184,7 +189,8 @@ function sameTiming(a, b) {
 
 function geometry(it, ctx, where) {
   if (ctx.geometry.has(it)) return ctx.geometry.get(it);
-  const track = it.type === 'path' ? trackOf(it.path, KIND.shape, ctx, where) : primitiveTrack(it, ctx, where);
+  let track = it.type === 'path' ? trackOf(it.path, KIND.shape, ctx, where) : primitiveTrack(it, ctx, where);
+  if (it.direction === 'reversed') track = mapTrack(track, reverseBlocks);
   const r = finalize(track, ctx, KIND.shape.tol);
   const g = { track, value: r.value, d: arrayToD(r.value), anim: animate('d', r, arrayToD, ctx) };
   ctx.geometry.set(it, g);

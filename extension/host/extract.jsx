@@ -322,6 +322,7 @@ var BetterLottie = (function () {
       if (p.enabled === false) it.enabled = false;
       var shapeBlend = SHAPE_BLEND_MODES[value(p, 'ADBE Vector Blend Mode')];
       if (shapeBlend && shapeBlend !== 'normal') it.blendMode = shapeBlend;
+      if ((type === 'path' || type === 'rect' || type === 'ellipse') && value(p, 'ADBE Vector Shape Direction') === 3) it.direction = 'reversed';
       switch (type) {
         case 'group':
           it.transform = readTransform(p.property('ADBE Vector Transform Group'), GROUP_TRANSFORM, ctx, w);

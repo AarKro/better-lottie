@@ -67,6 +67,9 @@
 //   { type: 'path', path: Prop<Shape> }
 //   { type: 'rect', size: Prop<[w,h]>, position: Prop<[x,y]>, roundness: Prop<number> }
 //   { type: 'ellipse', size: Prop<[w,h]>, position: Prop<[x,y]> }
+//   Paths, rects and ellipses may carry direction: 'reversed' (AE "Reverse
+//   Path Direction"): closed subpaths run the other way from the same first
+//   vertex; open ones are unchanged. With nonzero fills this decides holes.
 //   { type: 'fill', color: Prop<rgb>, opacity: Prop<number>, fillRule?: 'nonzero'|'evenodd' }
 //   { type: 'stroke', color, opacity, width: Prop<number>,
 //     lineCap?: 'butt'|'round'|'square', lineJoin?: 'miter'|'round'|'bevel', miterLimit?: number,
