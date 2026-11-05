@@ -9,7 +9,7 @@ import { wrapTransform } from './transform.js';
 import { applyMasks, applyMatte } from './masks.js';
 import { cssBlend } from './blend.js';
 
-export const VERSION = '0.3.2';
+export const VERSION = '0.3.3';
 
 /**
  * @param {import('./ir.js').IR} ir

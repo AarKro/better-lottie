@@ -1,6 +1,6 @@
 {
   "name": "better-lottie",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Export After Effects shape animations as self-animating SVG (SMIL) files.",
   "type": "module",
   "bin": {
