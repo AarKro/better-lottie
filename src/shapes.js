@@ -4,6 +4,8 @@
 // AE semantics this follows:
 // - A group's items draw bottom-up. Each paint draws the paths above it in
 //   the same group, including paths in groups above it.
+// - A fill fills all of those paths as one compound shape, so with its fill
+//   rule an inner path cuts a hole (outlined Illustrator artwork).
 // - A modifier (Trim Paths) changes every path above it, including paths in
 //   groups above it, no matter where the paints are.
 // - Merge Paths combines the paths above it into one; paints below it draw
@@ -43,7 +45,8 @@ function renderStack(items, ctx, where, end = items.length) {
     if (PAINTS.has(it.type)) {
       const style = paint(it, ctx, w);
       if (blend) blendStyle(style, blend);
-      out += collectGeometry(items, i, ctx, where).map(e => e.render(style)).join('');
+      const entries = collectGeometry(items, i, ctx, where);
+      out += (style.kind === 'fill' ? compoundFill(entries, style, ctx) : entries.map(e => e.render(style))).join('');
     } else if (it.type === 'group') {
       const inner = renderStack(it.contents || [], ctx, w);
       if (inner) {
@@ -82,7 +85,10 @@ function blendStyle(style, css) {
 
 // Drawable entries for everything above index `end`:
 //   { track(): shape track in this group's space (null if not expressible),
-//     trimmed, render(style) → SVG string }
+//     trimmed: the path's Trim Paths info (or false),
+//     compound: a plain path a fill can join into one compound path without
+//       baking (no animated group transform, no modifier in between),
+//     render(style) → SVG string }
 function collectGeometry(items, end, ctx, where) {
   let entries = [];
   for (let j = 0; j < end; j++) {
@@ -92,7 +98,8 @@ function collectGeometry(items, end, ctx, where) {
     if (GEOMETRY.has(it.type)) {
       entries.push({
         track: () => geometry(it, ctx, w).track,
-        trimmed: ctx.trimOf.has(it),
+        trimmed: ctx.trimOf.get(it) || false,
+        compound: true,
         render: style => pathElement(it, style, ctx, w),
       });
     } else if (it.type === 'group') {
@@ -115,18 +122,62 @@ function collectGeometry(items, end, ctx, where) {
 // An entry from a sub-group: drawn inside the group's transform, or
 // flattened into this group's space when merged.
 function nestEntry(e, tr, ctx, where) {
+  const m = matrixTrack(tr, ctx, where);
   return {
     track() {
       const inner = e.track();
       if (!inner) return null;
-      const m = matrixTrack(tr, ctx, where);
       return combineTracks([inner, ...m.parts],
         (shape, pos, rot, scale, anchor) => transformShape(shape, transformMatrix(pos, rot[0], scale, anchor)),
         sampling(ctx, KIND.shape.tol, !m.moving));
     },
     trimmed: e.trimmed,
+    compound: e.compound && !m.moving,
     render: style => wrapTransform(tr, e.render(style), ctx, where, { opacity: false }),
   };
+}
+
+// A fill's paths as one <path>, so its fill rule sees all subpaths together
+// like AE does: holes cut by inner paths, no double-painted overlaps. Entries
+// that can't join (behind an animated group transform, repeated, boolean
+// merges) are drawn on their own as before.
+function compoundFill(entries, style, ctx) {
+  const members = entries.filter(e => e.compound);
+  if (members.length < 2) return entries.map(e => e.render(style));
+  for (const e of members) {
+    if (e.trimmed) ctx.warn(e.trimmed.state.where, 'Trim Paths only trims strokes in the export; fills stay whole');
+  }
+  const r = finalize(concatShapes(members.map(e => e.track()), ctx), ctx, KIND.shape.tol);
+  const compound = element('path', { d: arrayToD(r.value), ...style.attrs }, animate('d', r, arrayToD, ctx) + style.anims);
+  return entries.map(e => (e === members[0] ? compound : e.compound ? '' : e.render(style)));
+}
+
+// Shape tracks → one track of their concatenated subpaths. Concatenation is
+// linear, so when every moving shape has the same keyframe times and easing
+// (e.g. a compound path keyed as a whole) the keyframes carry over exactly;
+// otherwise combineTracks bakes it.
+function concatShapes(tracks, ctx) {
+  const concat = (...arrs) => [].concat(...arrs);
+  const moving = tracks.filter(t => !trackIsStatic(t));
+  const ref = moving[0];
+  if (moving.length > 1 && moving.every(t => sameTiming(t, ref))) {
+    return {
+      stops: ref.stops.map((s, k) => ({ t: s.t, v: concat(...tracks.map(t => (trackIsStatic(t) ? t.stops[0] : t.stops[k]).v)) })),
+      segs: ref.segs,
+    };
+  }
+  return combineTracks(tracks, concat, sampling(ctx, KIND.shape.tol));
+}
+
+function sameTiming(a, b) {
+  const near = (x, y) => Math.abs(x - y) < 1e-9;
+  return a.stops.length === b.stops.length
+    && a.stops.every((s, k) => near(s.t, b.stops[k].t))
+    && a.segs.every((s, k) => {
+      const o = b.segs[k];
+      if (s.hold || o.hold) return !!s.hold === !!o.hold;
+      return s.spline.every((x, c) => near(x, o.spline[c]));
+    });
 }
 
 // --- geometry ---
@@ -390,7 +441,7 @@ function mergeEntry(entries, it, ctx, where) {
 // merge: union, via clockwise subpaths + nonzero. exclude: evenodd (XOR).
 function combinedEntry(tracks, mode, ctx, where) {
   const prepared = mode === 'merge' ? tracks.map(t => mapTrack(t, orientClockwise)) : tracks;
-  const combined = combineTracks(prepared, (...arrs) => [].concat(...arrs), sampling(ctx, KIND.shape.tol));
+  const combined = concatShapes(prepared, ctx);
   const r = finalize(combined, ctx, KIND.shape.tol);
   const d = arrayToD(r.value);
   const anim = animate('d', r, arrayToD, ctx);

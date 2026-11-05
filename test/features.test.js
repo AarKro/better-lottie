@@ -102,3 +102,41 @@ test('visibility switches land half a frame before their frame', () => {
   // parenting fixture: 30 fps, layer in at 1 s → switch at 1 − 1/60 s
   assert.match(svgOf('parenting'), /keyTimes="0;0\.491667;0\.741667"/);
 });
+
+test('a fill draws all its paths as one compound path (inner paths cut holes)', () => {
+  const square = (r, t) => ({ type: 'path', name: `Square ${r}`, path: {
+    closed: true, vertices: [[-r, -r], [r, -r], [r, r], [-r, r]], inTangents: [], outTangents: [] } });
+  const ir = {
+    version: 1,
+    comp: { name: 'compound', width: 200, height: 200, duration: 1, frameRate: 30 },
+    layers: [{
+      id: 1, name: 'Whisk', type: 'shape', transform: { position: [100, 100] },
+      contents: [
+        square(20),
+        { type: 'group', name: 'Outer', transform: { position: [0, 0] }, contents: [square(80)] },
+        { type: 'fill', color: [1, 0, 0, 1], opacity: 100, fillRule: 'evenodd' },
+        { type: 'stroke', color: [0, 0, 0, 1], opacity: 100, width: 2 },
+      ],
+    }],
+  };
+  const svg = convert(ir).svg;
+  const fills = [...svg.matchAll(/<path d="([^"]+)"[^>]*fill="#ff0000"[^>]*>/g)];
+  assert.equal(fills.length, 1, 'one filled <path>');
+  assert.equal((fills[0][1].match(/M/g) || []).length, 2, 'both squares are subpaths of it');
+  assert.match(fills[0][0], /fill-rule="evenodd"/);
+  assert.equal((svg.match(/stroke="#000000"/g) || []).length, 2, 'strokes stay one path each');
+});
+
+test('compound fill keeps keyframes when its paths are keyed together', () => {
+  const morph = r => ({ type: 'path', path: { keyframes: [0, 1].map(t => ({ t, v: {
+    closed: true, vertices: [[-r - t * 10, 0], [0, -r], [r, 0], [0, r]], inTangents: [], outTangents: [] } })) } });
+  const ir = {
+    version: 1,
+    comp: { name: 'compound-morph', width: 200, height: 200, duration: 1, frameRate: 30 },
+    layers: [{ id: 1, name: 'L', type: 'shape', transform: { position: [100, 100] },
+      contents: [morph(20), morph(60), { type: 'fill', color: [1, 0, 0, 1], opacity: 100 }] }],
+  };
+  const anim = convert(ir).svg.match(/<animate attributeName="d" values="([^"]+)"/);
+  assert.ok(anim);
+  assert.equal(anim[1].split(';').length, 2, 'two keyframes, not baked per frame');
+});
