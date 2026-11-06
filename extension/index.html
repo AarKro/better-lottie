@@ -11,6 +11,7 @@
       <button type="button" id="export" class="primary">Export SVG…</button>
       <div class="row">
         <button type="button" id="preview">Preview</button>
+        <button type="button" id="prepare" title="Copy this comp with its Illustrator and text layers converted to shape layers">Prepare comp</button>
         <button type="button" id="save-ir" title="Save the extracted data for bug reports and test fixtures">Save IR…</button>
       </div>
     </section>
@@ -23,6 +24,7 @@
     <p id="status" class="status" role="status">Select a composition, then export.</p>
 
     <section id="result" hidden>
+      <p id="notice" class="notice" hidden></p>
       <div id="stage" class="stage"></div>
       <p id="meta" class="meta"></p>
 

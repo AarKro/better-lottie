@@ -24,7 +24,7 @@ AE project ──(ExtendScript: extract)──▶ IR JSON ──(JS: convert)─
 
 Two separate halves, kept separate on purpose:
 
-1. **Extractor** (`extension/host/*.jsx`, ExtendScript). Walks the active comp and writes a neutral **intermediate representation (IR)** as JSON. It only reads AE and does no SVG logic.
+1. **Extractor** (`extension/host/extract.jsx`, ExtendScript). Walks the active comp and writes a neutral **intermediate representation (IR)** as JSON. It only reads AE and does no SVG logic. The one host script that changes the project is `prepare.jsx` ("Prepare comp"), which the panel loads on first use (`$.evalFile`, path from `getSystemPath('extension')`).
 2. **Converter** (`src/`, modern JS, no AE dependency). Turns the IR into an SVG string. It runs inside the CEP panel (Chromium/Node) **and** in plain Node for tests.
 
 The point of the split: almost all the logic lives in the converter, which can be tested in Node with fixture IR files and needs no After Effects. Keep the `.jsx` side as thin as possible.
@@ -62,6 +62,7 @@ better-lottie/
     panel.js               # UI; calls the host via __adobe_cep__.evalScript (no CSInterface.js)
     lib/better-lottie.js   # converter bundle, built by `npm run build` (gitignored)
     host/extract.jsx       # ExtendScript: active comp → IR JSON string; save dialog + file write
+    host/prepare.jsx       # "Prepare comp": copy of the comp with Illustrator/text layers → shape layers
 ```
 
 ### Commands
@@ -80,7 +81,7 @@ better-lottie/
 
 ### Status
 - **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave.
-- **Extension:** panel (Export SVG, Preview, Save IR, loop/background options, warnings, usage snippet) and extractor. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
+- **Extension:** panel (Export SVG, Preview, Prepare comp, Save IR, loop/background options, warnings, usage snippet) and extractor. Prepare comp is verified in AE 2026 by script (renders before/after identical); the panel button and loading `prepare.jsx` from the panel are **not yet tested inside AE**. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
 - **Verified against AE renders** (`test/ae/`, pixel diffs ≤ 2.5/255 on average, only anti-aliased edges differ): masks (all modes, feather, inverted, opacity, expansion, animated path), all four track matte types incl. an animated matte, repeaters (offset, fractional copies, composite order), taper (ease 0–100), wave, gradient Scale/Rotation.
 - **Blend modes verified in AE:** every layer and shape-level mode with a CSS equivalent matches AE renders to within 2/255 (Soft Light included); comps `blend-layers` and `blend-shapes` in the scratch project.
 - **Release package:** the 0.3.1 `.zxp` installs via aescripts' ZXP Installer and loads in AE 2026 on macOS with the dev link removed. Windows install untested.
@@ -103,6 +104,7 @@ Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The
 - **Track mattes:** `trackMatteType`, `trackMatteLayer` (AE 2023+, else the layer above), matte layers report `enabled=false`, `isTrackMatte=true`. Luma uses sRGB luminance (0.4 gray at 60% → 0.24).
 - **Repeater:** `ADBE Vector Repeater Copies/Offset/Order` (Order 1 = below: copy 0 on top; 2 = above) and `…Transform` with `Anchor/Position/Scale/Rotation/Opacity 1/Opacity 2`. Copy k = translate(position·k) · rotate/scale^k about the anchor (positions are not rotated by earlier copies). Opacity of copy i = start + (end − start)·i/⌈copies⌉; a fractional count fades the last copy by the fraction.
 - **Taper/Wave:** Length Units 1 = percent (`…Start Length`), 2 = pixels (`…StartWidthPx`); Wave Units 1 = wavelength px, 2 = cycles. Width in a taper = start width + (1 − start width)·bezier(handles (0,e), (1−e,1)) with e = ease/100. Wave: W·(1 − A/2 − A/2·cos(2π·cycles·s + phase)). Setting a hidden stream (e.g. Wave Cycles while Units = px) throws in scripts.
+- **Create Shapes from Vector Layer** (command 3973; from Text: 3781) acts on the selected layers of the comp open in the viewer (other selected types are ignored). The new `<name> Outlines` shape layer goes directly above the original and gets its transform (keyframes, expressions), parent, in/out, stretch, effects and masks; the original is switched off. **Not** copied: blend mode, motion blur, its own track matte; children and matted layers keep pointing at the original. Renders identically. `prepare.jsx` fixes these up, re-parents with `setParentWithJump` (plain `.parent =` changes the child's values), takes the original's name, removes the original. Text animators are baked to the current time. The new shapes are unsaved, so their gradient colors can't be read until the project is saved. Footage layers whose source is `.ai/.eps/.pdf` get `vector: true` in the IR.
 - `saveFrameToPng` writes colors already composited over the comp background, plus alpha: compare against SVGs rendered *with* the background.
 - Still unverified: ease `speed` units for color and path properties (treated as progress/s); `File.saveDlg` without a filter on macOS works in practice.
 
@@ -152,7 +154,7 @@ With the user's OK (it drives their open AE), run read-only scripts via `osascri
 - Export the work area only; "start paused" option
 
 ### Out of scope
-Effects, 3D layers and cameras, blend modes, text (tell users to use "Create Shapes from Text"), images and video, and the remaining shape modifiers (polystar, offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
+Effects, 3D layers and cameras, blend modes, text and Illustrator layers (point users to "Prepare comp"), images and video, and the remaining shape modifiers (polystar, offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
 
 ## Key conversion rules (where it's easy to get wrong)
 

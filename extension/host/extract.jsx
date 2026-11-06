@@ -414,6 +414,16 @@ var BetterLottie = (function () {
     return 'footage';
   }
 
+  // Illustrator, EPS and PDF footage: AE's "Create Shapes from Vector Layer"
+  // can convert it (the panel's "Prepare comp" does that on a copy).
+  function isVectorFootage(layer) {
+    try {
+      return !!(layer.source && layer.source.file && /\.(ai|eps|pdf)$/i.test(layer.source.file.name));
+    } catch (e) {
+      return false;
+    }
+  }
+
   function readLayer(layer, ctx) {
     var where = 'layer "' + layer.name + '"';
     var L = {
@@ -425,6 +435,7 @@ var BetterLottie = (function () {
     };
     if (!layer.enabled || layer.guideLayer) L.enabled = false;
     if (layer.parent) L.parent = layer.parent.index;
+    if (L.type === 'footage' && isVectorFootage(layer)) L.vector = true;
     if (L.type === 'camera' || L.type === 'light') return L;
     // Hidden layers still pass their transform to children, so read it anyway.
     L.transform = readTransform(layer.property('ADBE Transform Group'), LAYER_TRANSFORM, ctx, where);
@@ -444,7 +455,11 @@ var BetterLottie = (function () {
     try { if (layer.timeRemapEnabled) ctx.warn(where, 'time remapping is not supported (ignored)'); } catch (e4) {}
     try {
       var fx = layer.property('ADBE Effect Parade');
-      if (fx && fx.numProperties) ctx.warn(where, 'effects are not supported (ignored)');
+      if (fx && fx.numProperties) {
+        var names = [];
+        for (var f = 1; f <= fx.numProperties; f++) names.push(fx.property(f).name);
+        ctx.warn(where, 'effects are not supported (ignored): ' + names.join(', '));
+      }
     } catch (e5) {}
     L.masks = readMasks(layer, ctx, where);
 

@@ -33,6 +33,19 @@
     return data;
   }
 
+  // prepare.jsx changes the project, so it isn't the panel's main host script;
+  // it's loaded the first time "Prepare comp" is used.
+  var prepLoaded = false;
+
+  async function loadPrep() {
+    if (prepLoaded) return;
+    // getSystemPath gives a file URL: file:///Users/… on macOS, file:///C:/… on Windows.
+    var dir = decodeURIComponent(cep.getSystemPath('extension').replace(/^file:\/\/(\/(?=[A-Za-z]:))?/, ''));
+    var raw = await evalHost('try { $.evalFile(' + literal(dir + '/host/prepare.jsx') + '); "ok" } catch (e) { String(e) }');
+    if (raw !== 'ok') throw new Error('Could not load prepare.jsx: ' + raw);
+    prepLoaded = true;
+  }
+
   function applyHostTheme() {
     try {
       var c = JSON.parse(cep.getHostEnvironment()).appSkinInfo.panelBackgroundColor.color;
@@ -76,6 +89,29 @@
     });
   }
 
+  async function onPrepare() {
+    await run('Preparing…', async function () {
+      if (cep) await loadPrep();
+      var prep = await callHost('prepareActiveComp');
+      if (!prep.id) {
+        if (prep.warnings.length) throw new Error('Nothing in "' + prep.comp + '" could be converted. ' + prep.warnings.join(' '));
+        return 'Nothing to prepare: "' + prep.comp + '" has no Illustrator or text layers.';
+      }
+      var n = prep.converted.length;
+      var done = 'Created "' + prep.comp + '" with ' + n + ' layer' + (n === 1 ? '' : 's') + ' converted to shapes. ';
+      if (prep.needsSave) {
+        // The gradients would preview black to white until then.
+        $('result').hidden = true;
+        return done + 'Save the project (gradient colors are read from the saved file), then preview or export it.';
+      }
+      // The prepared copy is now the active comp: preview it right away.
+      var r = await convertActiveComp();
+      r.warnings = prep.warnings.concat(r.warnings);
+      show(r);
+      return done + 'Check it against the original, then export it.';
+    });
+  }
+
   async function onSaveIR() {
     await run('Extracting…', async function () {
       var ir = await callHost('extractActiveComp');
@@ -99,8 +135,20 @@
 
   // --- rendering ---
 
+  // Layers "Prepare comp" can turn into shapes.
+  function convertible(ir) {
+    return ir.layers.filter(function (l) {
+      return l.enabled !== false && ((l.type === 'footage' && l.vector) || l.type === 'text');
+    }).length;
+  }
+
   function show(r) {
     last = { svg: r.svg, fileName: r.fileName };
+    var n = convertible(r.ir);
+    $('notice').hidden = n === 0;
+    $('notice').textContent = n + ' Illustrator or text layer' + (n === 1 ? ' is' : 's are')
+      + ' missing from the SVG. Click "Prepare comp" to make a copy of this comp with '
+      + (n === 1 ? 'it' : 'them') + ' converted to shape layers, then export the copy.';
     $('result').hidden = false;
     $('stage').innerHTML = r.svg;
     // An inserted SVG joins the page's clock mid-loop; start it from frame 0.
@@ -112,16 +160,20 @@
     $('meta').textContent = r.ir.comp.width + '×' + r.ir.comp.height + ' · ' + r.ir.comp.duration.toFixed(2) + 's · '
       + shapeLayers + ' shape layer' + (shapeLayers === 1 ? '' : 's') + ' · ' + kb + ' KB';
 
+    renderWarnings(r.warnings);
+    renderSnippet();
+  }
+
+  function renderWarnings(warnings) {
     var list = $('warnings');
     list.innerHTML = '';
-    r.warnings.forEach(function (w) {
+    warnings.forEach(function (w) {
       var li = document.createElement('li');
       li.textContent = w;
       list.appendChild(li);
     });
-    $('warnings-box').hidden = r.warnings.length === 0;
-    $('warnings-title').textContent = r.warnings.length + ' warning' + (r.warnings.length === 1 ? '' : 's');
-    renderSnippet();
+    $('warnings-box').hidden = warnings.length === 0;
+    $('warnings-title').textContent = warnings.length + ' warning' + (warnings.length === 1 ? '' : 's');
   }
 
   function renderSnippet() {
@@ -150,6 +202,7 @@
 
   $('export').addEventListener('click', onExport);
   $('preview').addEventListener('click', onPreview);
+  $('prepare').addEventListener('click', onPrepare);
   $('save-ir').addEventListener('click', onSaveIR);
   $('copy').addEventListener('click', copySnippet);
 }());

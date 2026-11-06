@@ -58,6 +58,15 @@ button.small { padding: 2px 8px; font-size: 11px; }
 }
 .stage svg { display: block; width: 100%; height: auto; max-height: 50vh; }
 
+.notice {
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--warn);
+  border-radius: 4px;
+  color: var(--warn);
+}
+.notice[hidden] { display: none; }
+
 .meta { margin: 6px 0 0; color: var(--muted); font-variant-numeric: tabular-nums; }
 
 details { margin-top: 10px; }

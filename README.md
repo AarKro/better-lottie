@@ -45,9 +45,18 @@ Tools like Lottie export your animation as data that needs a JavaScript player o
 ## How to use it
 
 1. **Open the composition** you want to export, or select it in the Project panel.
-2. Click **Preview** to see the result in the panel without saving anything.
+2. Click **Preview** to see the result in the panel without saving anything. If the comp has Illustrator or text layers, the panel says so: click **Prepare comp** (see below) and continue with the copy it makes.
 3. Click **Export SVG…** and choose where to save the file.
 4. Copy the `<img>` snippet the panel shows and use it on your website.
+
+### Prepare comp: Illustrator and text layers
+
+better-lottie exports shape layers. **Prepare comp** makes a copy of the open comp, named "<comp> [better-lottie]", in which every Illustrator (`.ai`, `.eps`, `.pdf`) layer and text layer is turned into a shape layer, using After Effects' own *Create Shapes from Vector Layer* and *Create Shapes from Text*. Animation, parenting, track mattes, blend modes and effects stay as they were.
+
+- Your original comp and your Illustrator files are not changed. The copy is a new comp in your project; one **Edit › Undo** removes it again.
+- **Save the project** after preparing if the artwork has gradients. better-lottie reads gradient colors from the saved project file. The panel reminds you.
+- The Illustrator files must be available. If one is missing (a red-bar placeholder), relink it with **File › Replace Footage** first.
+- Text animators don't carry over: the shapes show the text as it looks at the current time.
 
 ### Options
 
@@ -73,13 +82,12 @@ If your composition uses something better-lottie can't export, the panel lists i
 
 ### Not supported
 
-Effects, text layers, images and video, 3D layers and cameras, precomps, blend modes that browsers don't have (e.g. Linear Burn, Vivid Light, Pin Light, Hard Mix, Subtract, Divide; these export as Normal), and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners, Polystar).
+Effects, text layers and Illustrator layers (until converted with **Prepare comp**), images and video, 3D layers and cameras, precomps, blend modes that browsers don't have (e.g. Linear Burn, Vivid Light, Pin Light, Hard Mix, Subtract, Divide; these export as Normal), and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners, Polystar).
 
 ## Tips
 
 - **Save your project before exporting** if it uses gradients. After Effects doesn't let extensions read gradient colors directly, so better-lottie reads them from the saved project file.
-- **Illustrator artwork:** right-click the layer and choose **Create › Create Shapes from Vector Layer** first. Only shape layers are exported.
-- **Text:** right-click the text layer and choose **Create › Create Shapes from Text**.
+- **Illustrator artwork and text:** use **Prepare comp**, or convert layers yourself: right-click the layer and choose **Create › Create Shapes from Vector Layer** (or **Create Shapes from Text**). Only shape layers are exported.
 - **Keep it simple:** shape-based animations with a moderate number of layers give the smallest files.
 
 ## Using the SVG on a website

@@ -75,12 +75,25 @@ function hash(s) {
   return (h >>> 0).toString(36).slice(0, 5);
 }
 
+// Illustrator and text layers have a fix: AE can turn them into shape layers.
+function unsupportedLayer(layer) {
+  if (layer.type === 'footage' && layer.vector) {
+    return 'Illustrator layers are not supported (skipped); convert them with "Prepare comp" in the panel'
+      + ' or Layer › Create › Create Shapes from Vector Layer';
+  }
+  if (layer.type === 'text') {
+    return 'text layers are not supported (skipped); convert them with "Prepare comp" in the panel'
+      + ' or Layer › Create › Create Shapes from Text';
+  }
+  return `${layer.type} layers are not supported (skipped)`;
+}
+
 // force: render even when hidden (track matte layers are hidden in AE).
 function renderLayer(layer, ctx, { force = false } = {}) {
   const where = `layer "${layer.name}"`;
   if ((layer.enabled === false && !force) || layer.type === 'null') return '';
   if (layer.type !== 'shape') {
-    ctx.warn(where, `${layer.type} layers are not supported (skipped)`);
+    ctx.warn(where, unsupportedLayer(layer));
     return '';
   }
   if (layer.threeD) ctx.warn(where, '3D layer exported as 2D');

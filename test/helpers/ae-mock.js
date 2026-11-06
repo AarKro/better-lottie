@@ -41,6 +41,7 @@ export class Property {
     this.expressionEnabled = !!this.exprFn;
     this.expression = this.exprFn ? '/* mock */' : '';
     this.enabled = true;
+    this.propertyType = 6812; // PropertyType.PROPERTY
     // AE: true once edited, keyframed or given an expression.
     this.isModified = modified || this.keys.length > 0 || !!this.exprFn;
   }
@@ -64,6 +65,7 @@ export class PropertyGroup {
     this.name = name;
     this.children = children;
     this.enabled = true;
+    this.propertyType = 6814; // PropertyType.NAMED_GROUP
   }
   get numProperties() { return this.children.length; }
   property(x) {
@@ -79,6 +81,7 @@ export class Layer {
       blendingMode: BlendingMode.NORMAL, trackMatteType: TrackMatteType.NO_TRACK_MATTE,
       timeRemapEnabled: false, nullLayer: false, adjustmentLayer: false, source: null, groups: {},
       autoOrient: AutoOrientType.NO_AUTO_ORIENT, isTrackMatte: false, trackMatteLayer: null,
+      locked: false, shy: false, selected: false, motionBlur: false, stretch: 100, label: 1, comment: '',
     }, props);
   }
   property(matchName) { return this.groups[matchName] || null; }
@@ -89,11 +92,78 @@ export class TextLayer extends AVLayer {}
 export class CameraLayer extends Layer {}
 export class LightLayer extends Layer {}
 export class SolidSource {}
+export class FileSource {}
+
+// file: { name }; shapes: the shape contents "Create Shapes from Vector Layer" makes from it.
+export class FootageItem {
+  constructor(props) { Object.assign(this, { footageMissing: false, mainSource: new FileSource(), shapes: [] }, props); }
+}
+
+export const PropertyType = { PROPERTY: 6812, INDEXED_GROUP: 6813, NAMED_GROUP: 6814 };
+
+let currentApp = null; // the app of the last loadHost, for openInViewer
+
+// Layers in a comp built from these keep `index` in sync with their position.
+const LAYER_METHODS = {
+  setTrackMatte(matte, type) {
+    this.trackMatteLayer = matte;
+    this.trackMatteType = type;
+    matte.isTrackMatte = true;
+    matte.enabled = false; // AE switches a matte layer off
+  },
+  setParentWithJump(parent) { this.parent = parent; },
+  remove() { this.comp.layers.splice(this.comp.layers.indexOf(this), 1); this.comp.reindex(); },
+};
+Object.assign(Layer.prototype, LAYER_METHODS);
 
 export class CompItem {
   constructor(props) { Object.assign(this, { layers: [] }, props); }
   get numLayers() { return this.layers.length; }
   layer(i) { return this.layers[i - 1]; }
+  reindex() { this.layers.forEach((l, i) => { l.index = i + 1; l.comp = this; }); }
+  openInViewer() { if (currentApp) currentApp.project.activeItem = this; }
+  remove() { if (currentApp) currentApp.project.removed.push(this); }
+  // Layers are copied shallowly; parents and mattes point into the copy.
+  duplicate() {
+    const copy = new CompItem({ ...this, id: this.id + 1000, layers: [] });
+    copy.layers = this.layers.map(l => Object.assign(Object.create(Object.getPrototypeOf(l)), l));
+    const map = new Map(this.layers.map((l, i) => [l, copy.layers[i]]));
+    for (const l of copy.layers) {
+      if (l.parent) l.parent = map.get(l.parent);
+      if (l.trackMatteLayer) l.trackMatteLayer = map.get(l.trackMatteLayer);
+    }
+    copy.reindex();
+    if (currentApp) currentApp.project.items.push(copy);
+    return copy;
+  }
+}
+
+// AE's Create Shapes from Vector Layer (3973) / from Text (3781) on the
+// selected layers, as verified in AE 2026: a "<name> Outlines" shape layer
+// goes directly above the original with its transform, parent, timing, time
+// stretch, effects and masks; the original is switched off. Blend mode, motion
+// blur and the track matte are not copied; children and matted layers keep
+// pointing at the original.
+function createShapes(comp, command) {
+  for (const layer of comp.layers.filter(l => l.selected)) {
+    const vector = layer.source instanceof FootageItem && /\.(ai|eps|pdf)$/i.test(layer.source.file.name);
+    if (command === 3973 ? !vector || layer.source.footageMissing : !(layer instanceof TextLayer)) continue;
+    const contents = command === 3973 ? layer.source.shapes : [G('ADBE Vector Group', 'T', [])];
+    const shape = new ShapeLayer({
+      name: `${layer.name} Outlines`, parent: layer.parent, inPoint: layer.inPoint, outPoint: layer.outPoint,
+      stretch: layer.stretch, selected: true, label: 8,
+      groups: {
+        'ADBE Transform Group': layer.groups['ADBE Transform Group'],
+        'ADBE Root Vectors Group': G('ADBE Root Vectors Group', 'Contents', contents),
+        'ADBE Effect Parade': layer.groups['ADBE Effect Parade'] || G('ADBE Effect Parade', 'Effects', []),
+        'ADBE Mask Parade': layer.groups['ADBE Mask Parade'] || G('ADBE Mask Parade', 'Masks', []),
+      },
+    });
+    comp.layers.splice(comp.layers.indexOf(layer), 0, shape);
+    layer.enabled = false;
+    layer.selected = false;
+  }
+  comp.reindex();
 }
 
 // --- builders ---
@@ -272,28 +342,39 @@ class MockFile {
 
 // Runs a host script against `activeItem` and returns its BetterLottie object.
 // projectFile: path of a RIFX file standing in for the saved .aep.
-export function loadHost(file, activeItem, { projectFile = null, items = [] } = {}) {
+// files: one host script or several, run in order (prepare.jsx after extract.jsx).
+// The returned object also exposes the mock `app` as `.app`.
+export function loadHost(files, activeItem, { projectFile = null, items = [] } = {}) {
   const settings = new Map();
-  const context = vm.createContext({
-    app: {
-      project: {
-        activeItem,
-        file: projectFile ? new MockFile(projectFile) : null,
-        dirty: false,
-        itemByID: id => [activeItem, ...items].find(i => i && i.id === id) || null,
-      },
-      settings: {
-        haveSetting: (s, k) => settings.has(`${s}/${k}`),
-        getSetting: (s, k) => settings.get(`${s}/${k}`),
-        saveSetting: (s, k, v) => settings.set(`${s}/${k}`, v),
-      },
+  if (activeItem instanceof CompItem) activeItem.reindex();
+  const app = {
+    project: {
+      activeItem,
+      items: [activeItem, ...items],
+      removed: [],
+      file: projectFile ? new MockFile(projectFile) : null,
+      dirty: false,
+      itemByID: id => app.project.items.find(i => i && i.id === id) || null,
     },
+    settings: {
+      haveSetting: (s, k) => settings.has(`${s}/${k}`),
+      getSetting: (s, k) => settings.get(`${s}/${k}`),
+      saveSetting: (s, k, v) => settings.set(`${s}/${k}`, v),
+    },
+    undoGroups: [],
+    beginUndoGroup: name => app.undoGroups.push(name),
+    endUndoGroup: () => app.undoGroups.push('end'),
+    executeCommand: id => createShapes(app.project.activeItem, id),
+  };
+  currentApp = app;
+  const context = vm.createContext({
+    app,
     File: MockFile,
-    KeyframeInterpolationType, BlendingMode, TrackMatteType, AutoOrientType, MaskMode, Shape,
-    CompItem, ShapeLayer, TextLayer, CameraLayer, LightLayer, SolidSource,
+    KeyframeInterpolationType, BlendingMode, TrackMatteType, AutoOrientType, MaskMode, Shape, PropertyType,
+    CompItem, ShapeLayer, TextLayer, CameraLayer, LightLayer, SolidSource, FootageItem, FileSource,
   });
-  vm.runInContext(readFileSync(file, 'utf8'), context, { filename: file });
-  return context.BetterLottie;
+  for (const file of [].concat(files)) vm.runInContext(readFileSync(file, 'utf8'), context, { filename: file });
+  return Object.assign(context.BetterLottie, { app });
 }
 
 // --- a minimal .aep (RIFX) for gradient colors ---

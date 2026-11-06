@@ -26,6 +26,8 @@
 // @property {string} name
 // @property {'shape'|'null'|string} type  other types are reported and skipped
 // @property {boolean} [enabled]        false = eye switch off, skipped
+// @property {boolean} [vector]         footage from an Illustrator, EPS or PDF file; "Prepare comp"
+//                                      in the panel turns these into shape layers
 // @property {number|null} [parent]     id of the parent layer
 // @property {number} [inPoint]         defaults to 0
 // @property {number} [outPoint]        defaults to comp.duration
