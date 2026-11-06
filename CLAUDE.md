@@ -37,7 +37,7 @@ better-lottie/
     ir.js                  # IR spec (JSDoc) + validate(). Source of truth for the IR.
     easing.js              # AE speed/influence ↔ bezier, keySpline normalization
     timeline.js            # props → tracks (exact or baked) → SMIL timing; combineTracks; auto-orient
-    path.js                # shape arrays (multi-subpath blocks) → path data; rect/ellipse → shapes
+    path.js                # shape arrays (multi-subpath blocks) → path data; rect/ellipse/polystar → shapes
     geometry.js            # matrices, orientation, path length on shape arrays
     anim.js                # SMIL/element helpers shared by the modules below
     transform.js           # AE transforms → nested <g>; matrix tracks for flattening
@@ -80,9 +80,9 @@ better-lottie/
 4. The user creates the GitHub release from the tag and attaches the `.zxp`. The README's install guide links to `releases/latest`.
 
 ### Status
-- **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave.
+- **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave, Polygon/Star.
 - **Extension:** panel (Export SVG, Preview, Prepare comp, Save IR, loop/background options, warnings, usage snippet) and extractor. Prepare comp is verified in AE 2026 by script (renders before/after identical); the panel button and loading `prepare.jsx` from the panel are **not yet tested inside AE**. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
-- **Verified against AE renders** (`test/ae/`, pixel diffs ≤ 2.5/255 on average, only anti-aliased edges differ): masks (all modes, feather, inverted, opacity, expansion, animated path), all four track matte types incl. an animated matte, repeaters (offset, fractional copies, composite order), taper (ease 0–100), wave, gradient Scale/Rotation.
+- **Verified against AE renders** (`test/ae/`, pixel diffs ≤ 2.5/255 on average, only anti-aliased edges differ): masks (all modes, feather, inverted, opacity, expansion, animated path), all four track matte types incl. an animated matte, repeaters (offset, fractional copies, composite order), taper (ease 0–100), wave, gradient Scale/Rotation, Polygon/Star (comps `polystar`, `polystar-anim`; ≤ 0.15/255).
 - **Blend modes verified in AE:** every layer and shape-level mode with a CSS equivalent matches AE renders to within 2/255 (Soft Light included); comps `blend-layers` and `blend-shapes` in the scratch project.
 - **Release package:** the 0.3.1 `.zxp` installs via aescripts' ZXP Installer and loads in AE 2026 on macOS with the dev link removed. Windows install untested.
 - **Not verified in AE:** animated gradient *colors* with different keyframe colors (scripts can't set gradient colors; the file layout was verified with identical keyframes).
@@ -105,6 +105,7 @@ Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The
 - **Repeater:** `ADBE Vector Repeater Copies/Offset/Order` (Order 1 = below: copy 0 on top; 2 = above) and `…Transform` with `Anchor/Position/Scale/Rotation/Opacity 1/Opacity 2`. Copy k = translate(position·k) · rotate/scale^k about the anchor (positions are not rotated by earlier copies). Opacity of copy i = start + (end − start)·i/⌈copies⌉; a fractional count fades the last copy by the fraction.
 - **Taper/Wave:** Length Units 1 = percent (`…Start Length`), 2 = pixels (`…StartWidthPx`); Wave Units 1 = wavelength px, 2 = cycles. Width in a taper = start width + (1 − start width)·bezier(handles (0,e), (1−e,1)) with e = ease/100. Wave: W·(1 − A/2 − A/2·cos(2π·cycles·s + phase)). Setting a hidden stream (e.g. Wave Cycles while Units = px) throws in scripts.
 - **Create Shapes from Vector Layer** (command 3973; from Text: 3781) acts on the selected layers of the comp open in the viewer (other selected types are ignored). The new `<name> Outlines` shape layer goes directly above the original and gets its transform (keyframes, expressions), parent, in/out, stretch, effects and masks; the original is switched off. **Not** copied: blend mode, motion blur, its own track matte; children and matted layers keep pointing at the original. Renders identically. `prepare.jsx` fixes these up, re-parents with `setParentWithJump` (plain `.parent =` changes the child's values), takes the original's name, removes the original. Text animators are baked to the current time. The new shapes are unsaved, so their gradient colors can't be read until the project is saved. Footage layers whose source is `.ai/.eps/.pdf` get `vector: true` in the IR.
+- **Polygon/Star** (`ADBE Vector Shape - Star`): `…Star Type` (1 star, 2 polygon), `Points` (min 3, fractional allowed), `Position`, `Rotation`, `Inner/Outer Radius`, `Inner/Outer Roundess` (sic). Geometry fitted to AE's own "Convert To Bezier Path" (command 4162; it only acts when run in its own DoScript call with the property selected) to 1e-4, see `polystarShape` and `test/fixtures/ae-polystar-shapes.json`. Not lottie-web's formula: roundness handles are q·r·K·sin(π/n), and fractional points add a partial vertex.
 - `saveFrameToPng` writes colors already composited over the comp background, plus alpha: compare against SVGs rendered *with* the background.
 - Still unverified: ease `speed` units for color and path properties (treated as progress/s); `File.saveDlg` without a filter on macOS works in practice.
 
@@ -154,7 +155,7 @@ With the user's OK (it drives their open AE), run read-only scripts via `osascri
 - Export the work area only; "start paused" option
 
 ### Out of scope
-Effects, 3D layers and cameras, blend modes, text and Illustrator layers (point users to "Prepare comp"), images and video, and the remaining shape modifiers (polystar, offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
+Effects, 3D layers and cameras, blend modes, text and Illustrator layers (point users to "Prepare comp"), images and video, and the remaining shape modifiers (offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
 
 ## Key conversion rules (where it's easy to get wrong)
 
@@ -183,7 +184,7 @@ A parent's transform groups wrap the child, **but AE parenting does not inherit 
 
 ### Paths
 AE shapes have `vertices`, `inTangents`, `outTangents` (relative to the vertex) and `closed`. Always output **`M` followed only by `C` commands**, including straight segments (tangents of 0 are valid). That way every keyframe of a morph has the same command structure, which SMIL `d` interpolation needs.
-- Ellipse → 4 cubic segments (kappa ≈ 0.5523). Rect, including roundness → path. Converting primitives to paths keeps morphing and output uniform.
+- Ellipse → 4 cubic segments (kappa ≈ 0.5523). Rect, including roundness → path. Polygon/Star → path; animated points or rotation bake, and animated points pad every frame to one vertex count (continuous across whole points). Converting primitives to paths keeps morphing and output uniform.
 - Keyframes with different vertex counts can't be morphed directly. Warn, then either resample to a common count or fall back to discrete.
 
 ### Easing: AE temporal ease → `keySplines`

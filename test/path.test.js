@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { arrayToD, shapeToArray, shapeToD, rectShape, ellipseShape } from '../src/path.js';
+import { readFileSync } from 'node:fs';
+import { arrayToD, shapeToArray, shapeToD, rectShape, ellipseShape, polystarShape } from '../src/path.js';
 
 const commands = d => d.replace(/[^MCZ]/g, '');
 
@@ -38,4 +39,34 @@ test('rect roundness is clamped to half the short side', () => {
 
 test('empty shape → empty path', () => {
   assert.equal(arrayToD([0, 1]), '');
+});
+
+// Shapes AE 2026 made with "Convert To Bezier Path" (4 decimals), incl.
+// fractional points and negative roundness.
+const AE_POLYSTARS = JSON.parse(readFileSync(new URL('./fixtures/ae-polystar-shapes.json', import.meta.url), 'utf8'));
+
+test('polystar matches AE\'s own bezier conversion', () => {
+  for (const { params, v, i, o } of AE_POLYSTARS) {
+    const s = polystarShape(params);
+    assert.equal(s.vertices.length, v.length, JSON.stringify(params));
+    for (const [mine, ae] of [[s.vertices, v], [s.inTangents, i], [s.outTangents, o]]) {
+      mine.forEach((p, k) => {
+        assert.ok(Math.abs(p[0] - ae[k][0]) < 1e-3 && Math.abs(p[1] - ae[k][1]) < 1e-3, `${JSON.stringify(params)} #${k}`);
+      });
+    }
+  }
+});
+
+test('padded polystar keeps its point count and is continuous across whole points', () => {
+  for (const type of ['star', 'polygon']) {
+    const at = points => shapeToArray(polystarShape({
+      type, points, position: [0, 0], rotation: 0, innerRadius: 40, outerRadius: 100, innerRoundness: 30, outerRoundness: 50,
+    }, 8));
+    const sizes = new Set([3, 4.5, 5, 7.99, 8].map(n => at(n).length));
+    assert.equal(sizes.size, 1, type);
+    for (const n of [4, 5, 6]) {
+      const below = at(n - 1e-6), above = at(n);
+      assert.ok(below.every((x, k) => Math.abs(x - above[k]) < 1e-3), `${type} at ${n}`);
+    }
+  }
 });

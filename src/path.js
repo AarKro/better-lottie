@@ -107,6 +107,92 @@ export function rectShape([w, h], [cx, cy], [roundness] = [0], rounded = roundne
   };
 }
 
+// AE Polygon/Star (fitted to shapes AE's "Convert To Bezier Path" produced,
+// to 1e-4). With a = π / points, vertices run clockwise from -90° + rotation:
+// a star alternates outer and inner radius every a, a polygon steps 2a. A
+// vertex with roundness q gets handles q · r · K · sin(a) along the circle.
+//
+// Fractional points (n = N + f) add a partial vertex P first, centred in the
+// gap left at the top. Star: P lies between inner and outer radius by f, its
+// handles are scaled by f, and so are the handles of its neighbours that
+// point at it. Polygon: P blends the midpoint of a rounded edge (f = 0) with
+// a full vertex (f = 1); the neighbours' handles towards it scale by (1+f)/2.
+// Both are continuous in n, so animated points can morph.
+//
+// padPoints (for animated points) always uses the fractional layout, starts
+// at the first full vertex instead of P, and pads up to padPoints with
+// zero-length copies of that vertex at the end (polygons first split their
+// closing edge). The point count stays constant and vertices line up
+// when n crosses an integer.
+export function polystarShape(p, padPoints) {
+  const star = p.type !== 'polygon';
+  const n = Math.max(3, p.points);
+  const N = Math.floor(n + 1e-9), f = Math.max(0, n - N);
+  const frac = f > 1e-6 || padPoints != null;
+  const a = Math.PI / n, sa = Math.sin(a);
+  const base = (p.rotation - 90) * Math.PI / 180;
+  const or = p.outerRadius, ir = star ? p.innerRadius : 0;
+  const os = p.outerRoundness / 100, is = star ? p.innerRoundness / 100 : 0;
+  const hOuter = os * or * K * sa, hInner = is * ir * K * sa;
+  const pts = []; // [angle, radius, in handle, out handle]
+  if (!star) {
+    if (frac) {
+      const mid = or * Math.cos(a) + 0.75 * hOuter * sa;
+      const edge = or * sa / 2 - hOuter * Math.cos(a) / 4;
+      const r = (1 - f) * mid + f * or, h = (1 - f) * edge + f * os * r * K * sa;
+      pts.push([base + (N + 1) * a + Math.PI, r, h, h]);
+      for (let k = 1; k <= N; k++) pts.push([base + 2 * k * a, or, hOuter, hOuter]);
+      pts[1][2] *= (1 + f) / 2;
+      pts[N][3] *= (1 + f) / 2;
+    } else {
+      for (let k = 0; k < N; k++) pts.push([base + 2 * k * a, or, hOuter, hOuter]);
+    }
+  } else if (frac) {
+    const r = ir + (or - ir) * f, h = f * os * r * K * sa;
+    pts.push([base + (2 * N + 1 + f) * a, r, h, h]);
+    for (let k = 1; k <= 2 * N + 1; k++) {
+      const outer = k % 2 === 0;
+      pts.push([base + k * a, outer ? or : ir, outer ? hOuter : hInner, outer ? hOuter : hInner]);
+    }
+    pts[1][2] *= f;
+    pts[2 * N + 1][3] *= f;
+  } else {
+    for (let k = 0; k < 2 * N; k++) {
+      const outer = k % 2 === 0;
+      pts.push([base + k * a, outer ? or : ir, outer ? hOuter : hInner, outer ? hOuter : hInner]);
+    }
+  }
+  if (padPoints != null) pts.push(pts.shift());
+  const [cx, cy] = p.position;
+  const V = [], I = [], O = [];
+  for (const [ang, r, hin, hout] of pts) {
+    const c = Math.cos(ang), s = Math.sin(ang);
+    V.push([cx + r * c, cy + r * s]);
+    I.push([s * hin, -c * hin]);
+    O.push([-s * hout, c * hout]);
+  }
+  const size = padPoints == null ? 0 : star ? 2 * Math.floor(padPoints) + 2 : Math.floor(padPoints) + 1;
+  if (V.length < size && !star) {
+    // A polygon gaining a point splits its closing edge at the new partial
+    // vertex (the edge's midpoint at f = 0), and its other padding sits on v1.
+    // Splitting at t = 1 - f/2 matches both ends and never changes the shape.
+    const t = 1 - f / 2, m = V.length - 1, A = V[m], B = V[0];
+    const c1 = [A[0] + O[m][0], A[1] + O[m][1]], c2 = [B[0] + I[0][0], B[1] + I[0][1]];
+    const at = (u, w) => [u[0] + (w[0] - u[0]) * t, u[1] + (w[1] - u[1]) * t];
+    const p01 = at(A, c1), p12 = at(c1, c2), p23 = at(c2, B), p012 = at(p01, p12), p123 = at(p12, p23);
+    const M = at(p012, p123);
+    O[m] = [p01[0] - A[0], p01[1] - A[1]];
+    V.push(M); I.push([p012[0] - M[0], p012[1] - M[1]]); O.push([p123[0] - M[0], p123[1] - M[1]]);
+    I[0] = [p23[0] - B[0], p23[1] - B[1]];
+  }
+  if (V.length < size) {
+    V.push(V[0]); I.push(I[0]); O.push([0, 0]);
+    while (V.length < size) { V.push(V[0]); I.push([0, 0]); O.push([0, 0]); }
+    I[0] = [0, 0];
+  }
+  return { vertices: V, inTangents: I, outTangents: O, closed: true };
+}
+
 // AE ellipse: position is the center. 4 points, clockwise from the top.
 export function ellipseShape([w, h], [cx, cy]) {
   const rx = w / 2, ry = h / 2, kx = rx * K, ky = ry * K;

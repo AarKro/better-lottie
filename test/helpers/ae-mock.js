@@ -212,6 +212,21 @@ export const ellipse = (name, size, direction = 1) => G('ADBE Vector Shape - Ell
   P('ADBE Vector Ellipse Position', 'Position', [0, 0], { spatial: true }),
 ]);
 
+// Polygon/Star (AE 2026): Type 1 star, 2 polygon; the roundness match names
+// are spelled "Roundess". Points minimum 3.
+export const polystar = (name, { type = 1, points = 5, position = [0, 0], rotation = 0, innerRadius = 50,
+  outerRadius = 100, innerRoundness = 0, outerRoundness = 0, direction = 1 } = {}) => G('ADBE Vector Shape - Star', name, [
+  P('ADBE Vector Shape Direction', 'Shape Direction', direction),
+  P('ADBE Vector Star Type', 'Type', type),
+  P('ADBE Vector Star Points', 'Points', points),
+  P('ADBE Vector Star Position', 'Position', position, { spatial: true }),
+  P('ADBE Vector Star Rotation', 'Rotation', rotation),
+  P('ADBE Vector Star Inner Radius', 'Inner Radius', innerRadius),
+  P('ADBE Vector Star Outer Radius', 'Outer Radius', outerRadius),
+  P('ADBE Vector Star Inner Roundess', 'Inner Roundness', innerRoundness),
+  P('ADBE Vector Star Outer Roundess', 'Outer Roundness', outerRoundness),
+]);
+
 // Shape Direction: 1 and 2 draw as drawn, 3 reverses (AE 2026).
 export const path = (name, spec, direction = 1) => G('ADBE Vector Shape - Group', name, [
   P('ADBE Vector Shape Direction', 'Shape Direction', direction),

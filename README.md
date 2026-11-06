@@ -73,7 +73,7 @@ If your composition uses something better-lottie can't export, the panel lists i
 |---|---|
 | **Layers** | Shape layers, null objects (as parents), parenting, layer in/out points |
 | **Transform** | Position, scale, rotation, opacity, anchor point, separated X/Y position, Auto-Orient along path |
-| **Shapes** | Paths, rectangles, ellipses, groups, shape morphing |
+| **Shapes** | Paths, rectangles, ellipses, polygons and stars (incl. fractional and animated points), groups, shape morphing |
 | **Fill & stroke** | Solid colors, linear and radial gradients (incl. gradient scale/rotation and animated colors), stroke width, line caps and joins, dashes, stroke taper and wave |
 | **Shape effects** | Trim Paths, Merge Paths, Repeater |
 | **Blend modes** | On layers and on shape groups, fills and strokes: Multiply, Screen, Overlay, Darken, Lighten, Color Dodge, Color Burn, Hard Light, Soft Light, Difference, Exclusion, Hue, Saturation, Color, Luminosity, Add |
@@ -82,7 +82,7 @@ If your composition uses something better-lottie can't export, the panel lists i
 
 ### Not supported
 
-Effects, text layers and Illustrator layers (until converted with **Prepare comp**), images and video, 3D layers and cameras, precomps, blend modes that browsers don't have (e.g. Linear Burn, Vivid Light, Pin Light, Hard Mix, Subtract, Divide; these export as Normal), and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners, Polystar).
+Effects, text layers and Illustrator layers (until converted with **Prepare comp**), images and video, 3D layers and cameras, precomps, blend modes that browsers don't have (e.g. Linear Burn, Vivid Light, Pin Light, Hard Mix, Subtract, Divide; these export as Normal), and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners).
 
 ## Tips
 

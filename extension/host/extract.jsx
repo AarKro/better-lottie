@@ -322,7 +322,7 @@ var BetterLottie = (function () {
       if (p.enabled === false) it.enabled = false;
       var shapeBlend = SHAPE_BLEND_MODES[value(p, 'ADBE Vector Blend Mode')];
       if (shapeBlend && shapeBlend !== 'normal') it.blendMode = shapeBlend;
-      if ((type === 'path' || type === 'rect' || type === 'ellipse') && value(p, 'ADBE Vector Shape Direction') === 3) it.direction = 'reversed';
+      if ((type === 'path' || type === 'rect' || type === 'ellipse' || type === 'polystar') && value(p, 'ADBE Vector Shape Direction') === 3) it.direction = 'reversed';
       switch (type) {
         case 'group':
           it.transform = readTransform(p.property('ADBE Vector Transform Group'), GROUP_TRANSFORM, ctx, w);
@@ -339,6 +339,19 @@ var BetterLottie = (function () {
         case 'ellipse':
           it.size = readProp(p.property('ADBE Vector Ellipse Size'), ctx, w + ' > Size');
           it.position = readProp(p.property('ADBE Vector Ellipse Position'), ctx, w + ' > Position');
+          break;
+        case 'polystar':
+          it.starType = value(p, 'ADBE Vector Star Type') === 2 ? 'polygon' : 'star';
+          it.points = readProp(p.property('ADBE Vector Star Points'), ctx, w + ' > Points');
+          it.position = readProp(p.property('ADBE Vector Star Position'), ctx, w + ' > Position');
+          it.rotation = readProp(p.property('ADBE Vector Star Rotation'), ctx, w + ' > Rotation');
+          it.outerRadius = readProp(p.property('ADBE Vector Star Outer Radius'), ctx, w + ' > Outer Radius');
+          // AE's match names really say "Roundess".
+          it.outerRoundness = readProp(p.property('ADBE Vector Star Outer Roundess'), ctx, w + ' > Outer Roundness');
+          if (it.starType === 'star') {
+            it.innerRadius = readProp(p.property('ADBE Vector Star Inner Radius'), ctx, w + ' > Inner Radius');
+            it.innerRoundness = readProp(p.property('ADBE Vector Star Inner Roundess'), ctx, w + ' > Inner Roundness');
+          }
           break;
         case 'fill':
           it.color = readProp(p.property('ADBE Vector Fill Color'), ctx, w + ' > Color');

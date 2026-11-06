@@ -69,7 +69,10 @@
 //   { type: 'path', path: Prop<Shape> }
 //   { type: 'rect', size: Prop<[w,h]>, position: Prop<[x,y]>, roundness: Prop<number> }
 //   { type: 'ellipse', size: Prop<[w,h]>, position: Prop<[x,y]> }
-//   Paths, rects and ellipses may carry direction: 'reversed' (AE "Reverse
+//   { type: 'polystar', starType: 'star'|'polygon', points: Prop<number> (≥ 3, may be fractional),
+//     position: Prop<[x,y]>, rotation: Prop<number> (degrees), outerRadius: Prop<number>,
+//     outerRoundness: Prop<number> (percent), innerRadius?, innerRoundness?: Prop<number> (stars only) }
+//   Paths, rects, ellipses and polystars may carry direction: 'reversed' (AE "Reverse
 //   Path Direction"): closed subpaths run the other way from the same first
 //   vertex; open ones are unchanged. With nonzero fills this decides holes.
 //   { type: 'fill', color: Prop<rgb>, opacity: Prop<number>, fillRule?: 'nonzero'|'evenodd' }
@@ -90,7 +93,7 @@
 //   { type: 'merge-paths', mode: 'merge'|'add'|'subtract'|'intersect'|'exclude' }
 //   { type: 'repeater', copies, offset: Prop<number>, composite: 'below'|'above',
 //     transform: { anchor, position, scale, rotation }, startOpacity, endOpacity: Prop<number> }
-//   Any other type (polystar, offset-paths, …) is reported and ignored.
+//   Any other type (offset-paths, …) is reported and ignored.
 //
 //   Paints (fill, stroke, gradient-*) draw every path above them in the same
 //   group, including paths in groups above. Trim Paths changes every path

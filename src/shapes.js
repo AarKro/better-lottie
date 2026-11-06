@@ -16,7 +16,7 @@
 
 import { KIND, combineTracks, mapTrack, trackIsStatic, trackValueAt } from './timeline.js';
 import { outlineShape } from './taper.js';
-import { arrayToD, ellipseShape, rectShape, reverseBlocks, shapeToArray } from './path.js';
+import { arrayToD, ellipseShape, polystarShape, rectShape, reverseBlocks, shapeToArray } from './path.js';
 import { orientClockwise, shapeLength, transformMatrix, transformShape } from './geometry.js';
 import { animate, displayToggle, element, finalize, newId, sampling, trackOf } from './anim.js';
 import { num } from './format.js';
@@ -24,7 +24,7 @@ import { paint, PAINTS } from './paint.js';
 import { cssBlend } from './blend.js';
 import { matrixTrack, part, wrapParts, wrapTransform } from './transform.js';
 
-const GEOMETRY = new Set(['path', 'rect', 'ellipse']);
+const GEOMETRY = new Set(['path', 'rect', 'ellipse', 'polystar']);
 const MODIFIERS = new Set(['trim', 'merge-paths', 'repeater']);
 
 export function renderContents(items, ctx, where) {
@@ -189,7 +189,8 @@ function sameTiming(a, b) {
 
 function geometry(it, ctx, where) {
   if (ctx.geometry.has(it)) return ctx.geometry.get(it);
-  let track = it.type === 'path' ? trackOf(it.path, KIND.shape, ctx, where) : primitiveTrack(it, ctx, where);
+  let track = it.type === 'path' ? trackOf(it.path, KIND.shape, ctx, where)
+    : it.type === 'polystar' ? polystarTrack(it, ctx, where) : primitiveTrack(it, ctx, where);
   if (it.direction === 'reversed') track = mapTrack(track, reverseBlocks);
   const r = finalize(track, ctx, KIND.shape.tol);
   const g = { track, value: r.value, d: arrayToD(r.value), anim: animate('d', r, arrayToD, ctx) };
@@ -211,6 +212,36 @@ function primitiveTrack(it, ctx, where) {
   return combineTracks(tracks,
     (size, pos, round) => shapeToArray(isRect ? rectShape(size, pos, round, rounded) : ellipseShape(size, pos)),
     sampling(ctx, KIND.shape.tol));
+}
+
+// Polygon/Star: linear in position, radii and roundness (one moving keeps its
+// keyframes), except a fractional polygon's partial vertex, whose handle is
+// quadratic in roundness. Animated points or rotation bake; animated points
+// pad every frame to the same vertex count so the path can morph.
+function polystarTrack(it, ctx, where) {
+  const polygon = it.starType === 'polygon';
+  const scalar = (prop, name, def) => trackOf(prop ?? def, KIND.scalar, ctx, `${where} › ${name}`);
+  const tracks = [
+    scalar(it.points, 'Points', 5),
+    trackOf(it.position ?? [0, 0], KIND.point, ctx, `${where} › Position`),
+    scalar(it.rotation, 'Rotation', 0),
+    scalar(polygon ? 0 : it.innerRadius, 'Inner Radius', 50),
+    scalar(it.outerRadius, 'Outer Radius', 100),
+    scalar(polygon ? 0 : it.innerRoundness, 'Inner Roundness', 0),
+    scalar(it.outerRoundness, 'Outer Roundness', 0),
+  ];
+  const [points, , rotation, , , , outerRound] = tracks;
+  const pointsMove = !trackIsStatic(points);
+  const pad = pointsMove ? Math.max(...points.stops.map(s => s.v[0])) : null;
+  const n = points.stops[0].v[0];
+  const linear = trackIsStatic(rotation) && !pointsMove
+    && !(polygon && n !== Math.floor(n) && !trackIsStatic(outerRound));
+  return combineTracks(tracks,
+    ([pts], position, [rot], [ir], [or], [is], [os]) => shapeToArray(polystarShape({
+      type: polygon ? 'polygon' : 'star', points: pts, position, rotation: rot,
+      innerRadius: ir, outerRadius: or, innerRoundness: is, outerRoundness: os,
+    }, pad)),
+    sampling(ctx, KIND.shape.tol, linear));
 }
 
 function withDash(attrs, style) {

@@ -7,7 +7,7 @@ import { convert } from '../src/index.js';
 import {
   loadHost, CompItem, AVLayer, CameraLayer, TextLayer, Shape, EASY, AutoOrientType, buildAep, gradientXml,
   shapeLayer, plainLayer, layerTransform, group, rect, ellipse, path, fill, stroke, trim, merge, gradientFill, BlendingMode,
-  MaskMode, TrackMatteType, mask, repeater,
+  MaskMode, TrackMatteType, mask, repeater, polystar,
 } from './helpers/ae-mock.js';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -307,4 +307,22 @@ test('reads Reverse Path Direction (3) on paths, rects and ellipses', () => {
   ])];
   const [layer] = JSON.parse(loadHost(HOST, comp).extractActiveComp()).layers;
   assert.deepEqual(layer.contents.map(it => it.direction), ['reversed', undefined, 'reversed', undefined]);
+});
+
+test('reads Polygon/Star settings (stars only get inner radius and roundness)', () => {
+  const comp = new CompItem({ id: 12, name: 'Stars', width: 100, height: 100, duration: 1, frameRate: 30 });
+  comp.layers = [shapeLayer({ index: 1, name: 'Stars', outPoint: 1 }, [
+    polystar('Star', { points: { keys: [{ t: 0, v: 3 }, { t: 1, v: 8 }] }, innerRadius: 40, innerRoundness: 20, outerRoundness: -10, direction: 3 }),
+    polystar('Polygon', { type: 2, points: 6, position: [5, 6], rotation: 15, outerRadius: 80 }),
+    fill('Fill 1', [1, 0, 0, 1]),
+  ])];
+  const [star, poly] = JSON.parse(loadHost(HOST, comp).extractActiveComp()).layers[0].contents;
+  assert.equal(star.type, 'polystar');
+  assert.equal(star.starType, 'star');
+  assert.equal(star.direction, 'reversed');
+  assert.deepEqual(star.points.keyframes.map(k => k.v), [3, 8]);
+  assert.deepEqual([star.innerRadius, star.innerRoundness, star.outerRoundness], [{ value: 40 }, { value: 20 }, { value: -10 }]);
+  assert.equal(poly.starType, 'polygon');
+  assert.deepEqual([poly.points, poly.position, poly.rotation, poly.outerRadius], [{ value: 6 }, { value: [5, 6] }, { value: 15 }, { value: 80 }]);
+  assert.equal(poly.innerRadius, undefined);
 });
