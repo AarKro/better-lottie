@@ -97,11 +97,14 @@ function collectGeometry(items, end, ctx, where) {
     if (it.enabled === false) continue;
     const w = `${where} › ${it.name || it.type}`;
     if (GEOMETRY.has(it.type)) {
+      // Puppet-deformed open paths carry a closed copy for fills (puppet.js).
+      const filled = it.fillTrack ? fillItem(it) : it;
       entries.push({
         track: () => geometry(it, ctx, w).track,
+        fillTrack: () => geometry(filled, ctx, w).track,
         trimmed: ctx.trimOf.get(it) || false,
         compound: true,
-        render: style => pathElement(it, style, ctx, w),
+        render: style => pathElement(style.kind === 'fill' ? filled : it, style, ctx, w),
       });
     } else if (it.type === 'group') {
       for (const e of collectGeometry(it.contents || [], (it.contents || []).length, ctx, w)) {
@@ -124,14 +127,12 @@ function collectGeometry(items, end, ctx, where) {
 // flattened into this group's space when merged.
 function nestEntry(e, tr, ctx, where) {
   const m = matrixTrack(tr, ctx, where);
+  const nest = inner => inner && combineTracks([inner, ...m.parts],
+    (shape, pos, rot, scale, anchor) => transformShape(shape, transformMatrix(pos, rot[0], scale, anchor)),
+    sampling(ctx, KIND.shape.tol, !m.moving));
   return {
-    track() {
-      const inner = e.track();
-      if (!inner) return null;
-      return combineTracks([inner, ...m.parts],
-        (shape, pos, rot, scale, anchor) => transformShape(shape, transformMatrix(pos, rot[0], scale, anchor)),
-        sampling(ctx, KIND.shape.tol, !m.moving));
-    },
+    track: () => nest(e.track()),
+    fillTrack: e.fillTrack && (() => nest(e.fillTrack())),
     trimmed: e.trimmed,
     compound: e.compound && !m.moving,
     render: style => wrapTransform(tr, e.render(style), ctx, where, { opacity: false }),
@@ -152,7 +153,7 @@ function compoundPaint(entries, style, ctx) {
   for (const e of members) {
     if (e.trimmed) ctx.warn(e.trimmed.state.where, 'Trim Paths only trims strokes in the export; fills stay whole');
   }
-  const r = finalize(concatShapes(members.map(e => e.track()), ctx), ctx, KIND.shape.tol);
+  const r = finalize(concatShapes(members.map(e => (isFill && e.fillTrack ? e.fillTrack() : e.track())), ctx), ctx, KIND.shape.tol);
   const compound = element('path', { d: arrayToD(r.value), ...style.attrs }, animate('d', r, arrayToD, ctx) + style.anims);
   return entries.map(e => (e === members[0] ? compound : members.includes(e) ? '' : e.render(style)));
 }
@@ -187,11 +188,22 @@ function sameTiming(a, b) {
 
 // --- geometry ---
 
+const fillItems = new WeakMap();
+function fillItem(it) {
+  if (!fillItems.has(it)) fillItems.set(it, { ...it, track: it.fillTrack, fillTrack: undefined });
+  return fillItems.get(it);
+}
+
+// A path, rect, ellipse or polystar as a track of shape arrays.
+export function geometryTrack(it, ctx, where) {
+  const track = it.type === 'path' ? trackOf(it.path, KIND.shape, ctx, where)
+    : it.type === 'polystar' ? polystarTrack(it, ctx, where) : primitiveTrack(it, ctx, where);
+  return it.direction === 'reversed' ? mapTrack(track, reverseBlocks) : track;
+}
+
 function geometry(it, ctx, where) {
   if (ctx.geometry.has(it)) return ctx.geometry.get(it);
-  let track = it.type === 'path' ? trackOf(it.path, KIND.shape, ctx, where)
-    : it.type === 'polystar' ? polystarTrack(it, ctx, where) : primitiveTrack(it, ctx, where);
-  if (it.direction === 'reversed') track = mapTrack(track, reverseBlocks);
+  const track = it.track || geometryTrack(it, ctx, where);
   const r = finalize(track, ctx, KIND.shape.tol);
   const g = { track, value: r.value, d: arrayToD(r.value), anim: animate('d', r, arrayToD, ctx) };
   ctx.geometry.set(it, g);

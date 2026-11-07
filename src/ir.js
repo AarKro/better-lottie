@@ -20,6 +20,7 @@
 // @property {number} duration          seconds
 // @property {number} frameRate
 // @property {number[]} [background]    [r,g,b] 0..1; omitted = transparent
+// @property {{ start: number, duration: number }} [workArea]  seconds; used with the workArea option
 //
 // @typedef {Object} Layer
 // @property {number} id                AE layer index
@@ -40,6 +41,27 @@
 // @property {Mask[]} [masks]           layer masks in AE order (mode None is left out)
 // @property {Transform} transform
 // @property {ShapeItem[]} [contents]   shape layers only, top item first
+// @property {Puppet[]} [puppets]       Puppet effects (ADBE FreePin3) in effect order
+//
+// @typedef {Object} Puppet           deforms the layer's paths and masks (baked per frame)
+// @property {string} name
+// @property {boolean} [enabled]        false = effect switched off
+// @property {'advanced'|'legacy'} engine
+// @property {number} refinement        "Mesh Rotation Refinement" (ARAP iterations)
+// @property {{ width: number, height: number, space: 'comp'|'source', scale?: number }} source
+//                                      where mesh and pins live. Shape layers: comp space, after
+//                                      the layer's transform (and its parents'); mesh coordinates are
+//                                      normalized by `scale` (default: the larger of width and height)
+// @property {PuppetMesh[]} meshes
+// @property {number} [overlapPins]     counts, reported as unsupported
+// @property {number} [stiffnessPins]
+//
+// @typedef {Object} PuppetMesh
+// @property {string|null} data         hex of the saved 'fpms' chunk (rest vertices and
+//                                      triangles; see decodeMesh in puppet.js). Scripting
+//                                      can't read the mesh; null when the project isn't saved
+// @property {{ name: string, type: 'position'|string, vertex: number, position: Prop<number[]> }[]} pins
+//                                      position in source space; vertex = the mesh vertex it holds
 //
 // @typedef {Object} Transform
 // @property {Prop<number[]>} [anchor]      [x,y(,z)]

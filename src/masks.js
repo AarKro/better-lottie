@@ -75,7 +75,7 @@ function invertedShape(m, ctx, where, ink) {
 // One mask's shape painted in `ink` (with feather, expansion and opacity).
 // `under` is drawn first inside the same opacity group (for inversion).
 function maskShape(m, ctx, where, ink, under = '') {
-  const path = trackOf(m.path, KIND.shape, ctx, `${where} › Mask Path`);
+  const path = m.track || trackOf(m.path, KIND.shape, ctx, `${where} › Mask Path`);
   const shape = finalize(path, ctx, KIND.shape.tol);
   const opacity = resolve(m.opacity ?? 100, KIND.scalar, ctx, `${where} › Mask Opacity`);
   const feather = resolve(m.feather ?? [0, 0], KIND.vec2, ctx, `${where} › Mask Feather`);

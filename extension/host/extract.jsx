@@ -68,6 +68,13 @@ var BetterLottie = (function () {
   // Expressions can't be translated, so sample the result once per frame.
   // The converter simplifies the resulting linear runs.
   function bakeExpression(prop, ctx, where) {
+    var baked = bakeFrames(prop, ctx);
+    if (baked.keyframes) ctx.warn(where, 'expression baked to one keyframe per frame');
+    return baked;
+  }
+
+  // AE's value on every frame, as linear keyframes ({ value } if it never changes).
+  function bakeFrames(prop, ctx) {
     var fps = ctx.comp.frameRate, duration = ctx.comp.duration;
     var frames = Math.round(duration * fps);
     var kfs = [], first = null, changes = false;
@@ -79,7 +86,6 @@ var BetterLottie = (function () {
       kfs.push({ t: t, v: v });
     }
     if (!changes) return { value: kfs[0].v };
-    ctx.warn(where, 'expression baked to one keyframe per frame');
     return { keyframes: kfs };
   }
 
@@ -469,9 +475,17 @@ var BetterLottie = (function () {
     try {
       var fx = layer.property('ADBE Effect Parade');
       if (fx && fx.numProperties) {
-        var names = [];
-        for (var f = 1; f <= fx.numProperties; f++) names.push(fx.property(f).name);
-        ctx.warn(where, 'effects are not supported (ignored): ' + names.join(', '));
+        var names = [], puppets = [];
+        for (var f = 1; f <= fx.numProperties; f++) {
+          if (fx.property(f).matchName !== 'ADBE FreePin3') { names.push(fx.property(f).name); continue; }
+          try {
+            puppets.push(readPuppet(fx.property(f), layer, ctx, where));
+          } catch (e7) {
+            ctx.warn(where, 'could not read ' + fx.property(f).name + ' (ignored): ' + e7);
+          }
+        }
+        if (names.length) ctx.warn(where, 'effects are not supported (ignored): ' + names.join(', '));
+        if (puppets.length) L.puppets = puppets;
       }
     } catch (e5) {}
     L.masks = readMasks(layer, ctx, where);
@@ -536,6 +550,101 @@ var BetterLottie = (function () {
     return out.length ? out : undefined;
   }
 
+  // --- Puppet (ADBE FreePin3) ---
+  //
+  // Pins are readable, the mesh is not (CUSTOM_VALUE): its rest vertices and
+  // triangles come from the saved project ('fpms' chunks, one per Mesh, in
+  // tree order). Reading the value of 'PosPin Vtx Offset' crashes the script
+  // engine (try/catch doesn't help), so it is never touched.
+  var PIN_TYPES = { 1: 'position' };
+
+  function readPuppet(fx, layer, ctx, where) {
+    var w = where + ' > ' + fx.name;
+    var P = {
+      name: fx.name,
+      engine: fx.property('ADBE FreePin3 Puppet Engine').value === 1 ? 'legacy' : 'advanced',
+      refinement: fx.property('ADBE FreePin3 Auto Rotate Pins').value,
+      meshes: []
+    };
+    if (!fx.enabled) P.enabled = false;
+    // Shape layers (always continuously rasterized) deform in comp space,
+    // after their transform; other layers in their source's pixels.
+    if (layer instanceof ShapeLayer) {
+      P.source = { width: ctx.comp.width, height: ctx.comp.height, space: 'comp' };
+    } else if (layer.source) {
+      P.source = { width: layer.source.width, height: layer.source.height, space: 'source' };
+    }
+    var meshData = ctx.projectMeshes();
+    var layerMeshes = meshData ? meshData[layer.index] || [] : [];
+    if (!ctx.meshIndex) ctx.meshIndex = {};
+    var group = fx.property('ADBE FreePin3 ARAP Group').property('ADBE FreePin3 Mesh Group');
+    for (var m = 1; m <= group.numProperties; m++) {
+      var atom = group.property(m);
+      var used = ctx.meshIndex[layer.index] || 0;
+      ctx.meshIndex[layer.index] = used + 1;
+      var mesh = { data: layerMeshes[used] || null, pins: [] };
+      var pins = atom.property('ADBE FreePin3 PosPins');
+      for (var k = 1; k <= pins.numProperties; k++) {
+        var pin = pins.property(k), type = pin.property('ADBE FreePin3 PosPin Type').value;
+        mesh.pins.push({
+          name: pin.name,
+          type: PIN_TYPES[type] || ('type ' + type),
+          vertex: pin.property('ADBE FreePin3 PosPin Vtx Index').value,
+          position: readPinPosition(pin.property('ADBE FreePin3 PosPin Position'), ctx, w + ' > ' + pin.name)
+        });
+      }
+      var overlap = atom.property('ADBE FreePin3 HghtPins'), starch = atom.property('ADBE FreePin3 StarchPins');
+      if (overlap && overlap.numProperties) P.overlapPins = (P.overlapPins || 0) + overlap.numProperties;
+      if (starch && starch.numProperties) P.stiffnessPins = (P.stiffnessPins || 0) + starch.numProperties;
+      P.meshes.push(mesh);
+    }
+    return P;
+  }
+
+  // AE moves pins along their keyframes in its own normalized space: the
+  // stored ease speeds don't match the pixel motion (verified on a converted
+  // Illustrator layer, up to 45 px off). Pins only matter per frame anyway,
+  // so take AE's own value on every frame.
+  function readPinPosition(prop, ctx, where) {
+    if (prop.numKeys < 2 || hasExpression(prop)) return readProp(prop, ctx, where);
+    return bakeFrames(prop, ctx);
+  }
+
+  function hasPuppets(comp) {
+    for (var l = 1; l <= comp.numLayers; l++) {
+      var fx = comp.layer(l).property('ADBE Effect Parade');
+      if (!fx) continue;
+      for (var f = 1; f <= fx.numProperties; f++) if (fx.property(f).matchName === 'ADBE FreePin3') return true;
+    }
+    return false;
+  }
+
+  // Returns { layerIndex: [hex per mesh, in order] } or null.
+  function readProjectMeshes(comp, ctx) {
+    return readProjectLayers(comp, ctx, 'puppet meshes', function (f, start, end) {
+      var out = [];
+      collectMeshes(f, start, end, out);
+      return out;
+    });
+  }
+
+  var HEX = '0123456789abcdef';
+
+  function collectMeshes(f, start, end, out) {
+    eachChunk(f, start, end, function (id, body, size) {
+      if (id === 'LIST') collectMeshes(f, body + 4, body + size, out);
+      else if (id === 'fpms') {
+        var raw = readAt(f, body, size), hex = [];
+        for (var i = 0; i < raw.length; i++) {
+          var c = raw.charCodeAt(i);
+          hex.push(HEX.charAt(c >> 4) + HEX.charAt(c & 15));
+        }
+        out.push(hex.join(''));
+      }
+      return true;
+    });
+  }
+
   // --- gradient colors from the saved project file ---
   //
   // Scripting can't read gradient colors (the Colors property has no value).
@@ -564,18 +673,28 @@ var BetterLottie = (function () {
 
   // Returns { layerIndex: [[xml per keyframe] per gradient paint, in order] } or null.
   function readProjectGradients(comp, ctx) {
+    return readProjectLayers(comp, ctx, 'gradient colors', function (f, start, end) {
+      var out = [];
+      collectGradients(f, start, end, out);
+      return out;
+    });
+  }
+
+  // Runs collect(file, start, end) on each of the comp's layers in the saved
+  // project: { layerIndex: result } or null.
+  function readProjectLayers(comp, ctx, what, collect) {
     var saved = app.project.file;
     if (!saved || !saved.exists) {
-      ctx.warn('project', 'save the project to export gradient colors');
+      ctx.warn('project', 'save the project to export ' + what);
       return null;
     }
     try {
-      if (app.project.dirty) ctx.warn('project', 'unsaved changes: gradient colors come from the last saved version');
+      if (app.project.dirty) ctx.warn('project', 'unsaved changes: ' + what + ' come from the last saved version');
     } catch (e) { /* older AE: no dirty flag */ }
     var f = new File(saved.fsName);
     f.encoding = 'BINARY';
     if (!f.open('r')) {
-      ctx.warn('project', 'could not read the project file for gradient colors');
+      ctx.warn('project', 'could not read the project file for ' + what);
       return null;
     }
     try {
@@ -586,8 +705,7 @@ var BetterLottie = (function () {
       eachChunk(f, item.start, item.end, function (id, body, size) {
         if (id === 'LIST' && readAt(f, body, 4) === 'Layr') {
           index++;
-          layers[index] = [];
-          collectGradients(f, body + 4, body + size, layers[index]);
+          layers[index] = collect(f, body + 4, body + size);
         }
         return true;
       });
@@ -738,7 +856,7 @@ var BetterLottie = (function () {
 
   function extract(comp) {
     var warnings = [];
-    var gradients;
+    var gradients, meshes;
     var ctx = {
       comp: comp,
       warn: function (where, msg) { warnings.push(where + ': ' + msg); },
@@ -746,6 +864,10 @@ var BetterLottie = (function () {
       projectGradients: function () {
         if (gradients === undefined) gradients = hasGradients(comp) ? readProjectGradients(comp, ctx) : null;
         return gradients;
+      },
+      projectMeshes: function () {
+        if (meshes === undefined) meshes = hasPuppets(comp) ? readProjectMeshes(comp, ctx) : null;
+        return meshes;
       }
     };
     var layers = [];
@@ -758,7 +880,8 @@ var BetterLottie = (function () {
         height: comp.height,
         duration: comp.duration,
         frameRate: comp.frameRate,
-        background: comp.bgColor
+        background: comp.bgColor,
+        workArea: { start: comp.workAreaStart, duration: comp.workAreaDuration }
       },
       layers: layers,
       warnings: warnings

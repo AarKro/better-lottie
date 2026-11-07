@@ -6,7 +6,7 @@ import * as acorn from 'acorn';
 import { convert } from '../src/index.js';
 import {
   loadHost, CompItem, AVLayer, TextLayer, FootageItem, BlendingMode, TrackMatteType,
-  shapeLayer, plainLayer, layerTransform, group, rect, fill, gradientFill, Property, PropertyGroup,
+  shapeLayer, plainLayer, layerTransform, group, rect, fill, gradientFill, Property, PropertyGroup, puppet,
 } from './helpers/ae-mock.js';
 
 const EXTRACT = fileURLToPath(new URL('../extension/host/extract.jsx', import.meta.url));
@@ -106,6 +106,12 @@ test('Prepare comp reports missing Illustrator files and asks for a save with gr
   const comp = buildComp();
   comp.layer(3).source.shapes = [group('G', [rect('R', [40, 40]), gradientFill('Gradient Fill 1')])];
   assert.equal(run(comp).result.needsSave, true);
+
+  // A Puppet is copied to the new shape layer with its mesh, which is read
+  // from the saved project too.
+  const pinned = buildComp();
+  pinned.layer(3).groups['ADBE Effect Parade'].children.push(puppet('Puppet', { meshes: [{ pins: [] }] }));
+  assert.equal(run(pinned).result.needsSave, true);
 });
 
 test('Prepare comp makes no copy when there is nothing to convert', () => {
@@ -126,11 +132,11 @@ test('Prepare comp makes no copy when there is nothing to convert', () => {
 
 test('the extractor flags Illustrator footage and the converter points to Prepare comp', () => {
   const comp = buildComp();
-  comp.layer(3).groups['ADBE Effect Parade'].children.push(new PropertyGroup('ADBE FreePin3', 'Puppet'));
+  comp.layer(3).groups['ADBE Effect Parade'].children.push(new PropertyGroup('ADBE Gaussian Blur 2', 'Gaussian Blur'));
   const ir = JSON.parse(loadHost(EXTRACT, comp).extractActiveComp());
   const bucket = ir.layers.find(l => l.name === 'Bucket');
   assert.deepEqual([bucket.type, bucket.vector], ['footage', true]);
-  assert.ok(ir.warnings.includes('layer "Bucket": effects are not supported (ignored): Puppet'));
+  assert.ok(ir.warnings.includes('layer "Bucket": effects are not supported (ignored): Gaussian Blur'));
   const { warnings } = convert(ir);
   assert.ok(warnings.some(w => w.startsWith('layer "Bucket": Illustrator layers are not supported (skipped); convert them with "Prepare comp"')));
   assert.ok(warnings.some(w => w.startsWith('layer "Title": text layers are not supported (skipped); convert them with "Prepare comp"')));

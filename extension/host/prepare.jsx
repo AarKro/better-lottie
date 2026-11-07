@@ -52,6 +52,15 @@
     return false;
   }
 
+  // Puppet meshes are also read from the saved project; Create Shapes copies
+  // the Puppet (mesh and pins) to the new shape layer (verified in AE 2026).
+  function hasPuppet(layer) {
+    var fx = layer.property('ADBE Effect Parade');
+    if (!fx) return false;
+    for (var i = 1; i <= fx.numProperties; i++) if (fx.property(i).matchName === 'ADBE FreePin3') return true;
+    return false;
+  }
+
   // Converts one layer in place; returns the new shape layer or null.
   function convertLayer(comp, layer, command) {
     var state = {
@@ -115,7 +124,7 @@
     var layers = [];
     for (var i = 1; i <= copy.numLayers; i++) layers.push(copy.layer(i));
 
-    var converted = [], warnings = [], gradients = false;
+    var converted = [], warnings = [], needsSave = false;
     for (var j = 0; j < layers.length; j++) {
       var layer = layers[j], k = kind(layer), where = 'layer "' + layer.name + '"';
       if (!k) continue;
@@ -130,7 +139,7 @@
         continue;
       }
       converted.push(shape.name); // the original layer is gone now
-      if (hasGradient(shape.property('ADBE Root Vectors Group'))) gradients = true;
+      if (hasGradient(shape.property('ADBE Root Vectors Group')) || hasPuppet(shape)) needsSave = true;
       if (animated) warnings.push(where + ': text animation is not carried over; the shapes show the text at the current time');
     }
     if (!converted.length) {
@@ -138,13 +147,13 @@
       comp.openInViewer();
       return { comp: comp.name, converted: [], warnings: warnings };
     }
-    return { comp: copy.name, id: copy.id, converted: converted, warnings: warnings, needsSave: gradients };
+    return { comp: copy.name, id: copy.id, converted: converted, warnings: warnings, needsSave: needsSave };
   }
 
   // Returns {"comp", "id", "converted": [layer names], "warnings": [...], "needsSave"};
   // without "id" when nothing needed (or could be) converted and no copy was made.
-  // needsSave: the new shapes have gradients, whose colors export only once
-  // the project is saved.
+  // needsSave: the new shapes have gradients or a Puppet, whose colors and
+  // meshes export only once the project is saved.
   function prepareActiveComp() {
     try {
       var comp = app.project && app.project.activeItem;

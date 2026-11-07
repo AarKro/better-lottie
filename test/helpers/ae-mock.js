@@ -56,7 +56,19 @@ export class Property {
   keyOutTemporalEase(i) { return this.key(i).easeOut || [new KeyframeEase(0, 16.666667)]; }
   keyInSpatialTangent(i) { return this.key(i).spatialIn || [0, 0, 0]; }
   keyOutSpatialTangent(i) { return this.key(i).spatialOut || [0, 0, 0]; }
-  valueAtTime(t) { return this.exprFn ? this.exprFn(t) : this.value; }
+  // Expressions, else keys interpolated linearly (enough for baking tests).
+  valueAtTime(t) {
+    if (this.exprFn) return this.exprFn(t);
+    const k = this.keys;
+    if (k.length < 2 || t <= k[0].t) return k.length ? k[0].v : this.value;
+    for (let i = 1; i < k.length; i++) {
+      if (t <= k[i].t) {
+        const u = (t - k[i - 1].t) / (k[i].t - k[i - 1].t), a = k[i - 1].v, b = k[i].v;
+        return Array.isArray(a) ? a.map((x, j) => x + (b[j] - x) * u) : a + (b - a) * u;
+      }
+    }
+    return k[k.length - 1].v;
+  }
 }
 
 export class PropertyGroup {
@@ -117,7 +129,10 @@ const LAYER_METHODS = {
 Object.assign(Layer.prototype, LAYER_METHODS);
 
 export class CompItem {
-  constructor(props) { Object.assign(this, { layers: [] }, props); }
+  constructor(props) {
+    Object.assign(this, { layers: [], workAreaStart: 0 }, props);
+    if (this.workAreaDuration == null) this.workAreaDuration = this.duration;
+  }
   get numLayers() { return this.layers.length; }
   layer(i) { return this.layers[i - 1]; }
   reindex() { this.layers.forEach((l, i) => { l.index = i + 1; l.comp = this; }); }
@@ -324,13 +339,51 @@ export const trim = (name, { start = 0, end = 100, offset = 0, type = 1 } = {}) 
   P('ADBE Vector Trim Type', 'Trim Multiple Shapes', type),
 ]);
 
-export function shapeLayer(props, contents, { effects = 0, masks = [] } = {}) {
+// Puppet (ADBE FreePin3) as verified in AE 2026. meshes: [{ pins: [{ name, vertex,
+// position, type }], overlap, stiffness }]. The mesh itself is a CUSTOM_VALUE
+// (only in the saved .aep), and reading 'PosPin Vtx Offset' crashes AE's
+// script engine, so the mock throws there.
+export function puppet(name, { engine = 2, refinement = 20, meshes = [] } = {}) {
+  const atoms = meshes.map((m, i) => G('ADBE FreePin3 Mesh Atom', `Mesh ${i + 1}`, [
+    P('ADBE FreePin3 Mesh', 'Mesh', null),
+    P('ADBE FreePin3 Mesh Tri Count', 'Triangles', 50),
+    P('ADBE FreePin3 Mesh Tri Density', 'Density', 10),
+    P('ADBE FreePin3 Mesh Expansion', 'Expansion', 3),
+    // AE lists the newest pin first.
+    G('ADBE FreePin3 PosPins', 'Deform', (m.pins || []).map(pin => {
+      const offset = P('ADBE FreePin3 PosPin Vtx Offset', 'Vertex Offset', null);
+      Object.defineProperty(offset, 'value', { get() { throw new Error('reading Vtx Offset crashes AE'); } });
+      return G('ADBE FreePin3 PosPin Atom', pin.name, [
+        offset,
+        P('ADBE FreePin3 PosPin Vtx Index', 'Vertex Index', pin.vertex),
+        P('ADBE FreePin3 PosPin Type', 'Pin Type', pin.type || 1),
+        P('ADBE FreePin3 PosPin Position', 'Position', pin.position, { spatial: true }),
+        P('ADBE FreePin3 PosPin Scale', 'Scale', 100),
+        P('ADBE FreePin3 PosPin Rotation', 'Rotation', 0),
+      ]);
+    })),
+    G('ADBE FreePin3 HghtPins', 'Overlap', Array.from({ length: m.overlap || 0 }, (_, k) => G('ADBE FreePin3 HghtPin Atom', `Overlap ${k + 1}`, []))),
+    G('ADBE FreePin3 StarchPins', 'Stiffness', Array.from({ length: m.stiffness || 0 }, (_, k) => G('ADBE FreePin3 StarchPin Atom', `Stiffness ${k + 1}`, []))),
+  ]));
+  return G('ADBE FreePin3', name, [
+    P('ADBE FreePin3 Puppet Engine', 'Puppet Engine', engine),
+    P('ADBE FreePin3 Auto Rotate Pins', 'Mesh Rotation Refinement', refinement),
+    P('ADBE FreePin3 On Transparent', 'On Transparent', 0),
+    G('ADBE FreePin3 ARAP Group', 'arap', [
+      P('ADBE FreePin3 Outlines', 'Auto-traced Shapes', null),
+      G('ADBE FreePin3 Mesh Group', 'Mesh', atoms),
+    ]),
+  ]);
+}
+
+export function shapeLayer(props, contents, { effects = 0, masks = [], puppets = [] } = {}) {
   return new ShapeLayer({
     ...props,
     groups: {
       'ADBE Transform Group': props.transform || layerTransform(),
       'ADBE Root Vectors Group': G('ADBE Root Vectors Group', 'Contents', contents),
-      'ADBE Effect Parade': G('ADBE Effect Parade', 'Effects', Array.from({ length: effects }, (_, i) => G('ADBE Glo2', `Glow ${i + 1}`))),
+      'ADBE Effect Parade': G('ADBE Effect Parade', 'Effects', [
+        ...Array.from({ length: effects }, (_, i) => G('ADBE Glo2', `Glow ${i + 1}`)), ...puppets]),
       'ADBE Mask Parade': G('ADBE Mask Parade', 'Masks', masks),
     },
   });
@@ -416,6 +469,8 @@ export function gradientXml(colors, alphas = [[0, 0.5, 1], [1, 0.5, 1]]) {
 // comps: [{ id, layers: [[entry per gradient paint, …] per layer] }]; an entry
 // is one XML string, an array of them (one per color keyframe), or null for
 // a gradient whose colors were never edited (AE stores no Colors stream).
+// A layer may instead be { gradients, meshes: [hex of each puppet mesh] },
+// stored as 'fpms' chunks inside the layer's effect data.
 export function buildAep(comps) {
   const tdmn = name => { const b = Buffer.alloc(40); b.write(name, 'latin1'); return rifxChunk('tdmn', b); };
   const items = comps.map(({ id, layers }) => {
@@ -423,8 +478,16 @@ export function buildAep(comps) {
     idta.writeUInt32BE(id, 16);
     return rifxList('Item', [
       rifxChunk('idta', idta),
-      ...layers.map(grads => rifxList('Layr', [
+      ...layers.map(layer => [Array.isArray(layer) ? layer : layer.gradients || [], layer.meshes || []]).map(([grads, meshes]) => rifxList('Layr', [
         rifxChunk('Utf8', Buffer.from('layer')),
+        ...(meshes.length ? [rifxList('tdgp', [
+          tdmn('ADBE Effect Parade'),
+          rifxList('tdgp', meshes.flatMap(hex => [
+            tdmn('ADBE FreePin3 Mesh'),
+            rifxChunk('fpmv', Buffer.from([0, 0, 0, 6])),
+            rifxChunk('fpms', Buffer.from(hex, 'hex')),
+          ])),
+        ])] : []),
         rifxList('tdgp', [
           tdmn('ADBE Root Vectors Group'),
           rifxList('tdgp', grads.flatMap(entry => [

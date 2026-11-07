@@ -45,6 +45,8 @@ better-lottie/
     shapes.js              # shape contents: paint/group stacking, Trim Paths, Merge Paths, Repeaters
     taper.js               # Taper/Wave strokes → filled outline polygons
     masks.js               # layer masks and track mattes → <mask>
+    puppet.js              # Puppet effect: saved mesh decode, skinning solver, per-frame path deformation
+    workarea.js            # "Work area only": shift every keyframe/in/out point so the work area starts at 0
     svg.js                 # document, layers, parenting, in/out points
   bin/better-lottie.js     # CLI: better-lottie in.ir.json [-o out.svg] [--once]
   test/
@@ -80,13 +82,14 @@ better-lottie/
 4. The user creates the GitHub release from the tag and attaches the `.zxp`. The README's install guide links to `releases/latest`.
 
 ### Status
-- **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave, Polygon/Star.
-- **Extension:** panel (Export SVG, Preview, Prepare comp, Save IR, loop/background options, warnings, usage snippet) and extractor. Prepare comp is verified in AE 2026 by script (renders before/after identical); the panel button and loading `prepare.jsx` from the panel are **not yet tested inside AE**. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
+- **Converter:** Phases 1 and 2, plus dashes, Trim Paths, Merge Paths (all five modes), linear/radial gradient fills and strokes (incl. Scale/Rotation and animated colors), Auto-Orient Along Path, layer masks, track mattes, repeaters, stroke Taper and Wave, Polygon/Star, Puppet (position pins, shape layers).
+- **Extension:** panel (Export SVG, Preview, Prepare comp, Save IR, loop/background/work-area options, warnings, usage snippet; previews the active comp when it opens) and extractor. Prepare comp is verified in AE 2026 by script (renders before/after identical); the panel button and loading `prepare.jsx` from the panel are **not yet tested inside AE**. Verified in **real AE 2026** on the user's project (`abgabe.aep`, comps "rocks-glass" and "shaker"): AE's own frames (`saveFrameToPng`) match the SVG.
 - **Verified against AE renders** (`test/ae/`, pixel diffs ≤ 2.5/255 on average, only anti-aliased edges differ): masks (all modes, feather, inverted, opacity, expansion, animated path), all four track matte types incl. an animated matte, repeaters (offset, fractional copies, composite order), taper (ease 0–100), wave, gradient Scale/Rotation, Polygon/Star (comps `polystar`, `polystar-anim`; ≤ 0.15/255).
 - **Blend modes verified in AE:** every layer and shape-level mode with a CSS equivalent matches AE renders to within 2/255 (Soft Light included); comps `blend-layers` and `blend-shapes` in the scratch project.
 - **Release package:** the 0.3.1 `.zxp` installs via aescripts' ZXP Installer and loads in AE 2026 on macOS with the dev link removed. Windows install untested.
+- **Puppet verified in AE** on comp `puppet` (360×60 bar, 3 pins, right pin keyed 80 px up): IoU 0.97 at full bend, exact at rest (`test/fixtures/ae-puppet-1.png` is AE's frame). Comp `puppet-tall` (300×500, bar plus a stroked curve, bottom pin keyed 80 px right) settled the normalization (larger side). A user's real project (`test/ae/izgara/`, gitignored: copy of IZGARA.aep + Assets.ai; comp "Dough-Rise", cloth with 5 animated pins on Illustrator footage): after Prepare comp, IoU 0.94–0.99 on every frame of the drape, off-screen at the same times as AE. The 6 s export is 247 KB (101 KB gzipped). Not handled: content that moves out of the mesh (AE splits it raster-style; ours bends the outline, 0.61 on comp `puppet-moved`).
 - **Not verified in AE:** animated gradient *colors* with different keyframe colors (scripts can't set gradient colors; the file layout was verified with identical keyframes).
-- **Not built:** work-area export, mask modes lighten/darken/difference (approximated), adds after an intersect mask (approximated). Not yet checked in Safari/Firefox (pathLength trims, SMIL inside masks).
+- **Not built:** mask modes lighten/darken/difference (approximated), adds after an intersect mask (approximated). Not yet checked in Safari/Firefox (pathLength trims, SMIL inside masks).
 
 Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The extractor only bakes what the converter can't see, i.e. expressions: it writes them as per-frame linear keyframes, and the converter's linear-run simplification shrinks them back down.
 
@@ -107,6 +110,12 @@ Baking happens in the converter: `propValueAt` evaluates AE's curves itself. The
 - **Create Shapes from Vector Layer** (command 3973; from Text: 3781) acts on the selected layers of the comp open in the viewer (other selected types are ignored). The new `<name> Outlines` shape layer goes directly above the original and gets its transform (keyframes, expressions), parent, in/out, stretch, effects and masks; the original is switched off. **Not** copied: blend mode, motion blur, its own track matte; children and matted layers keep pointing at the original. Renders identically. `prepare.jsx` fixes these up, re-parents with `setParentWithJump` (plain `.parent =` changes the child's values), takes the original's name, removes the original. Text animators are baked to the current time. The new shapes are unsaved, so their gradient colors can't be read until the project is saved. Footage layers whose source is `.ai/.eps/.pdf` get `vector: true` in the IR.
 - **Polygon/Star** (`ADBE Vector Shape - Star`): `…Star Type` (1 star, 2 polygon), `Points` (min 3, fractional allowed), `Position`, `Rotation`, `Inner/Outer Radius`, `Inner/Outer Roundess` (sic). Geometry fitted to AE's own "Convert To Bezier Path" (command 4162; it only acts when run in its own DoScript call with the property selected) to 1e-4, see `polystarShape` and `test/fixtures/ae-polystar-shapes.json`. Not lottie-web's formula: roundness handles are q·r·K·sin(π/n), and fractional points add a partial vertex.
 - `saveFrameToPng` writes colors already composited over the comp background, plus alpha: compare against SVGs rendered *with* the background.
+- **Puppet** (`ADBE FreePin3`): `Puppet Engine` (2 = Advanced), `Auto Rotate Pins` (UI "Mesh Rotation Refinement", default 20), `ARAP Group` > `Mesh Group` > `Mesh Atom` (`Mesh` is CUSTOM_VALUE; `Mesh Tri Count/Density/Expansion`) > `PosPins` > `PosPin Atom` (newest first) with `Vtx Index` (the mesh vertex it holds), `Pin Type` (1 = position), `Position` (keyframed, source space), `Scale`, `Rotation`; `HghtPins` = Overlap, `StarchPins` = Stiffness. Reading the value of `PosPin Vtx Offset` **crashes the script engine** (uncatchable error dialog). Scripts can add `PosPin Atom`s but they never bind to the mesh (index stays −1, no deformation). Real pins need clicks in the viewer: with the terminal allowed Accessibility, select the layer by script, send Cmd+P via System Events, then post CoreGraphics mouse events (Python `ctypes` → `CGEventCreateMouseEvent`/`CGEventPost`; System Events' `click at` does not reach the viewer). `screencapture` shows where the comp sits on screen.
+- **Puppet space:** shape layers report `collapseTransformation` true and can't change it (always continuously rasterized), so the Puppet runs **after the layer's transform, in comp space**: mesh and pins are comp coordinates, normalized by the comp's larger side. Moving or scaling the layer slides its content under a mesh that stays put; content outside the mesh is drawn undeformed (comp `puppet-moved`). Continuously rasterized Illustrator footage works the same way (pins of the IZGARA cloth are comp coordinates, ×1200 for a 1200×900 comp).
+- **Puppet pin speeds** aren't px/s: AE interpolates pins in its own normalized space, and no single factor or per-axis model reproduces `valueAtTime` (up to 45 px off). The extractor samples keyed pins on every frame instead.
+- **Prepare comp keeps puppets:** Create Shapes from Vector Layer copies the Puppet with its mesh and keyed pins to the new shape layer, and AE renders it the same (IZGARA "Dough-Rise").
+- **Puppet mesh in the .aep:** one `fpms` chunk per Mesh Atom inside the layer's `LIST Layr` (the project-level `Pefl` holds a copy too): u16 version, 4 × f32, u32 n + n × (f32, f32) outline, u32 `0xad0beb0a`, u32 1, u8, u32 nv + nv × (f64 x, f64 y), u32 nt + nt × 3 × u32, pad. Vertices × the source's larger side = source-space pixels (300×500 comp → ×500); the pins' rest positions are exactly their `Vtx Index` vertices (checked on shape layers 500×300 and 300×500, and a 150×150 .psd). A shape layer's source is comp-sized, centered on the layer origin (source = layer + comp size / 2).
+- **ExtendScript crash:** concatenating a `File` object into a string (`'x' + app.project.file`) kills the script without a catchable error; use `.fsName`.
 - Still unverified: ease `speed` units for color and path properties (treated as progress/s); `File.saveDlg` without a filter on macOS works in practice.
 
 ### Probing real AE from the terminal
@@ -152,10 +161,10 @@ With the user's OK (it drives their open AE), run read-only scripts via `osascri
 
 ### Next candidates
 - Solid layers (as rects); precomps
-- Export the work area only; "start paused" option
+- "Start paused" option
 
 ### Out of scope
-Effects, 3D layers and cameras, blend modes, text and Illustrator layers (point users to "Prepare comp"), images and video, and the remaining shape modifiers (offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
+Effects other than Puppet, 3D layers and cameras, blend modes, text and Illustrator layers (point users to "Prepare comp"), images and video, and the remaining shape modifiers (offset paths, wiggle, zig zag, pucker & bloat, twist, round corners). **Never drop anything silently.** Each unsupported thing produces a warning that names the layer and property.
 
 ## Key conversion rules (where it's easy to get wrong)
 
@@ -235,6 +244,13 @@ Shape-level blend modes (`ADBE Vector Blend Mode` on groups, fills, strokes) are
 ### Repeaters and taper
 - Repeaters split the group's stack at the lowest repeater: items below draw first, then the copies of everything above. Copy 0 holds the content in `<g id>`; the others `<use>` it. Paints below a repeater draw every copy of the paths above.
 - Taper/Wave strokes become filled polygons (`taper.js`): 64 samples (denser near the ends), fixed-count caps so the structure stays constant for `d` animation, trimmed first so the taper follows the visible part. Always baked when animated.
+
+### Puppet (puppet.js)
+- A pre-pass in `renderLayer` replaces each path, rect, ellipse and polystar (and each mask) with a baked track: every frame, the shape goes through its groups' matrices and the layer's transform chain (parents included, `layerMatrix`) into comp space, gets deformed, and comes back into its group's space. Points within one mesh edge outside the mesh follow the nearest triangle (vector outlines poke out of a mesh built from the rasterized layer); points farther out stay put, as in AE. Groups, paints, gradients and modifiers stay as they are. Long segments are first split (≈2.5 mesh edges per piece; 1.5 was no more accurate on the IZGARA cloth and 60% bigger, the same count on every frame) so they can bend; handles go through their vertex's triangle Jacobian.
+- Solver: linear blend skinning with bounded biharmonic weights (active set) and one affine transform per pin; the transforms' rotations come from `refinement` local/global ARAP iterations. Mesh ARAP (0.90) and Igarashi two-step (0.92) fit AE worse than this (0.97). One pin = translation.
+- A fill closes an open path with a straight line, and AE bends that line with the mesh. A deformed path with open subpaths therefore also gets a `fillTrack`: closed (no tangents on the closing segment) before subdividing and deforming. Fills draw that one, strokes the open path. Without it a filled open curve showed a wedge (comp `puppet-tall`, IoU 0.77 → 0.90; 0.92 at rest, limited by the unrasterized stroke).
+- Mesh rest positions and triangles come from the saved `.aep` (the extractor passes the `fpms` hex through; `decodeMesh` parses it). Unsaved puppets warn.
+- Not handled (warned): pin types other than position, Overlap and Stiffness pins, the Legacy engine (approximated), repeater copies (they get the original's deformation). Stroke widths stay constant while AE stretches them with the image (not warned).
 
 ### Auto-Orient
 The layer's rotation gets the motion path's direction added: the exact tangent of the spatial bezier at the eased arc-length position (`orientationTrack`), held before the first and after the last keyframe, and unwrapped so it never spins through ±180°.

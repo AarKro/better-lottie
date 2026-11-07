@@ -8,6 +8,8 @@ import { renderContents } from './shapes.js';
 import { wrapTransform } from './transform.js';
 import { applyMasks, applyMatte } from './masks.js';
 import { cssBlend } from './blend.js';
+import { puppetLayer } from './puppet.js';
+import { cropToWorkArea } from './workarea.js';
 
 export const VERSION = '0.5.0';
 
@@ -18,10 +20,12 @@ export const VERSION = '0.5.0';
  *   background: draw comp.background if the IR has one (default true)
  *   idPrefix: prefix for gradient/clip/mask ids; defaults to one derived from
  *     the comp name, so several exports can be inlined on one page
+ *   workArea: export only the comp's work area (IR comp.workArea), starting at 0
  * @returns {{ svg: string, warnings: string[] }}
  */
 export function convert(ir, options = {}) {
   validate(ir);
+  if (options.workArea) ir = cropToWorkArea(ir);
   const comp = ir.comp;
   const warnings = (ir.warnings || []).slice();
   const seen = new Set(warnings);
@@ -38,6 +42,7 @@ export function convert(ir, options = {}) {
     trimCache: new Map(),
     merges: new Map(),
     mattes: new Set(),
+    puppets: new Map(),
     warn(where, msg) {
       const s = `${where}: ${msg}`;
       if (!seen.has(s)) { seen.add(s); warnings.push(s); }
@@ -98,6 +103,10 @@ function renderLayer(layer, ctx, { force = false } = {}) {
   }
   if (layer.threeD) ctx.warn(where, '3D layer exported as 2D');
   if (layer.trackMatte) ctx.warn(where, 'track mattes need a newer extractor; re-export from After Effects');
+  if (layer.puppets) {
+    if (!ctx.puppets.has(layer)) ctx.puppets.set(layer, puppetLayer(layer, ctx, where));
+    layer = ctx.puppets.get(layer);
+  }
 
   ctx.shapeBlends = false;
   let content = renderContents(layer.contents || [], ctx, where);

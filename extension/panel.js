@@ -62,11 +62,15 @@
 
   async function convertActiveComp() {
     var ir = await callHost('extractActiveComp');
+    var workArea = $('opt-workarea').checked;
     var result = window.BetterLottieSVG.convert(ir, {
       loop: $('opt-loop').checked,
-      background: $('opt-background').checked
+      background: $('opt-background').checked,
+      workArea: workArea
     });
-    return { ir: ir, svg: result.svg, warnings: result.warnings, fileName: fileBase(ir.comp.name) + '.svg' };
+    var wa = ir.comp.workArea;
+    var duration = workArea && wa && wa.duration > 0 ? Math.min(wa.duration, ir.comp.duration - (wa.start || 0)) : ir.comp.duration;
+    return { ir: ir, svg: result.svg, warnings: result.warnings, duration: duration, fileName: fileBase(ir.comp.name) + '.svg' };
   }
 
   async function onPreview() {
@@ -100,9 +104,9 @@
       var n = prep.converted.length;
       var done = 'Created "' + prep.comp + '" with ' + n + ' layer' + (n === 1 ? '' : 's') + ' converted to shapes. ';
       if (prep.needsSave) {
-        // The gradients would preview black to white until then.
+        // Gradients would preview black to white and puppets undeformed until then.
         $('result').hidden = true;
-        return done + 'Save the project (gradient colors are read from the saved file), then preview or export it.';
+        return done + 'Save the project (gradient colors and puppet meshes are read from the saved file), then preview or export it.';
       }
       // The prepared copy is now the active comp: preview it right away.
       var r = await convertActiveComp();
@@ -157,7 +161,7 @@
 
     var shapeLayers = r.ir.layers.filter(function (l) { return l.type === 'shape' && l.enabled !== false; }).length;
     var kb = (new Blob([r.svg]).size / 1024).toFixed(1);
-    $('meta').textContent = r.ir.comp.width + '×' + r.ir.comp.height + ' · ' + r.ir.comp.duration.toFixed(2) + 's · '
+    $('meta').textContent = r.ir.comp.width + '×' + r.ir.comp.height + ' · ' + r.duration.toFixed(2) + 's · '
       + shapeLayers + ' shape layer' + (shapeLayers === 1 ? '' : 's') + ' · ' + kb + ' KB';
 
     renderWarnings(r.warnings);
@@ -200,9 +204,21 @@
     setTimeout(function () { $('copy').textContent = 'Copy'; }, 1200);
   }
 
+  // Show the active comp right away when the panel opens. With no comp open,
+  // keep the usual hint instead of an error.
+  async function previewOnOpen() {
+    if (!cep) return;
+    try {
+      var r = await convertActiveComp();
+      show(r);
+      status('Preview of "' + r.ir.comp.name + '". Not saved yet.');
+    } catch (e) { /* no comp yet */ }
+  }
+
   $('export').addEventListener('click', onExport);
   $('preview').addEventListener('click', onPreview);
   $('prepare').addEventListener('click', onPrepare);
   $('save-ir').addEventListener('click', onSaveIR);
   $('copy').addEventListener('click', copySnippet);
+  previewOnOpen();
 }());

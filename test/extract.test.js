@@ -7,7 +7,7 @@ import { convert } from '../src/index.js';
 import {
   loadHost, CompItem, AVLayer, CameraLayer, TextLayer, Shape, EASY, AutoOrientType, buildAep, gradientXml,
   shapeLayer, plainLayer, layerTransform, group, rect, ellipse, path, fill, stroke, trim, merge, gradientFill, BlendingMode,
-  MaskMode, TrackMatteType, mask, repeater, polystar,
+  MaskMode, TrackMatteType, mask, repeater, polystar, puppet,
 } from './helpers/ae-mock.js';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -325,4 +325,42 @@ test('reads Polygon/Star settings (stars only get inner radius and roundness)', 
   assert.equal(poly.starType, 'polygon');
   assert.deepEqual([poly.points, poly.position, poly.rotation, poly.outerRadius], [{ value: 6 }, { value: [5, 6] }, { value: 15 }, { value: 80 }]);
   assert.equal(poly.innerRadius, undefined);
+});
+
+// --- puppet ---
+
+test('reads Puppet pins and takes the mesh from the saved project', () => {
+  const hex = JSON.parse(readFileSync(new URL('./fixtures/ae-puppet.ir.json', import.meta.url), 'utf8')).layers[0].puppets[0].meshes[0].data;
+  const comp = new CompItem({ id: 12, name: 'Puppet', width: 500, height: 300, duration: 2, frameRate: 30 });
+  comp.layers = [shapeLayer({ index: 1, name: 'Bar', outPoint: 2 }, [rect('R', [360, 60]), fill('F', [1, 0.5, 0, 1])], {
+    effects: 1,
+    puppets: [puppet('Puppet', {
+      meshes: [{
+        pins: [
+          { name: 'Puppet Pin 2', vertex: 5, position: { keys: [{ t: 0, v: [250, 150] }, { t: 1, v: [250, 100] }] } },
+          { name: 'Puppet Pin 1', vertex: 6, position: [90, 150], type: 3 },
+        ],
+        overlap: 1,
+      }],
+    })],
+  })];
+  const file = projectFile([{ id: 12, layers: [{ gradients: [], meshes: [hex] }] }]);
+  const ir = JSON.parse(loadHost(HOST, comp, { projectFile: file }).extractActiveComp());
+  const [fx] = ir.layers[0].puppets;
+  assert.deepEqual({ ...fx, meshes: undefined }, {
+    name: 'Puppet', engine: 'advanced', refinement: 20, overlapPins: 1, meshes: undefined,
+    source: { width: 500, height: 300, space: 'comp' },
+  });
+  assert.equal(fx.meshes[0].data, hex);
+  assert.deepEqual(ir.comp.workArea, { start: 0, duration: 2 });
+  assert.deepEqual(fx.meshes[0].pins.map(p => [p.name, p.type, p.vertex]), [['Puppet Pin 2', 'position', 5], ['Puppet Pin 1', 'type 3', 6]]);
+  // Keyed pins come baked: AE's value on every frame (30 fps × 2 s).
+  const keys = fx.meshes[0].pins[0].position.keyframes;
+  assert.equal(keys.length, 61);
+  assert.deepEqual([keys[15].t, keys[15].v], [0.5, [250, 125]]);
+  assert.deepEqual(ir.warnings, ['layer "Bar": effects are not supported (ignored): Glow 1']);
+
+  const unsaved = JSON.parse(loadHost(HOST, comp).extractActiveComp());
+  assert.equal(unsaved.layers[0].puppets[0].meshes[0].data, null);
+  assert.ok(unsaved.warnings.includes('project: save the project to export puppet meshes'));
 });

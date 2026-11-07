@@ -45,7 +45,7 @@ Tools like Lottie export your animation as data that needs a JavaScript player o
 ## How to use it
 
 1. **Open the composition** you want to export, or select it in the Project panel.
-2. Click **Preview** to see the result in the panel without saving anything. If the comp has Illustrator or text layers, the panel says so: click **Prepare comp** (see below) and continue with the copy it makes.
+2. The panel previews the active comp when it opens; click **Preview** again after changing the comp or an option. Nothing is saved yet. If the comp has Illustrator or text layers, the panel says so: click **Prepare comp** (see below) and continue with the copy it makes.
 3. Click **Export SVG…** and choose where to save the file.
 4. Copy the `<img>` snippet the panel shows and use it on your website.
 
@@ -54,7 +54,7 @@ Tools like Lottie export your animation as data that needs a JavaScript player o
 better-lottie exports shape layers. **Prepare comp** makes a copy of the open comp, named "<comp> [better-lottie]", in which every Illustrator (`.ai`, `.eps`, `.pdf`) layer and text layer is turned into a shape layer, using After Effects' own *Create Shapes from Vector Layer* and *Create Shapes from Text*. Animation, parenting, track mattes, blend modes and effects stay as they were.
 
 - Your original comp and your Illustrator files are not changed. The copy is a new comp in your project; one **Edit › Undo** removes it again.
-- **Save the project** after preparing if the artwork has gradients. better-lottie reads gradient colors from the saved project file. The panel reminds you.
+- **Save the project** after preparing if the artwork has gradients or a Puppet. better-lottie reads gradient colors and puppet meshes from the saved project file. The panel reminds you. Puppet pins carry over to the shape layer.
 - The Illustrator files must be available. If one is missing (a red-bar placeholder), relink it with **File › Replace Footage** first.
 - Text animators don't carry over: the shapes show the text as it looks at the current time.
 
@@ -62,6 +62,7 @@ better-lottie exports shape layers. **Prepare comp** makes a copy of the open co
 
 - **Loop:** on by default. Turn it off to play the animation once and stop on the last frame.
 - **Include comp background:** off by default, so the SVG has a transparent background. Turn it on to include your composition's background color.
+- **Work area only:** off by default. Turn it on to export just the comp's work area; the SVG then starts at the work area's start.
 
 ### Warnings
 
@@ -76,17 +77,19 @@ If your composition uses something better-lottie can't export, the panel lists i
 | **Shapes** | Paths, rectangles, ellipses, polygons and stars (incl. fractional and animated points), groups, shape morphing |
 | **Fill & stroke** | Solid colors, linear and radial gradients (incl. gradient scale/rotation and animated colors), stroke width, line caps and joins, dashes, stroke taper and wave |
 | **Shape effects** | Trim Paths, Merge Paths, Repeater |
+| **Puppet** | Puppet tool position pins on shape layers (also after **Prepare comp**), recorded frame by frame. Close to After Effects, not pixel-identical: Adobe's solver isn't public |
 | **Blend modes** | On layers and on shape groups, fills and strokes: Multiply, Screen, Overlay, Darken, Lighten, Color Dodge, Color Burn, Hard Light, Soft Light, Difference, Exclusion, Hue, Saturation, Color, Luminosity, Add |
 | **Masks & mattes** | Layer masks (add, subtract, intersect, inverted, feather, expansion, opacity), track mattes (alpha, luma and inverted) |
 | **Animation** | All keyframe easing, hold keyframes, motion paths, expressions (recorded frame by frame) |
 
 ### Not supported
 
-Effects, text layers and Illustrator layers (until converted with **Prepare comp**), images and video, 3D layers and cameras, precomps, blend modes that browsers don't have (e.g. Linear Burn, Vivid Light, Pin Light, Hard Mix, Subtract, Divide; these export as Normal), and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners).
+Effects other than Puppet (and Puppet's Advanced/Bend pins, Overlap and Starch pins), text layers and Illustrator layers (until converted with **Prepare comp**), images and video, 3D layers and cameras, precomps, blend modes that browsers don't have (e.g. Linear Burn, Vivid Light, Pin Light, Hard Mix, Subtract, Divide; these export as Normal), and a few shape effects (Offset Paths, Wiggle Paths, Zig Zag, Pucker & Bloat, Twist, Round Corners).
 
 ## Tips
 
-- **Save your project before exporting** if it uses gradients. After Effects doesn't let extensions read gradient colors directly, so better-lottie reads them from the saved project file.
+- **Save your project before exporting** if it uses gradients or the Puppet tool. After Effects doesn't let extensions read gradient colors or puppet meshes directly, so better-lottie reads them from the saved project file.
+- **Puppet animations are larger** than other animations, because every frame of the deformation is stored. Keep pinned layers where you pinned them: content that moves out of the puppet mesh doesn't deform like in After Effects.
 - **Illustrator artwork and text:** use **Prepare comp**, or convert layers yourself: right-click the layer and choose **Create › Create Shapes from Vector Layer** (or **Create Shapes from Text**). Only shape layers are exported.
 - **Keep it simple:** shape-based animations with a moderate number of layers give the smallest files.
 
@@ -118,7 +121,7 @@ Note: browsers pause animations in `<img>` tags while they are scrolled out of v
 | The panel isn't in **Window › Extensions** | Quit After Effects completely and reopen it. If it's still missing, install the `.zxp` again (step 3 of the installation). |
 | "Open or select a composition first" | Click inside the composition's timeline or viewer, then try again. |
 | Saving fails | Turn on **Allow Scripts to Write Files and Access Network** (step 4 of the installation). |
-| Gradients come out black and white, or there's a warning about unsaved changes | Save the After Effects project, then export again. |
+| Gradients come out black and white, a puppet doesn't bend, or there's a warning about unsaved changes | Save the After Effects project, then export again. |
 | The export looks different from After Effects | Click **Save IR…** in the panel and attach the saved file, a screenshot, and a short description to a bug report. |
 
 ## For developers
