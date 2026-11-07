@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
-<!-- better-lottie 0.5.0 · comp "gradient-transform" -->
+<!-- better-lottie 0.6.0 · comp "gradient-transform" -->
 <defs><linearGradient id="blzdp2p-grad1" gradientUnits="userSpaceOnUse" x1="-40" y1="-20" x2="50" y2="30"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/></linearGradient><linearGradient id="blzdp2p-grad2" gradientUnits="userSpaceOnUse" x1="-40" y1="-20" x2="50" y2="30" gradientTransform="rotate(45) scale(0.5 1)"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/></linearGradient><radialGradient id="blzdp2p-grad3" gradientUnits="userSpaceOnUse" cx="-40" cy="-20" r="102.956"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/></radialGradient><radialGradient id="blzdp2p-grad4" gradientUnits="userSpaceOnUse" cx="-40" cy="-20" r="102.956" gradientTransform="rotate(30) scale(0.6 1)"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#000000"/></radialGradient></defs>
 <rect width="400" height="400" fill="#1a1a1f"/>
 <g transform="translate(100 100)"><path d="M75 -75C75 -75 75 75 75 75C75 75 -75 75 -75 75C-75 75 -75 -75 -75 -75C-75 -75 75 -75 75 -75Z" fill="url(#blzdp2p-grad1)"/></g>

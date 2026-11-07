@@ -11,7 +11,7 @@ import { cssBlend } from './blend.js';
 import { puppetLayer } from './puppet.js';
 import { cropToWorkArea } from './workarea.js';
 
-export const VERSION = '0.5.0';
+export const VERSION = '0.6.0';
 
 /**
  * @param {import('./ir.js').IR} ir
